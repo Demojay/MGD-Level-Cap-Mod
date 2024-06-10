@@ -1,0 +1,81 @@
+{
+    "Easy": {
+        "enableCap" : false,
+        "lvls" : [
+        ]
+    },
+    "Normal" : {
+        "enableCap" : true,
+        "lvls" : [
+            {
+                "lvl": 5,
+                "item": [""]
+            },
+            {
+                "lvl": 10,
+                "item": ["Vandal Note"]
+            },
+            {
+                "lvl": 15,
+                "item": ["Sigil Of Allure"]
+            },
+            {
+                "lvl": 25,
+                "item": ["Temple Checkpoint Gem"]
+            },
+            {
+                "lvl": 30,
+                "item": ["Sigil Of Will-Power", "True Sigil Of Power"]
+            },
+            {
+                "lvl": 45,
+                "item": ["Labyrinth Checkpoint Gem"]
+            },
+            {
+                "lvl": 50,
+                "item": ["Lucidian Passport"]
+            },
+            {
+                "lvl": 70,
+                "item": ["Slime Badge"]
+            }
+        ]
+    },
+    "Hard" : {
+        "enableCap" : true,
+        "lvls" : [
+            {
+                "lvl": 5,
+                "item": [""]
+            },
+            {
+                "lvl": 10,
+                "item": ["Vandal Note"]
+            },
+            {
+                "lvl": 15,
+                "item": ["Sigil Of Allure"]
+            },
+            {
+                "lvl": 25,
+                "item": ["Temple Checkpoint Gem"]
+            },
+            {
+                "lvl": 30,
+                "item": ["Sigil Of Will-Power", "True Sigil Of Power"]
+            },
+            {
+                "lvl": 45,
+                "item": ["Labyrinth Checkpoint Gem"]
+            },
+            {
+                "lvl": 50,
+                "item": ["Lucidian Passport"]
+            },
+            {
+                "lvl": 70,
+                "item": ["Slime Badge"]
+            }
+        ]
+    }
+}
