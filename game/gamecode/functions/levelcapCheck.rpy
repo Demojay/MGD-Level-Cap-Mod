@@ -17,10 +17,16 @@ label LevelCapCheck:
             else:
                 return Integer.MAX_VALUE
 
+        def getLevelCapFilePath():
+            if renpy.android:
+                return "Mods/LevelCapCheck.json"
+            else:
+                return "../Mods/LevelCapCheck.json"
+
         def loadLevelCapJSON():
             global LevelCapObj
-            levelCapJSONStr = renpy.file("../Mods/LevelCapCheck.json").read().decode("utf-8")
             try:
+                levelCapJSONStr = renpy.file(getLevelCapFilePath()).read().decode("utf-8")
                 loadedCapList = json.loads(levelCapJSONStr).items()
                 LevelCapObj = {}
                 
