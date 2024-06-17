@@ -78,7 +78,7 @@ label LevelCapCheck:
 
             for levelCheck in levelArr:
                 capPassed = False
-                if levelCheck["lvl"] <= maxLevelCap:
+                if levelCheck["lvl"] <= maxLevelCap and levelCheck["lvl"] > currentCap:
                     itemsToCheck = levelCheck.get("item", [])
                     eventsToCheck = levelCheck.get("events", [])
                     capPassed = requiresCheck(itemsToCheck, eventsToCheck, player, ProgressEvent)
