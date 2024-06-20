@@ -1927,10 +1927,10 @@ label refreshLevelVar:
     return
 
 label levelUpSpot:
-    $ culmitiveLeveling += 1
     if player.stats.Exp >= player.stats.ExpNeeded:
         if levelCapNotReached():
             #CODEMOD
+            $ culmitiveLeveling += 1
             $ player.stats.Exp -= player.stats.ExpNeeded
             $ player.stats.lvl += 1
             "[player.stats.lvl]/[culmitiveLeveling]"
@@ -1990,8 +1990,8 @@ label levelUpSpot:
             else:
                 $ hasResPoints = 0
         else:
-            $ culmitiveLeveling -= 1
-            $ player.stats.Exp = player.stats.ExpNeeded - 1
+            if player.stats.Exp >= player.stats.ExpNeeded:
+                $ player.stats.Exp = player.stats.ExpNeeded - 1
 
         #call levelup function
         if player.stats.Exp >= player.stats.ExpNeeded:
