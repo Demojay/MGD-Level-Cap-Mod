@@ -1933,7 +1933,6 @@ label levelUpSpot:
             $ culmitiveLeveling += 1
             $ player.stats.Exp -= player.stats.ExpNeeded
             $ player.stats.lvl += 1
-            "[player.stats.lvl]/[culmitiveLeveling]"
 
             python:
                 player.stats.ExpNeeded = int((0.4*(player.stats.lvl*player.stats.lvl)) + (2*player.stats.lvl) + (15*math.sqrt(player.stats.lvl)-8))
