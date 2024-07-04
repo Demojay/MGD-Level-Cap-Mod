@@ -24,13 +24,14 @@ label after_load:
     #Thus, it is impossible to apply to an already up to date save by mistake for as long as your if condition
     #never contains the current game version you are intending to ship.
 
+    hide screen ON_MapMenu 
+
     if onGridMap == 0:
         hide screen gridMoveKeys
 
     $ needToUpdate = 0
     hide screen FishingHitEffect
-
-
+    show screen input_detection
     python:
         UpdatedGameCheck = len(SkillsDatabase) + len(ItemDatabase) + len(MonsterDatabase) + len(PerkDatabase) + len(LocationDatabase) + len(EventDatabase) + len(AdventureDatabase)
 
@@ -39,7 +40,6 @@ label after_load:
         except NameError:
             needToUpdate = 1
             CurrentIteration = copy.deepcopy(UpdatedGameCheck)
-        
 
     if CurrentIteration != UpdatedGameCheck:
         $ needToUpdate = 1

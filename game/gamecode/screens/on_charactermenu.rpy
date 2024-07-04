@@ -119,7 +119,7 @@ screen ON_EquipPrompt(promptEquipping, promptSlotType, equipmentSlot=0, equipmen
 
 screen ON_EquipSlot(itemSlot, slotType, slotID):
     hbox:
-        xalign 0.0
+        xmaximum 500
         if slotType == "Rune":
             textbutton slotType + " Slot [slotID] - ":
                 text_color "#fff"
@@ -147,6 +147,8 @@ screen ON_EquipSlot(itemSlot, slotType, slotID):
                 action [SelectedIf(False), SensitiveIf(InventoryAvailable), Show("ON_EquipPrompt", promptEquipping=False, promptSlotType=slotType, equipmentSlot=slotID)]
                 text_insensitive_color "#fff"
                 text_size on_listTextSize
+                text_textalign 0.0
+                text_layout "greedy"
 
 screen ON_SingleFetishDisplay(fetish, value, tempFetishLevel, tooltipDisplay="", color="#fff", duration=0, timeType=""):
     fixed:
@@ -322,7 +324,10 @@ screen ON_SingleItemDisplay(item, spaceNextOne=0):
         $ twolayered += 24
         $ spaceNextOne = 1
 
-    $ itemsToolTip = item.descrips + " Value: " + str(item.cost) + " eros."
+    if item.itemType != "Key":
+        $ itemsToolTip = item.descrips + " Value: " + str(item.cost) + " eros."
+    else:
+        $ itemsToolTip = item.descrips
     if item.itemType == "Consumable" or item.itemType == "DissonantConsumable" or item.itemType == "CombatConsumable"  or item.itemType == "CombatConsumable":
         if len(item.skills) > 0:
             $ fetchSkill = getFromName(item.skills[0], SkillsDatabase)
@@ -603,8 +608,8 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
                         action Jump("spendLvlUpPoints")
 
             vbox:
-                yalign 0.5
-                xpos 960
+                yalign 0.0
+                xpos 860 yoffset 38
                 use ON_EquipSlot(player.inventory.RuneSlotOne, "Rune", 1)
                 use ON_EquipSlot(player.inventory.RuneSlotTwo, "Rune", 2)
                 use ON_EquipSlot(player.inventory.RuneSlotThree, "Rune", 3)
@@ -1166,7 +1171,7 @@ init python:
         display += holder[1]
 
         if skillChoice.costType == "ep":
-            player.stats.ep -= skillChoice.cost
+            player.stats.ep -= int(math.floor(skillChoice.cost*GetParalEnergyChange(player)+GetParalFlatEnergyChange(player)))
         elif skillChoice.costType == "hp":
             actualCost = skillChoice.cost + (player.stats.max_true_hp-100)*0.15
             actualCost = math.floor(actualCost)

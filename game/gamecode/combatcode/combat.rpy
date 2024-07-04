@@ -195,7 +195,7 @@ init python:
 
                             stanceRequired = 1
 
-            if stanceRequired == 1 and moveRequired == 1 and charsRequired == 1:
+            if stanceRequired == 1 and moveRequired == 1 and charsRequired == 1 and each.NameOfScene != "":
                 scenesPool.append(copy.deepcopy(each))
                 sceneNumbers.append(copy.deepcopy(getFromNameOfScene(each.NameOfScene, Scenes)))
 
@@ -292,6 +292,7 @@ label combat:
     $ display = ""
     $ pushAwayAttempt = 0
     $ turnsStunnedByParalysis = 0
+    $ restraintMaxHP = 0
     $ refreshMenu = 1
     $ manualSort = ""
     $ swappingSkill = -1
@@ -484,19 +485,19 @@ label combatPlayer:
     $ c = 0
 
     $ paralysisStunned = 0
-    if player.statusEffects.paralysis.potency >= 1 and player.statusEffects.paralysis.duration >= 1 and paralysisIgnored == 0:
+    #if player.statusEffects.paralysis.potency >= 1 and player.statusEffects.paralysis.duration >= 1 and paralysisIgnored == 0:
 
-        if getParalysisBoost(player) >= renpy.random.randint(0, 100):
-            $ paralysisStunned = 1
-            $ turnsStunnedByParalysis += 1
-        else:
-            $ turnsStunnedByParalysis = 0
-            $ paralysisIgnored = 1
+        #if getParalysisBoost(player) >= renpy.random.randint(0, 100):
+            #$ paralysisStunned = 1
+            #$ turnsStunnedByParalysis += 1
+        #else:
+            #$ turnsStunnedByParalysis = 0
+            #$ paralysisIgnored = 1
 
-            #$ display = player.name + " manages to struggle through the paralysis wracking his body, and is able to act!"
-            #"[display!i]"
-    else:
-        $ turnsStunnedByParalysis = 0
+            ##$ display = player.name + " manages to struggle through the paralysis wracking his body, and is able to act!"
+            ##"[display!i]"
+    #else:
+    #    $ turnsStunnedByParalysis = 0
 
     if (player.statusEffects.surrender.duration > 0):
         $ cmenu_resetMenu()
@@ -590,6 +591,7 @@ label combatPlayer:
     jump combatPlayer
 
 label pushaway:
+
     $ combatChoice = copy.deepcopy(getSkill("Push Away", SkillsDatabase))
 
 label targeting:
@@ -634,18 +636,14 @@ label enemySkillChoice(mSC):
 
     $ refinedSkillList = []
 
-    if monsterEncounter[mSC].statusEffects.restrained.duration > 0:
-        if postTurnStartSelection == 0:
-            $ monSkillChoice.append( getSkill("Struggle ", SkillsDatabase))
-        else:
-            $ monSkillChoice[mSC] = getSkill("Struggle ", SkillsDatabase)
-        return
 
     $ showSkill = 0
     python:
         for eachSkillOption in monsterEncounter[mSC].skillList:
             if eachSkillOption.requiresStance == "Any":
                 showSkill = 1
+                if monsterEncounter[mSC].statusEffects.restrained.duration > 0 and eachSkillOption.statusEffect != "Escape" and cmenu_checkSkillTag(eachSkillOption, "RestrainUsable") == False:
+                    showSkill = 0
             else:
                 if eachSkillOption.requiresStance == "Penetration":
                     for stanceChek in monsterEncounter[mSC].combatStance:
@@ -758,13 +756,19 @@ label enemySkillChoice(mSC):
                     if stanceChek.Stance == stances:
                         showSkill = 0
 
+            if monsterEncounter[mSC].statusEffects.restrained.duration > 0 and cmenu_checkSkillTag(eachSkillOption, "RestrainUnusable") == True:
+                showSkill = 0
 
             if eachSkillOption.startsStance[0] != "":
+                if monsterEncounter[mSC].statusEffects.restrained.duration > 0 and cmenu_checkSkillTag(eachSkillOption, "RestrainUsable") == False:
+                    showSkill = 0
                 if justEscapedStance > 0:
                     showSkill = 0
 
             if eachSkillOption.statusEffect == "Restrain" or eachSkillOption.statusEffect == "EventRestrain":
                 if player.statusEffects.restrained.duration >= 1 or getFromName("Restraint Immune", player.perks) != -1:
+                    showSkill = 0
+                if monsterEncounter[mSC].statusEffects.restrained.duration > 0 and cmenu_checkSkillTag(eachSkillOption, "RestrainUsable") == False:
                     showSkill = 0
 
             if eachSkillOption.statusEffect == "Sleep":
@@ -845,9 +849,6 @@ label enemySkillChoice(mSC):
                             showSkill = 0
 
 
-
-
-
             stanceCheckedList = []
             n = 0
             i = 0
@@ -900,6 +901,10 @@ label enemySkillChoice(mSC):
                         del refinedSkillList[clearList]
                         clearList -= 1
                 clearList += 1
+
+    if monsterEncounter[mSC].statusEffects.restrained.duration > 0:
+        $ refinedSkillList.append( getSkill("Struggle ", SkillsDatabase))
+    #    $ refinedSkillList.append( getSkill("Struggle ", SkillsDatabase))
 
 
 label enemySkillChoiceLoop:
@@ -1042,7 +1047,6 @@ label enemySkillChoiceLoop:
                         else:
                             player.removeStanceByName(MonStanceStruggle)
                             monsterEncounter[m].removeStanceByName(MonStanceStruggle)
-
 
                 else:
                     if isSexStance == 1:
@@ -1259,7 +1263,7 @@ label combatDisplay:
                         $ CombatFunctionEnemytarget = currentEnemy
                         $ CombatFunctionEnemyInitial = currentEnemy
 
-                        if monsterEncounter[m].statusEffects.restrained.duration > 0 and (monsterEncounter[m].statusEffects.stunned.duration <= 0 and monsterEncounter[m].statusEffects.sleep.potency != -99):
+                        if monsterEncounter[m].statusEffects.restrained.duration > 0 and skillIsUsable(monSkillChoice[m], monsterEncounter[m]) == False and monSkillChoice[m].name != "Struggle" and monSkillChoice[m].statusEffect != "Escape" and (monsterEncounter[m].statusEffects.stunned.duration <= 0 and monsterEncounter[m].statusEffects.sleep.potency != -99):
                             $ pickNewSkill = -1
                             $ attackerName = monsterEncounter[m].restrainer.name
                             $ attackerHeOrShe = getHeOrShe(monsterEncounter[m].restrainer)
@@ -1271,7 +1275,7 @@ label combatDisplay:
                             $ targetHisOrHer = getHisOrHer(monsterEncounter[m])
                             $ targetHimOrHer = getHimOrHer(monsterEncounter[m])
                             $ targetYouOrMonsterName = getYouOrMonsterName(monsterEncounter[m])
-                            $ Speaker = Character(_(''))
+                            $ Speaker = Character(_(monsterEncounter[m].name + " - Struggle"))
                             call combatStruggleActivate(monsterEncounter[m]) from _call_combatStruggleActivate_1
                             if UnshackledFreedom == 1 and monsterEncounter[m].statusEffects.restrained.duration <= 0:
                                 $ pickNewSkill = 1
@@ -1670,6 +1674,8 @@ label combatLossEnd:
     $ monsterEncounterCG = []
     $ DefeatedEncounterMonsters = []
     $ SceneCharacters = []
+    $ RoledCGOn = 0
+    $ CgRoleKeeper = []
     $ explorationDeck = []
     $ ttCombat = ""
     $ deckProgress = 0
@@ -1790,6 +1796,8 @@ label combatWin:
 
             $ monsterEncounter = []
             $ monsterEncounterCG = []
+            $ RoledCGOn = 0
+            $ CgRoleKeeper = []
             $ lineOfScene = 0
             $ combatItems = 0
             $ runAndStayInEvent = 1
@@ -1830,6 +1838,8 @@ label PostCombatWin:
     $ trueMonsterEncounter = []
     $ DefeatedEncounterMonsters = []
     $ SceneCharacters = []
+    $ RoledCGOn = 0
+    $ CgRoleKeeper = []
     $ ttCombat = ""
     #give rewards, Exp
     #end
@@ -2059,7 +2069,8 @@ label combatPushAway:
     hide screen returnButton
     hide screen ON_CombatMenu
     $ combatChoice = copy.deepcopy(getSkill("Push Away", SkillsDatabase))
-
+    if GetParalFlatEnergyChange(player) > 0:
+        $ player.stats.ep -= int(math.floor(GetParalFlatEnergyChange(player)))
     $ stanceNum = len(monsterEncounter[target].combatStance)
 
 label StanceStruggleGo:
@@ -2275,11 +2286,14 @@ label combatStruggleActivate(Struggler):
     else:
         $ combatChoice = copy.deepcopy(getSkill("Struggle", SkillsDatabase))
 
+    if GetParalFlatEnergyChange(player) > 0:
+        $ player.stats.ep -= int(math.floor(GetParalFlatEnergyChange(player)))
+
     $ despMod = 0
     if desperateStruggle == 1 and Struggler.species == "Player":
         $ desperateStruggle = 0
-        $ despMod = 0.35
-        $ player.stats.ep -= 10
+        $ despMod = 0.5
+        $ player.stats.ep -= int(math.floor(20*GetParalEnergyChange(player)))
 
     $ charmMod = 1
     if Struggler.statusEffects.charmed.duration > 0:
@@ -2375,6 +2389,8 @@ label combatDefend:
     $ combatChoice = copy.deepcopy(getSkill("Defend", SkillsDatabase))
     $ player.statusEffects.defend.duration = 1
     $ target = 0
+    if GetParalFlatEnergyChange(player) > 0:
+        $ player.stats.ep -= int(math.floor(GetParalFlatEnergyChange(player)))
     #add status defending
     jump combatEnemies
 
@@ -2458,6 +2474,9 @@ label combatRun:
 
 
 label combatRunAttempt:
+    if GetParalFlatEnergyChange(player) > 0:
+        $ player.stats.ep -= int(math.floor(GetParalFlatEnergyChange(player)))
+
     "You try to run..."
     #roll opposed check to escape
     $ failed = 0
@@ -2481,7 +2500,7 @@ label combatRunAttempt:
                         runBonus += perk.EffectPower[p]
                     p += 1
 
-            playerRoll = player.stats.Tech*1.5 + (player.stats.Luck)*0.5  + renpy.random.randint(0,100) + runBonus
+            playerRoll = player.stats.Tech*1.5 + (player.stats.Luck)*0.5  + renpy.random.randint(0,100) + runBonus - player.statusEffects.paralysis.potency*5
 
             if each.statusEffects.sleep.potency == -99 or each.statusEffects.trance.potency >= 11 or each.statusEffects.stunned.duration > 0 or each.statusEffects.restrained.duration > 0:
                 playerRoll = 1000000000
@@ -2511,6 +2530,8 @@ label combatRunAttempt:
     $ trueMonsterEncounter = []
     $ DefeatedEncounterMonsters = []
     $ hidingCombatEncounter = 0
+    $ RoledCGOn = 0
+    $ CgRoleKeeper = []
 
     "And get away!"
 

@@ -50,6 +50,7 @@ init python:
 
     showTimeofDay = 1
 
+    restraintMaxHP = 0
 
     #config.predict_screen_statements = False
     #config.predict_screens = False
@@ -393,7 +394,7 @@ init python:
 init:
     define config.history_current_dialogue = False
     $ config.save_dump = False
-    $ config.console = True
+    #$ config.console = True
     #$ config.developer = True
     default _game_menu_screen = None
 
@@ -613,6 +614,7 @@ label start:
     $ TempSensitivity = BodySensitivity()
     $ CurrentVersion = config.version
 
+    show screen input_detection
 
     python:
         playerGone = 0

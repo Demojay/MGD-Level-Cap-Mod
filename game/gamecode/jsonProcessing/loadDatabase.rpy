@@ -358,6 +358,7 @@ label loadDatabase:
                     currentData["name"],
                     currentData["itemType"],
                     int(currentData["cost"]),
+                    currentData.get("tags", []),
                     currentData["requires"],
                     requirementList,
                     int(currentData["hp"]),
@@ -1457,6 +1458,10 @@ label loadDatabase:
                 except:
                     setattr(player.inventory.items[i], 'onUnequip', "")
 
+                try:
+                    player.inventory.items[i].tags
+                except:
+                    setattr(player.inventory.items[i], 'tags', [])
 
                 i += 1
 
@@ -1527,7 +1532,6 @@ label loadDatabase:
                             perk.duration = copy.deepcopy(PerkDatabase[ getFromName(perk.name, PerkDatabase)].duration)
 
             player.stats.BarMinMax()
-
 
 
 
