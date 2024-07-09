@@ -1,0 +1,45 @@
+{
+    "name": "Pray to the Goddess Statue.",
+    "Addition": "Yes",
+    "Speakers": [
+    ],
+    "EventText": [
+        {
+            "NameOfScene": "PrayingMenuActual",
+            "theScene": [
+                "MenuAddition",
+                    "HideOptionOnRequirementFail", "RequiresLevelCapPassed", "Reset to Level Cap",
+                    "OverrideOption", "FinalOption", "Stop praying.",
+                "EndLoop"
+            ]
+        },
+        {
+            "NameOfScene": "Reset to Level Cap",
+            "theScene": [
+                "You pray at the statue of the Goddess Venereae to fix your unnatural state.",
+                "Her voice rings through your mind.",
+                "Speak", "Goddess Venereae",
+                "Oh chosen hero, it seems as though you are stronger than it is meant to be. Do you wish to return to a more natural state?",
+                "(This will manually change your level to maximum level cap currently possible)",
+                "Menu",
+                    "Yes",
+                    "No",
+                "EndLoop"
+            ]
+        },
+        {
+            "NameOfScene": "No",
+            "theScene": [
+                "JumpToScene",
+                   "PrayingMenuActual" 
+            ]
+        },
+        {
+            "NameOfScene": "Yes",
+            "theScene": [
+                "You suddenly feel a rush of energy, as though something has shifted back to where it should be.",
+                "AdjustPlayerLevel", "Cap"
+            ]
+        }
+    ]
+}

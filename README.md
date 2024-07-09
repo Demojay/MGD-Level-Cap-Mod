@@ -61,3 +61,24 @@ These level gates are defined in _game/Mods/LevelCapCheck.json_. By default, the
       - Optional. An array of item names that if the player has any of them, will pass the level gate
     - events
       - Optional. An array of event progress requirements, that the player must have any of in order to pass the level gate. The format of these progress definintions are the same as defining requirements for a [custom location](https://mgd-modding-docs.readthedocs.io/Doc/Manual/Adventures/Adventures.html#requires-requiresevent).
+
+## Manual Level Setting
+
+If your character's has a higher level than the game's current maximum level cap, it can be limited to that cap using the "Reset to level Cap" option at the Church. This option will only appear if character's level does exceed the maximum level cap
+
+### Added functions
+
+- RequiresLevelCapPassed
+  - Requirement Sub Function that restricts a menu option based on whether the character's level is above the current level cap
+- AdjustPlayerLevel
+  - Core Function for setting the character's level. Once set, the player's stat/sens/perks points will be reset and will be taken to the level up screen (similar to respeccing). The following options can be used with the function:
+    - (Number)
+      - E.g. "AdjustPlayerLevel", "10"
+      - Inputting a number below 1 will set the level to 1. Inputting a number above the current maximum level cap will be limited to the level cap
+    - (Cap)
+      - E.g. "AdjustPlayerLevel", "Cap"
+      = Sets the player's level to the current maximum level cap
+    - (Input)
+      - E.g. "AdjustPlayerLevel", "Input"
+      - Prompts the user to enter a number for the new level.
+      - Inputting a number below 1 will set the level to 1. Inputting a number above the current maximum level cap will be limited to the level cap

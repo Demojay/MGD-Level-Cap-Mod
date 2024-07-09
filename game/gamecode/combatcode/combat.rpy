@@ -1936,6 +1936,20 @@ label refreshLevelVar:
     $ perkIncreases = 0
     return
 
+#CODEMOD: Called from custom level setting pyton mod to call original level up process after maually setting level
+label forceRepecLevelUpCheck:
+    $ respeccing = 1
+    $ supressLevelMessage = 1
+    $ tentativeStats = copy.deepcopy(player)
+    call refreshLevelVar from _call_refreshLevelVar_1
+    call levelUpSpot from _call_levelUpSpot_2
+    show screen ON_HealthDisplayBacking #(_layer="hplayer")
+    show screen ON_HealthDisplay #(_layer="sayScreen")
+    $ respeccing = 0
+    $ supressLevelMessage = 0
+    return
+
+
 label levelUpSpot:
     if player.stats.Exp >= player.stats.ExpNeeded:
         if levelCapNotReached():
@@ -2008,28 +2022,29 @@ label levelUpSpot:
 
         #CODEMOD
         if culmitiveLeveling >= 1:
-            if culmitiveLeveling == 1:
-                $ display = "Level up!\n"
-            else:
-                $ display = "Level increased by "+str(culmitiveLeveling)+"!\n"
+            if supressLevelMessage == 0:
+                if culmitiveLeveling == 1:
+                    $ display = "Level up!\n"
+                else:
+                    $ display = "Level increased by "+str(culmitiveLeveling)+"!\n"
 
-            #if hpIncreases > 0:
-                #$ display += "Max Arousal +"+str(hpIncreases)+"!\n"
+                #if hpIncreases > 0:
+                    #$ display += "Max Arousal +"+str(hpIncreases)+"!\n"
 
-            if statPointIncreases == 2:
-                $ display += "Gained two stat points!"
-            else:
-                $ display += "Gained " + str(statPointIncreases) + " stat points!"
+                if statPointIncreases == 2:
+                    $ display += "Gained two stat points!"
+                else:
+                    $ display += "Gained " + str(statPointIncreases) + " stat points!"
 
-            if sensitivityIncreases == 1:
-                $ display += "\nGained a point to alter sensitivity!"
-            elif sensitivityIncreases > 0:
-                $ display += "\nGained " + str(sensitivityIncreases) + " points to alter sensitivity!"
+                if sensitivityIncreases == 1:
+                    $ display += "\nGained a point to alter sensitivity!"
+                elif sensitivityIncreases > 0:
+                    $ display += "\nGained " + str(sensitivityIncreases) + " points to alter sensitivity!"
 
-            if perkIncreases > 0:
-                $ display += "\nGained " + str(perkIncreases) + " perk point!"
+                if perkIncreases > 0:
+                    $ display += "\nGained " + str(perkIncreases) + " perk point!"
 
-            "[display!i]"
+                "[display!i]"
 
             call setStatFloors from _call_setStatFloors
             call spendLvlUpPoints from _call_spendLvlUpPoints

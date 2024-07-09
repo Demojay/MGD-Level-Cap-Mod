@@ -383,6 +383,8 @@ init python:
     hasResPoints = 0
     loadingDatabaseType = 0
     respeccing = 0
+    #CODEMOD
+    supressLevelMessage = 0
 
 
 

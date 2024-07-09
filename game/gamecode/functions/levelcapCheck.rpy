@@ -90,3 +90,65 @@ label LevelCapCheck:
                 currentCap = maxLevelCap
             
             return currentCap
+
+        def respecPlayerToLevel(levelToSet):
+            newLevel = levelToSet
+            if newLevel < 1:
+                newLevel = 1
+
+            if levelCapEnabled():
+                maxLevel = getMaxLevelCap()
+                if newLevel > maxLevel:
+                    newLevel = maxLevel
+            
+            #Code taken from "RespecPlayer" function code
+            global player, sexResCap, assResCap, nipResCap, chuResCap, seducResCap, magResCap, painResCap, hpFloor, epFloor, spFloor, powFloor, spdFloor
+            global intFloor, allFloor, wilFloor, lukFloor, respeccing, hasResPoints 
+
+            player.respec()
+            sexResCap = 150
+            assResCap = 150
+            nipResCap = 200
+            chuResCap = 150
+            seducResCap = 150
+            magResCap = 150
+            painResCap = 150
+            hpFloor = 50
+            epFloor = 20
+            spFloor = 1
+            powFloor = 1
+            spdFloor = 1
+            intFloor = 1
+            allFloor = 1
+            wilFloor = 1
+            lukFloor = 1
+            hasResPoints = 1
+
+            #Reset stat, perk and sens points to level 1, without affecting points given by non-level up perks
+            tempPerksList = copy.deepcopy(player.perks)
+            for each in tempPerksList:
+                player.giveOrTakePerk(each.name, -1)
+            
+            player.statPoints = 5
+            player.perkPoints = 0
+            player.SensitivityPoints = 3
+
+
+            for each in tempPerksList:
+                player.giveOrTakePerk(each.name, 1)
+
+
+            expToGive = 0
+            currentLvl = 1
+            player.stats.lvl = 1
+            player.stats.ExpNeeded = 10
+            player.stats.Exp = 0
+
+            while currentLvl < newLevel:
+                expToGive += int((0.4*(currentLvl*currentLvl)) + (2*currentLvl) + (15*math.sqrt(currentLvl)-8))
+                currentLvl += 1
+            
+            player.stats.Exp = expToGive + 1
+
+            renpy.say("", f"Level set to {newLevel}!")
+            renpy.jump("forceRepecLevelUpCheck")
