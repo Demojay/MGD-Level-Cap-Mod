@@ -385,6 +385,7 @@ init python:
     respeccing = 0
     #CODEMOD
     supressLevelMessage = 0
+    additionalPerkPointUpdate = 0
 
 
 

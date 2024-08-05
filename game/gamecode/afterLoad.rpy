@@ -60,6 +60,20 @@ label after_load:
     else:
         python:
             loadLevelCapJSON()
+    
+    #CODEMOD
+    #Check to see whether the player has already taken the extra perk point from the church, to properly update the number of extra perk points the player has
+    if additionalPerkPointUpdate == 0:
+        $ additionalPerkPointUpdate = 1
+        python:
+            try:
+                player.additionalPerkPoints
+            except:
+                player.additionalPerkPoints = 0
+                
+            churchReq = Requirements("Pray to the Goddess Statue.", -99, 10, "insight")
+            if requiresCheck([], [churchReq], player, ProgressEvent):
+                player.additionalPerkPoints += 1
 
     jump exitCombatFunction
 

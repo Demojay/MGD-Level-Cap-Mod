@@ -128,10 +128,24 @@ label LevelCapCheck:
             tempPerksList = copy.deepcopy(player.perks)
             for each in tempPerksList:
                 player.giveOrTakePerk(each.name, -1)
+
+            #Reset Stat, Sens and Perk points dependent on difficulty
+            spiritStatPointChange = (player.stats.max_true_sp - 3) * -3
             
-            player.statPoints = 5
-            player.perkPoints = 0
-            player.SensitivityPoints = 3
+            if difficulty == "Hard":
+                player.statPoints = 20 + min(0, spiritStatPointChange)
+                player.perkPoints = 0
+                player.SensitivityPoints = 1
+            elif difficulty == "Easy":
+                player.statPoints = 10 + spiritStatPointChange
+                player.perkPoints = 0
+                player.SensitivityPoints = 5
+            else:
+                player.statPoints = 5 + min(0, spiritStatPointChange)
+                player.perkPoints = 0
+                player.SensitivityPoints = 3
+            
+            player.perkPoints += player.additionalPerkPoints
 
 
             for each in tempPerksList:
