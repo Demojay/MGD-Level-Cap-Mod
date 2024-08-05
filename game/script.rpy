@@ -21,6 +21,9 @@ init python:
     slimeSnakeHighScore = 0
     minigameQuickMenuHide = 0
 
+    favorPool = -1
+    favorStrain = 0
+
     #config.rollback_length = 10
     config.longpress_vibrate = 0.1
     config.quicksave_slots = 12
@@ -786,7 +789,8 @@ label start:
     $ loadingDatabaseType = 1
 
     $ historyUpdate = 0
-
+    
+    $ favorPool = CalcGoddessFavor(player)
 
     call loadDatabase from _call_loadDatabase_5
 
@@ -899,6 +903,7 @@ label start:
 
             $ i += 1
     $ player.stats.refresh()
+    $ favorPool = CalcGoddessFavor(player)
     jump Town
 
     # This ends the game.

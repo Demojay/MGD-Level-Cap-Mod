@@ -485,6 +485,12 @@ label combatPlayer:
     $ c = 0
 
     $ paralysisStunned = 0
+    if GetParalFlatEnergyChange(player) > 0:
+        if player.stats.ep < int(math.floor(GetParalFlatEnergyChange(player))):
+            $ display = player.name + " is too paralyzed to act due to the paralysis wracking his body!"
+            "[display!i]"
+            jump combatWait
+
     #if player.statusEffects.paralysis.potency >= 1 and player.statusEffects.paralysis.duration >= 1 and paralysisIgnored == 0:
 
         #if getParalysisBoost(player) >= renpy.random.randint(0, 100):
@@ -1718,6 +1724,8 @@ label combatLossEnd:
 
     $ player = player.statusEffects.refresh(player)
     $ player.stats.refresh()
+    $ favorPool = CalcGoddessFavor(player)
+    $ favorStrain = 0
     $ timeNotify = 1
     call advanceTime(TimeIncrease=1) from _call_advanceTime_6
     $ timeNotify = 1
@@ -2046,9 +2054,9 @@ label levelUpSpot:
 
                 "[display!i]"
 
-            call setStatFloors from _call_setStatFloors
-            call spendLvlUpPoints from _call_spendLvlUpPoints
-            hide screen CreatorDisplay
+        call setStatFloors from _call_setStatFloors
+        call spendLvlUpPoints from _call_spendLvlUpPoints
+        hide screen CreatorDisplay
 
 
     $ InventoryAvailable = True
@@ -2406,6 +2414,58 @@ label combatDefend:
     $ target = 0
     if GetParalFlatEnergyChange(player) > 0:
         $ player.stats.ep -= int(math.floor(GetParalFlatEnergyChange(player)))
+
+    
+    $ DefendBonus = 0
+    python: 
+        for perk in player.perks:
+            p = 0
+            while  p < len(perk.PerkType):
+                if perk.PerkType[p] == "DefendCrit":
+                    DefendBonus += (perk.EffectPower[p])
+                p += 1
+
+        if DefendBonus > 0:
+            player.statusEffects.tempCrit.append(StatusEffect(2, DefendBonus, "Focus"))
+
+
+    $ DefendBonus = 0
+    python:
+        for perk in player.perks:
+            p = 0
+            while  p < len(perk.PerkType):
+                if perk.PerkType[p] == "DefendEscapeRestraint":
+                    DefendBonus += (perk.EffectPower[p])*0.01
+                p += 1
+
+    if DefendBonus > 0:
+        if len(player.combatStance) > 0:
+            $ stanceDamageTotal = (getStanceStruggleRoll(player))*DefendBonus
+            python:
+                TotalStances = 0
+                for mon in monsterEncounter: 
+                    TotalStances += len(mon.combatStance)
+                stanceDamageTotal/= TotalStances                
+                for mon in monsterEncounter:
+                    for stance in mon.combatStance:
+                        stance.potency -= stanceDamageTotal
+
+    if player.statusEffects.restrained.duration > 0:         
+        python:
+            if DefendBonus > 0:
+                restraintEscapeBoost = 0                
+                for perk in player.perks:
+                    p = 0
+                    while  p < len(perk.PerkType):
+                        if perk.PerkType[p] == "RemoveRestraints":
+                            restraintEscapeBoost += perk.EffectPower[p]
+                        p += 1
+                charmMod = 1
+                if player.statusEffects.charmed.duration > 0:
+                    charmMod = 0.5
+                player.statusEffects.restrained.duration -= getRestrainStruggle(player, restraintEscapeBoost, charmMod, 0)*DefendBonus
+
+
     #add status defending
     jump combatEnemies
 
@@ -2417,7 +2477,6 @@ label combatWait:
     $ player.stats.ep += int(math.floor(player.stats.max_true_ep*0.05))
     if player.stats.ep > player.stats.max_true_ep:
         $ player.stats.ep = player.stats.max_true_ep
-    #add status defending
     jump combatEnemies
 
 

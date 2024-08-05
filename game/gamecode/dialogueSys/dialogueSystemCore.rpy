@@ -748,6 +748,8 @@ label resumeSceneAfterCombat:
                 else:
                     $ lineOfScene -= 1
                 call advanceTime(TimeIncrease=1) from _call_advanceTime_1
+                $ favorPool = CalcGoddessFavor(player)
+                $ favorStrain = 0
                 $ player = Resting(player)
                 $ notFunction = 0
                 $ noCombatFunction = 0
@@ -756,6 +758,8 @@ label resumeSceneAfterCombat:
             elif displayingScene.theScene[lineOfScene] == "RefreshPlayer":
                 $ player = player.statusEffects.refresh(player)
                 $ player.stats.refresh()
+                $ favorPool = CalcGoddessFavor(player)
+                $ favorStrain = 0
 
             elif displayingScene.theScene[lineOfScene] == "PermanentlyChangeSensitivity":
                 $ lineOfScene += 1

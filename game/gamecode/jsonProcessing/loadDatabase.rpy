@@ -16,6 +16,59 @@ init python:
         if isinstance(attr, (str, unicode)):
             return [attr]
         return attr
+    def PurgeAttrList(attrList):
+        evilRenpyIsIstanceNoWork = attrList + []
+        index = 0
+        while index < len(attrList):
+            if attrList[index] in ["Any", "None", ""]:
+                attrList.pop(index)
+            else:
+                index += 1
+        return attrList
+
+    def StanceConditionCheck():
+        global SkillsDatabase
+        for skillJson in SkillsDatabase:
+            for condition in skillJson.stanceConditions:
+                if "theStance" in condition:
+                    stance = condition["theStance"]
+                    for skillKey, skills in condition["addingToSkills"].items():
+                        for eachSkill in skills:
+                            if validateJsons and not loadingDatabaseType:
+                                validator.validateIDname(eachSkill, skillJson.name, "Skills", "Skills", "stanceCondition")
+                            for skillData in SkillsDatabase:
+                                if skillData.name == eachSkill:
+                                    try:
+                                        currentValue = PurgeAttrList(getattr(skillData, skillKey))
+                                        currentValue.append(stance)
+                                    except TypeError:
+                                        if getattr(skillData, skillKey) not in ["Any", "None", ""]:
+                                            currentValue = [getattr(skillData, skillKey), stance]
+                                        else:
+                                            currentValue = stance
+                                    if skillKey == "unusableIfStance":
+                                        skillData.unusableIfStance = currentValue
+                                    elif skillKey == "requiresStance":
+                                        skillData.requiresStance = currentValue
+                                    elif skillKey == "unusableIfTarget":
+                                        skillData.unusableIfTarget = currentValue
+                                    elif skillKey == "requiresTargetStance":
+                                        skillData.requiresTargetStance = currentValue
+                elif "theStanceSet" in condition:
+                    stanceSet = condition["theStanceSet"]
+                    for skill in condition["unusableIfTargetHasTheseSets"]:
+                        for skillData in SkillsDatabase:
+                            if skillData.name == skill:
+                                try:
+                                    currentValue = PurgeAttrList(getattr(skillData, skillKey), stanceSet)
+                                    currentValue.append(stance)
+                                except TypeError:
+                                    if getattr(skillData, skillKey) not in ["Any", "None", ""]:
+                                        currentValue = [getattr(skillData, skillKey), stance]
+                                    else:
+                                        currentValue = stance
+                                skillData.unusableIfTargetHasTheseSets = currentValue
+
 label loadDatabase:
     python:
         # To enable json validation, toggle below value from False to True.
@@ -55,6 +108,10 @@ label loadDatabase:
                     newFetish.toolTip = (FL.get("ToolTip", ""))
                     newFetish.levelText = [[int(fet[0]), fet[1]] for fet in FL.get("LevelText", [])]
                     FetishList.append(newFetish)
+                
+                    if validateJsons and not loadingDatabaseType:
+                        validator.addIDToDatabase(newFetish.name, "Fetishes")
+
     ############################### LOAD SKILLS ###############################
         if loadingDatabaseType == 0:
             for each in dynamic_loader(".*/Skills/.*"):
@@ -159,10 +216,10 @@ label loadDatabase:
                     currentData["skillTags"],
                     currentData["fetishTags"],
                     startsStance,
-                    currentData["requiresStance"],
-                    currentData["unusableIfStance"],
-                    currentData["requiresTargetStance"],
-                    currentData["unusableIfTarget"],
+                    currentData.get("requiresStance", [""]),
+                    currentData.get("unusableIfStance", [""]),
+                    currentData.get("requiresTargetStance", [""]),
+                    currentData.get("unusableIfTarget", [""]),
                     removeStance,
                     currentData["requiresStatusEffect"],
                     int(currentData["requiresStatusPotency"]),
@@ -210,7 +267,8 @@ label loadDatabase:
                     powerSFScaling,
                     flatSFScaling,
                     totalSFScaling,
-                    unusableSets)
+                    unusableSets,
+                    currentData.get("stanceConditions", []))
 
                     if validateJsons and not loadingDatabaseType:
                         validate_skill_arrays = [
@@ -225,6 +283,8 @@ label loadDatabase:
                             blankSkill.restraintOnLoss,
                         ]
 
+                        validator.addIDToDatabase(blankSkill.name, "Skills")
+                        
                         for skill_value in validate_skill_arrays:
                             if isinstance(skill_value, list):
                                 for string in skill_value:
@@ -236,8 +296,7 @@ label loadDatabase:
                     if loadingDatabaseType == 0:
                         SkillsDatabase.append(blankSkill)    #add to list
 
-
-
+            StanceConditionCheck()
 
 
     ################################ LOAD PERKS ###############################
@@ -286,6 +345,9 @@ label loadDatabase:
                         blankPerk.duration = copy.deepcopy(blankPerk.EffectPower[p])
 
                 PerkDatabase.append(copy.deepcopy(blankPerk))    #add to list
+
+                if validateJsons and not loadingDatabaseType:
+                    validator.addIDToDatabase(blankPerk.name, "Perks")
 
             LocatePerkOrder = renpy.file("Json/Perks/_LevelUpPerkOrder.json").read().decode("utf-8")
             PerkOrderFile = json.loads(LocatePerkOrder)
@@ -384,6 +446,21 @@ label loadDatabase:
 
                     ItemDatabase.append(blankItem)    #add to list
 
+                    if validateJsons and not loadingDatabaseType:
+                        validate_item_arrays = [
+                            blankItem.useOutcome,
+                            blankItem.useMiss,
+                        ]
+
+                        validator.addIDToDatabase(blankItem.name, "Items")
+
+                        for item_value in validate_item_arrays:
+                            if isinstance(item_value, list):
+                                for string in item_value:
+                                    validator.checkCombatLine(string, fileName)
+                            else:
+                                validator.checkCombatLine(item_value, fileName)
+
 
 
     ############################### LOAD MONSTERS #############################
@@ -425,7 +502,10 @@ label loadDatabase:
                 if each != "":
                     dataTarget = getFromName(each, SkillsDatabase)
                     blankSkill = SkillsDatabase[dataTarget]
-
+                    
+                    if validateJsons and not loadingDatabaseType:
+                        validator.validateIDname(each, currentData["IDname"], "Skills", "Monsters", "skillList")
+                    
                     if additionLocation != None:
                         if loadingDatabaseType == 0:
                             MonsterDatabase[additionLocation].skillList.append(blankSkill)
@@ -438,11 +518,16 @@ label loadDatabase:
                         if loadingDatabaseType == 0:
                             MonsterDatabase[additionLocation].giveOrTakePerk(each, 1)
 
+            if validateJsons and not loadingDatabaseType:
+                for each in currentData["perks"]:
+                    validator.validateIDname(each, currentData["IDname"], "Perks", "Monsters", "perks")
 
             for each in currentData["ItemDropList"]:
                 blankItemDrop = ItemDrop()
                 blankItemDrop.name = each["name"]
                 blankItemDrop.dropChance = int(each["dropChance"])
+                if validateJsons and not loadingDatabaseType:
+                    validator.validateIDname(each["name"], currentData["IDname"], "Items", "Monsters", "ItemDropList")
                 if additionLocation != None:
                     if loadingDatabaseType == 0:
                         MonsterDatabase[additionLocation].ItemDropList.append(blankItemDrop)
@@ -494,6 +579,8 @@ label loadDatabase:
                         fetishSplit = each.partition("|/|")
                         if fetish.name == fetishSplit[0]:
                             fetish.Level += int(fetishSplit[2])
+                        if validateJsons and not loadingDatabaseType:
+                            validator.validateIDname(fetishSplit[0], currentData["IDname"], "Fetishes", "Monsters", "Fetishes")
 
 
             for each in currentData["lossScenes"]:
@@ -551,6 +638,13 @@ label loadDatabase:
                 if validateJsons and not loadingDatabaseType:
                     for line in blankDia.theText:
                         validator.checkCombatLine(line, fileName)
+                    # Awaiting stances implementation.
+                    # try:
+                    #     evilRenpyIsIstanceNoWork = each["move"] + []
+                    #     for move in each["move"]:
+                    #         validator.validateIDname(move, currentData["IDname"], "Skills", "Monsters", "combatDialogue")
+                    # except TypeError:
+                    #     validator.validateIDname(each["move"], currentData["IDname"], "Skills", "Monsters", "combatDialogue")
 
                 if additionLocation != None:
                     if loadingDatabaseType == 0:
@@ -732,7 +826,8 @@ label loadDatabase:
 
                     MonsterDatabase.append(copy.copy(blankMonster))    #add to list
 
-
+                    if validateJsons and not loadingDatabaseType:
+                        validator.addIDToDatabase(blankMonster.IDname, "Monsters")
 
     ############################### LOAD EVENTS ###############################
         for each in dynamic_loader(".*/Events/.*"):
@@ -797,7 +892,7 @@ label loadDatabase:
 
                 if additionLocation != None:
                     if loadingDatabaseType == 0:
-                        if blankDia.theScene[0] not in ["MenuAddition", "ShopAddition", "SkillShopAddition"]:
+                        if blankDia.theScene[0] not in ["MenuAddition", "ShopAddition", "SkillShopAddition", "PrependScene", "AppendScene"]:
                             replaced = False
                             for replace, checking in enumerate(EventDatabase[additionLocation].theEvents):
                                 if checking.NameOfScene == blankDia.NameOfScene and replaced == False:
@@ -835,6 +930,16 @@ label loadDatabase:
                                             break
                                     EventDatabase[additionLocation].theEvents[replace].theScene = copy.copy(checking.theScene[:end_index] + blankDia.theScene[1:-1] + checking.theScene[end_index:])
                                     break
+                        elif blankDia.theScene[0] == "PrependScene":
+                            for replace, checking in enumerate(EventDatabase[additionLocation].theEvents):
+                                if checking.NameOfScene == blankDia.NameOfScene:
+                                    EventDatabase[additionLocation].theEvents[replace].theScene = blankDia.theScene[1:] + checking.theScene
+                                    break
+                        elif blankDia.theScene[0] == "AppendScene":
+                            for replace, checking in enumerate(EventDatabase[additionLocation].theEvents):
+                                if checking.NameOfScene == blankDia.NameOfScene:
+                                    EventDatabase[additionLocation].theEvents[replace].theScene = checking.theScene + blankDia.theScene[1:]
+                                    break
                 else:
                     newDialogue.append(blankDia)
 
@@ -844,7 +949,7 @@ label loadDatabase:
             BaseProgress = 0
             BaseChoices = []
             BaseComplete = 0
-            if loadingDatabaseType == 1 and  getFromName(currentData["name"], eventProgHolder) != -1:
+            if loadingDatabaseType == 1 and getFromName(currentData["name"], eventProgHolder) != -1:
                 BaseTime = eventProgHolder[getFromName(currentData["name"], eventProgHolder)].timesSeen
                 BaseLastChoice = eventProgHolder[getFromName(currentData["name"], eventProgHolder)].lastChoice
                 BaseProgress = eventProgHolder[getFromName(currentData["name"], eventProgHolder)].eventProgress
@@ -872,7 +977,10 @@ label loadDatabase:
                     requirementList,
                     BaseComplete)
                     EventDatabase.append(copy.copy(blankEvent))    #add to list
-
+                    
+                    if validateJsons and not loadingDatabaseType:
+                        validator.addIDToDatabase(blankEvent.name, "Events")
+                
                 if loadingDatabaseType == 1:
                     progEvent = Event(
                     currentData["name"],
@@ -1114,6 +1222,8 @@ label loadDatabase:
 
                         LocationDatabase.append(blankLocation)    #add to list
 
+                    if validateJsons and not loadingDatabaseType:
+                        validator.addIDToDatabase(blankLocation.name, "Locations")
 
 
     ############################## LOAD ADVENTURES ############################
@@ -1219,6 +1329,9 @@ label loadDatabase:
                     erosDropList,
                     BaseComplete)
                     AdventureDatabase.append(blankAdventure)    #add to list
+                    
+                    if validateJsons and not loadingDatabaseType:
+                        validator.addIDToDatabase(blankAdventure.name, "Adventures")
 
                 if loadingDatabaseType == 1:
                     progAdventure = AdventuringDeck(
@@ -1237,6 +1350,7 @@ label loadDatabase:
 
 
 
+    ############################## LOAD EXTRA #################################
         if loadingDatabaseType == 1:
             for each in advenProgHolder:
                 if getFromName(each.name, ProgressAdventure) == -1:
@@ -1292,6 +1406,132 @@ label loadDatabase:
                 elif place.CardType == "StartOfTurn":
                     StartOfTurnList.append(copy.deepcopy(place))
 
+        if validateJsons and not loadingDatabaseType:
+            for monster in MonsterDatabase:
+                # TODO: Stances implementation to get combatDialogue with its mixed use of move.
+                for each in monster.requiresEvent:
+                    validator.validateIDname(each.NameOfEvent, monster.IDname, "Events", "Monsters", "requiresEvent")
+                for each in monster.requires:
+                    validator.validateIDname(each, monster.IDname, "Items", "Monsters", "requires")
+                for each in monster.lossScenes:
+                    validator.validateIDname(each.move, monster.IDname, "Skills", "Monsters", "lossScenes(move)", ["None", "Unavalible", "theScene", "OnlyJumpedTo"])
+                    for includes in each.includes:
+                        validator.validateIDname(includes, monster.IDname, "Monsters", "Monsters", "lossScenes(includes)", ["None", "OnlyJumpedTo"])
+                for each in monster.victoryScenes:
+                    validator.validateIDname(each.move, monster.IDname, "Skills", "Monsters", "victoryScenes(move)", ["None", "Unavalible", "theScene", "OnlyJumpedTo"])
+                    for includes in each.includes:
+                        validator.validateIDname(includes, monster.IDname, "Monsters", "Monsters", "victoryScenes(includes)", ["None", "OnlyJumpedTo"])
+            for item in ItemDatabase:
+                for each in item.requiresEvent:
+                    validator.validateIDname(each.NameOfEvent, item.name, "Events", "Items", "requiresEvent")
+                for each in item.requires:
+                    validator.validateIDname(each, item.name, "Items", "Items", "requires")
+
+                for each in item.perks:
+                    validator.validateIDname(each, item.name, "Perks", "Items", "perks")
+                for each in item.skills:
+                    validator.validateIDname(each, item.name, "Skills", "Items", "skills")
+            for skill in SkillsDatabase:
+                for each in skill.requiresPerk:
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresPerk")
+                for each in skill.requiresOnePerk:
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresOnePerk")
+                for each in skill.unusableIfPerk:
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "unusableIfPerk")
+                for each in skill.requiresPerkSelf:
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresPerkSelf")
+                for each in skill.requiresOnePerkSelf:
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresOnePerkSelf")
+                for each in skill.unusableIfPerkSelf:
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "unusableIfPerkSelf")
+
+
+                for each in skill.fetishTags:
+                    validator.validateIDname(each, skill.name, "Fetishes", "Skills", "fetishTags", ["Foreplay", "Penetration", "Seduction", "Sex Toy", "Indulgent"])
+                # for each in skill.requiresEvent:
+                #     validator.validateIDname(each.NameOfEvent, skill.name, "Events", "Skills", "requiresEvent")
+            for event in EventDatabase:
+                for each in event.Speakers:
+                    validator.validateIDname(each.name, event.name, "Monsters", "Events", "Speakers", ["???", "??? 1", "??? 2", "??? 3", "??? 4", "??? 5", "??? 6", "??? 7", "??? 8", "??? 9", "??? 10", "??? 11", "??? 12", "character", "Venereae"])
+
+                for each in event.requiresEvent:
+                    validator.validateIDname(each.NameOfEvent, event.name, "Events", "Events", "requiresEvent")
+                for each in event.requires:
+                    validator.validateIDname(each, event.name, "Items", "Events", "requires")
+            for perk in PerkDatabase:
+                for each in perk.PerkReq:
+                    validator.validateIDname(each, perk.name, "Perks", "Perks", "PerkReq")
+                # for each in perk.requiresEvent:
+                #     validator.validateIDname(each.NameOfEvent, perk.name, "Events", "Perks", "requiresEvent")
+            for adventure in AdventureDatabase:
+                # TODO: Decks.
+                for each in adventure.randomEvents:
+                    validator.validateIDname(each, adventure.name, "Events", "Adventures", "RandomEvents")
+                
+                for each in adventure.monsterGroups:
+                    for monster in each:
+                        validator.validateIDname(monster, adventure.name, "Monsters", "Adventures", "MonsterGroups")
+                for each in adventure.randomMonsters:
+                    validator.validateIDname(each, adventure.name, "Monsters", "Adventures", "RandomMonsters")
+                
+                for index, each in enumerate(adventure.Treasure):
+                    if index == 0:
+                        for treasure in each:
+                            validator.validateIDname(treasure, adventure.name, "Items", "Adventures", "Treasure(Common)")
+                    if index == 1:
+                        for treasure in each:
+                            validator.validateIDname(treasure, adventure.name, "Items", "Adventures", "Treasure(Uncommon)")
+                    if index == 2:
+                        for treasure in each:
+                            validator.validateIDname(treasure, adventure.name, "Items", "Adventures", "Treasure(Rare)")
+
+                
+                for each in adventure.requiresEvent:
+                    validator.validateIDname(each.NameOfEvent, adventure.name, "Events", "Adventures", "requiresEvent")
+                for each in adventure.requires:
+                    validator.validateIDname(each, adventure.name, "Items", "Adventures", "requires")
+            
+            for location in LocationDatabase:
+                for each in location.ExplorationUnlockedByEvent:
+                    validator.validateIDname(each.NameOfEvent, location.name, "Events", "Locations", "ExplorationUnlockedByEvent")
+                for each in location.ExplorationUnlockedBy:
+                    validator.validateIDname(each, location.name, "Items", "Locations", "ExplorationUnlockedBy", ["CantBeUnlocked"])
+
+                for each in location.FullyUnlockedByEvent:
+                    validator.validateIDname(each.NameOfEvent, location.name, "Events", "Locations", "FullyUnlockedByEvent")
+                for each in location.FullyUnlockedBy:
+                    validator.validateIDname(each, location.name, "Items", "Locations", "FullyUnlockedBy", ["CantBeUnlocked"])
+
+                for each in location.requiresEvent:
+                    validator.validateIDname(each.NameOfEvent, location.name, "Events", "Locations", "requiresEvent")
+                for each in location.requires:
+                    validator.validateIDname(each, location.name, "Items", "Locations", "requires", ["CantBeUnlocked"])
+
+
+                for index, each in enumerate(location.Treasure):
+                    if index == 0:
+                        for treasure in each:
+                            validator.validateIDname(treasure, location.name, "Items", "Locations", "Treasure(Common)")
+                    if index == 1:
+                        for treasure in each:
+                            validator.validateIDname(treasure, location.name, "Items", "Locations", "Treasure(Uncommon)")
+                    if index == 2:
+                        for treasure in each:
+                            validator.validateIDname(treasure, location.name, "Items", "Locations", "Treasure(Rare)")
+
+                for each in location.MonsterGroups:
+                    for monster in each:
+                        validator.validateIDname(monster, location.name, "Monsters", "Locations", "MonsterGroups")
+                for each in location.Monsters:
+                    validator.validateIDname(each, location.name, "Monsters", "Locations", "Monsters")
+
+                for each in location.Monsters:
+                    validator.validateIDname(each, location.name, "Monsters", "Locations", "Monsters")
+
+                for each in location.Events:
+                    validator.validateIDname(each, location.name, "Events", "Locations", "Events")
+                for each in location.Quests:
+                    validator.validateIDname(each, location.name, "Events", "Locations", "Quests")
 
 
     ############################ UPDATE SAVED PLAYER ##########################

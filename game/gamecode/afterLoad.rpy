@@ -29,6 +29,9 @@ label after_load:
     if onGridMap == 0:
         hide screen gridMoveKeys
 
+    if favorPool == -1:
+        $ favorPool = CalcGoddessFavor(player)
+
     $ needToUpdate = 0
     hide screen FishingHitEffect
     show screen input_detection

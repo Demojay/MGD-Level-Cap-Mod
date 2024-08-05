@@ -378,7 +378,7 @@ screen ON_StatsListDisplay(showMainStats=False):
         use ON_SingleStatDisplayNoVar("Intelligence:", "[player.stats.Int]", tooltipDisplay="Cast magic, resist some temptations, increase your chance to apply status effects, and increase the duration of your status effect! Every 5 points gained naturally increases your max energy by 10. Boosts how much damage you do with core skills!\nYou have [intDisplay] base intelligence out of 100. Intelligence skills deal [intBoost] extra arousal based on the (square root of the stat*4)-5. Said skills also get an increase of [intPerBoost]% to their base power!")
         use ON_SingleStatDisplayNoVar("Allure:", "[player.stats.Allure]", tooltipDisplay="Seduce and charm your foes! It increases how much arousal you deal with all skills, including increased critical arousal, and boosts how much damage you do with core skills! Also increases the recoil damage your opponent takes, from sex skills for example!\nYou have [allureDisplay] base allure out of 100. Allure skills deal [allureBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [allurePerBoost]% to their base power!")
         use ON_SingleStatDisplayNoVar("Willpower:", "[player.stats.Willpower]", tooltipDisplay="Greatly resist temptation, status effects, and reduces how much arousal you take! Every 5 points increases your max arousal and max energy by 5.\nYou have [willDisplay] base willpower out of 100. Willpower skills deal [willBoost] extra arousal based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [willPerBoost]% to their base power!")
-        use ON_SingleStatDisplayNoVar("Luck:", "[player.stats.Luck]", tooltipDisplay="Helps a little bit across the board. Such as acting before others, getting out of restraints, running away, hitting or dodging attacks, and improves your critical chance! But best of all it helps you find more treasure!\nYou have [luckDisplay] base luck out of 100. Luck skills(?) deal [luckBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [luckPerBoost]% to their base power!")
+        use ON_SingleStatDisplayNoVar("Luck:", "[player.stats.Luck]", tooltipDisplay="Helps a little bit across the board. Such as acting before others, getting out of restraints, running away, hitting or dodging attacks, and improves your critical chance! It even gives you the stat check auto passing Goddess Favor at a rate of Luck/10! But best of all it helps you find more treasure!\nYou have [luckDisplay] base luck out of 100. Luck skills(?) deal [luckBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [luckPerBoost]% to their base power!")
 
         use ON_MoreStatsListDisplay
 
@@ -580,7 +580,7 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
                 yalign 0.5
                 text "[player.name]" size fontsize xoffset -2
                 $ exp = player.stats.ExpNeeded - player.stats.Exp
-                $ showLevelUp = InventoryAvailable and (player.perkPoints >= 1 or player.SensitivityPoints >=1 or player.statPoints >= 1)
+                $ showLevelUp = InventoryAvailable and respeccing == 0 and (player.perkPoints >= 1 or player.SensitivityPoints >=1 or player.statPoints >= 1)
                 #CODEMOD
                 $ cap = ("/" + str(getMaxLevelCap())) if levelCapEnabled() else ""
                 textbutton "Level [player.stats.lvl][cap]" text_size 24 text_color "#fff" xoffset -3
@@ -606,6 +606,16 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
                     textbutton "Spend Unused stat points!":
                         text_size 26
                         action Jump("spendLvlUpPoints")
+
+            vbox:
+                xpos 430
+                yalign 0.5
+                textbutton _("Goddess' Favor: {color=#fff}[favorPool]/[PlayerFavor]{/color}") text_size 24 yalign 0.5:
+                        tooltip "Weather or not you're actually blessed this allows you to auto pass a number of failed checks per rest! You get 1 + Luck/10, plus any extras from perks you have. When you run out you can still spend energy to pass more, but keep in mind the increasing energy costs."
+                        action NullAction()
+                textbutton _("Strain: {color=#fff}[favorStrain]%{/color}") text_size 24 yalign 0.5:
+                    tooltip "Increases energy costs for surpassing stat checks, resets to 0 on rest."
+                    action NullAction()
 
             vbox:
                 yalign 0.0
