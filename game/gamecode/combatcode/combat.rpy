@@ -2054,9 +2054,9 @@ label levelUpSpot:
 
                 "[display!i]"
 
-        call setStatFloors from _call_setStatFloors
-        call spendLvlUpPoints from _call_spendLvlUpPoints
-        hide screen CreatorDisplay
+            call setStatFloors from _call_setStatFloors
+            call spendLvlUpPoints from _call_spendLvlUpPoints
+            hide screen CreatorDisplay
 
 
     $ InventoryAvailable = True
