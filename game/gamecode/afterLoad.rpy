@@ -1,8 +1,9 @@
 label after_load:
-    if _version.startswith("Renpy-8") or _version.startswith("Alpha-v25") or _version.startswith("Alpha-v24") or _version.startswith("Alpha-v23") or _version.startswith("Alpha-v22") or _version.startswith("Alpha-v21"):
+
+    if _version.startswith("Renpy-8") or _version.startswith("Alpha-v20") or _version.startswith("Alpha-v19") or _version.startswith("Alpha-v25") or _version.startswith("Alpha-v24") or _version.startswith("Alpha-v23") or _version.startswith("Alpha-v22") or _version.startswith("Alpha-v21"):
         $ save_name = copy.copy(player.name)
         $ _version = "Alpha-v26"
-        # $ print("Updated") Do prints to verify behavior.
+        #$ print("Updated") #Do prints to verify behavior.
         #You can console insert '_version' in the in-game console to see if it applied.
         #Make sure to first interact with the game before saving again to see if it remembered,
         #Ren'Py does not overwite a save that only had changes made via autoload,
@@ -23,6 +24,11 @@ label after_load:
     #You don't have to worry about it applying to a v27 save again as v27 isn't checked for in any conditional.
     #Thus, it is impossible to apply to an already up to date save by mistake for as long as your if condition
     #never contains the current game version you are intending to ship.
+
+    if (_version in ["Alpha-v26", "Alpha-v26a", "Alpha-v26b", "Alpha-v26.3"]) or _version.startswith("Alpha-v26.1") or _version.startswith("Alpha-v26.2"):
+        "The wind blows in a sudden gust and a small silver ticket flies into your face. It seems like you happend across a Guild Approved respec ticket!"
+        $ player.inventory.give("Respec Ticket", 1)
+        $ _version = "Alpha-v26.3a"
 
     hide screen ON_MapMenu 
 

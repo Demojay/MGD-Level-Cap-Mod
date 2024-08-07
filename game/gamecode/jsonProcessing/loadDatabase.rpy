@@ -1452,7 +1452,8 @@ label loadDatabase:
                 #     validator.validateIDname(each.NameOfEvent, skill.name, "Events", "Skills", "requiresEvent")
             for event in EventDatabase:
                 for each in event.Speakers:
-                    validator.validateIDname(each.name, event.name, "Monsters", "Events", "Speakers", ["???", "??? 1", "??? 2", "??? 3", "??? 4", "??? 5", "??? 6", "??? 7", "??? 8", "??? 9", "??? 10", "??? 11", "??? 12", "character", "Venereae"])
+                    if each.SpeakerType != "?":
+                        validator.validateIDname(each.name, event.name, "Monsters", "Events", "Speakers", ["???", "??? 1", "??? 2", "??? 3", "??? 4", "??? 5", "??? 6", "??? 7", "??? 8", "??? 9", "??? 10", "??? 11", "??? 12", "character", "Venereae"])
 
                 for each in event.requiresEvent:
                     validator.validateIDname(each.NameOfEvent, event.name, "Events", "Events", "requiresEvent")

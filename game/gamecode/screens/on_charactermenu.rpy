@@ -332,12 +332,14 @@ screen ON_SingleItemDisplay(item, spaceNextOne=0):
         if len(item.skills) > 0:
             $ fetchSkill = getFromName(item.skills[0], SkillsDatabase)
             $ skillToCheck = copy.deepcopy(SkillsDatabase[fetchSkill])
+            $ skillToCheck.isSkill = item.itemType
             $ itemsToolTip = getSkillToolTip(skillToCheck, player, itemsToolTip)
 
     button:
         ysize on_listEntryHeight + twolayered
         tooltip itemsToolTip
         unhovered [SetVariable("characterMenuCanHover", True)]
+        hovered [SetVariable("itemEnergyAmount", item.ep), SetVariable("itemArousalAmount", item.hp), SetVariable("itemSpiritAmount", item.sp)]
         alt display + " \n\n" +  itemsToolTip
         text display:
             size on_listTextSize
@@ -609,12 +611,15 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
 
             vbox:
                 xpos 430
-                yalign 0.5
+                yalign 0.83
                 textbutton _("Goddess' Favor: {color=#fff}[favorPool]/[PlayerFavor]{/color}") text_size 24 yalign 0.5:
-                        tooltip "Weather or not you're actually blessed this allows you to auto pass a number of failed checks per rest! You get 1 + Luck/10, plus any extras from perks you have. When you run out you can still spend energy to pass more, but keep in mind the increasing energy costs."
+                        if difficulty == "Hard":
+                            tooltip "Whether or not you're actually blessed, Goddess' Favor allows you to automatically pass a number of failed checks per rest! Your pool of Goddess' Favor is equal to Luck/10, plus any extras from Perks. When you run out, you can still spend Energy to pass, but with increasing energy costs."
+                        else:
+                            tooltip "Whether or not you're actually blessed, Goddess' Favor allows you to automatically pass a number of failed checks per rest! Your pool of Goddess' Favor is equal to 1 + Luck/10, plus any extras from Perks. When you run out, you can still spend Energy to pass, but with increasing energy costs."
                         action NullAction()
                 textbutton _("Strain: {color=#fff}[favorStrain]%{/color}") text_size 24 yalign 0.5:
-                    tooltip "Increases energy costs for surpassing stat checks, resets to 0 on rest."
+                    tooltip "Increases Energy costs for surpassing stat checks. Resets to 0 on a rest."
                     action NullAction()
 
             vbox:
@@ -1093,6 +1098,10 @@ init python:
             player.stats.sp = player.stats.max_true_sp
         if player.stats.sp <= 0:
             player.stats.sp = 0
+        
+        global favorPool
+        if favorPool > CalcGoddessFavor(player):
+            favorPool = CalcGoddessFavor(player)
 
     def useInventoryItem(inventoryTarget):
         renpy.retain_after_load()

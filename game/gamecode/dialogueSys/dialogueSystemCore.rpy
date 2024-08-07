@@ -1775,29 +1775,6 @@ label resumeSceneAfterCombat:
                 show screen ON_HealthDisplayBacking #(_layer="hplayer")
                 show screen ON_HealthDisplay #(_layer="sayScreen")
                 $ respeccing = 0
-            #CODEMOD
-            elif displayingScene.theScene[lineOfScene] == "AdjustPlayerLevel":
-                $ lineOfScene += 1
-                $ newLevel = 1
-                if displayingScene.theScene[lineOfScene] == "Cap":
-                    if levelCapEnabled():
-                        $ newLevel = getMaxLevelCap()
-                    else:
-                        $ newLevel = -1
-                elif displayingScene.theScene[lineOfScene] == "Input":
-                    $ newLevel = renpy.input(_("What level should the player be changed to (Currently [player.stats.lvl])?"), length=3, allow="0123456789") or _("-1")
-                else:
-                    $ newLevel = displayingScene.theScene[lineOfScene]
-                
-                python:
-                    try:
-                        newLevel = int(newLevel)
-                    except:
-                        newLevel = -1
-                    
-                    if newLevel != -1:
-                        respecPlayerToLevel(newLevel)
-
             elif displayingScene.theScene[lineOfScene] == "DonateToGoddess":
                 call DonateToGoddess from _call_DonateToGoddess
 
