@@ -15,7 +15,7 @@ label LevelCapCheck:
             if levelCapEnabled():
                 return calcLevelCap()
             else:
-                return Integer.MAX_VALUE
+                return sys.maxsize
 
         def getLevelCapFilePath():
             if renpy.android:

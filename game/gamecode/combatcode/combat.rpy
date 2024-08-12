@@ -1949,8 +1949,8 @@ label forceRepecLevelUpCheck:
     $ respeccing = 1
     $ supressLevelMessage = 1
     $ tentativeStats = copy.deepcopy(player)
-    call refreshLevelVar from _call_refreshLevelVar_1
-    call levelUpSpot from _call_levelUpSpot_2
+    call refreshLevelVar from _call_refreshLevelVar_lc_1
+    call levelUpSpot from _call_levelUpSpot_lc_1
     show screen ON_HealthDisplayBacking #(_layer="hplayer")
     show screen ON_HealthDisplay #(_layer="sayScreen")
     $ respeccing = 0
