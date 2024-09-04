@@ -312,7 +312,6 @@ init python:
                     override = copy.deepcopy(displayingScene.theScene[lineOfScene])
                 checkPreFuncs += 1
 
-
         if inverseRequirement == 0:
             if passStatcheck == 1 and passFetCheck == passFetChecks and passItemCheck == passItemChecks and passEquipmentCheck == passEquipmentChecks and passSkillCheck == passSkillChecks and passPerkCheck == passPerkChecks and passEnergyCheck == 1 and passVirilityCheck == 1 and passProgressCheck == passProgressChecks and passLocalProgressCheck == passLocalProgressChecks and passLocalChoiceCheck == passLocalChoiceChecks and passChoiceCheck == passChoiceChecks and passTimeCheck == passTimeChecks and passCapCheck == 1:
                 passcheck = 1
@@ -362,6 +361,386 @@ init python:
                 passcheck = 1
         return passcheck
 
+    JsonFuncRegistry = {
+    # If funcs
+    "IfChoice": ["JsonFuncIfChoice"],
+    "IfProgressEqualsOrGreater": ["JsonFuncIfProgressEqualsOrGreater"],
+        "IfProgressEquals": ["JsonFuncIfProgressEquals"],
+        "IfProgressEqualsOrLess": ["JsonFuncIfProgressEqualsOrLess"],
+        "IfEventsProgressEqualsOrLessThanOtherEventsProgress": ["JsonFuncIfEventsProgressEqualsOrLessThanOtherEventsProgress"],
+    "IfEventExists": ["JsonFuncIfEventExists"],
+    "IfRanAway": ["JsonFuncIfRanAway"],
+    "IfHealingSickness": ["JsonFuncIfHealingSickness"],
+    "IfDelayingNotifications": ["JsonFuncIfDelayingNotifications"],
+    "IfPlayerOrgasm": ["JsonFuncIfPlayerOrgasm"],
+        "IfPlayerArousalOverPercentOfMax": ["JsonFuncIfPlayerArousalOverPercentOfMax"],
+        "IfPlayerEnergyLessThanPercent": ["JsonFuncIfPlayerEnergyLessThanPercent"],
+        "IfPlayerEnergyGone": ["JsonFuncIfPlayerEnergyGone"],
+        "IfPlayerSpiritGone": ["JsonFuncIfPlayerSpiritGone"],
+    "IfHasItem": ["JsonFuncIfHasItem", "IfHasItem"],
+        "IfDoesntHaveItem": ["JsonFuncIfHasItem", "IfDoesntHaveItem"],
+        "IfHasItemEquipped": ["JsonFuncIfHasItem", "IfHasItemEquipped"],
+        "IfDoesntHaveItemEquipped": ["JsonFuncIfHasItem", "IfDoesntHaveItemEquipped"],
+    "IfHasItems": ["JsonFuncIfHasItems", "IfHasItems"],
+        "IfDoesntHaveItems": ["JsonFuncIfHasItems", "IfDoesntHaveItems"],
+    "IfHasItemInInventory": ["JsonFuncIfHasItemInInventory", "IfHasItemInInventory"],
+        "IfDoesntHaveItemInInventory": ["JsonFuncIfHasItemInInventory", "IfDoesntHaveItemInInventory"],
+    "IfHasRunesEquipped": ["JsonFuncIfHasRunesEquipped"],
+    "IfHasSkill": ["JsonFuncIfHasSkill"],
+        "IfHasSkills": ["JsonFuncIfHasSkills"],
+        "IfPlayerIsUsingThisSkill": ["JsonFuncIfPlayerIsUsingThisSkill"],
+    "IfHasPerk": ["JsonFuncIfHasPerk"],
+    "IfSensitivityEqualOrGreater": ["JsonFuncIfSensitivityEqualOrGreater"],
+    "IfHasFetish": ["JsonFuncIfHasFetish"],
+        "IfFetishLevelEqualOrGreater": ["JsonFuncIfFetishLevelEqualOrGreater"],
+    "IfInExploration": ["JsonFuncIfInExploration"],
+    "IfGridPlayerStunned": ["JsonFuncIfGridPlayerStunned"],
+        "IfGridNPCSeesPlayer": ["JsonFuncIfGridNPCSeesPlayer"],
+        "IfGridNPCThere": ["JsonFuncIfGridNPCThere"],
+        "IfGridVisonOn": ["JsonFuncIfGridVisonOn"],
+    "IfPlayerHasStatusEffect": ["JsonFuncIfPlayerHasStatusEffect", "IfPlayerHasStatusEffect"],
+        "IfPlayerDoesntHaveStatusEffect": ["JsonFuncIfPlayerHasStatusEffect", "IfPlayerDoesntHaveStatusEffect"],
+        "IfPlayerStunnedByParalysis": ["JsonFuncIfPlayerStunnedByParalysis"],
+        "IfPlayerHasStatusEffectWithPotencyEqualOrGreater": ["JsonFuncIfPlayerHasStatusEffectWithPotencyEqualOrGreater"],
+    "IfPlayerLevelGreaterThan": ["JsonFuncIfPlayerLevelGreaterThan"],
+    "IfAttackCrits": ["JsonFuncIfAttackCrits"],
+    "IfTimeIs": ["JsonFuncIfTimeIs"],
+    "IfDifficultyIs": ["JsonFuncIfDifficultyIs"],
+    "IfInputEquals": ["JsonFuncIfInputEquals"],
+        "IfInputEqualsOrLessThan": ["JsonFuncIfInputEqualsOrLessThan"],
+        "InputProgress": ["JsonFuncInputProgress"],
+    "IfPlayerHasStance": ["JsonFuncIfPlayerHasStance"],
+        "IfPlayerHasStances": ["JsonFuncIfPlayerHasStances"],
+        "IfPlayerDoesntHaveStance": ["JsonFuncIfPlayerDoesntHaveStance"],
+    "IfMonsterHasStance": ["JsonFuncIfMonsterHasStance"],
+        "IfMonsterDoesntHaveStance": ["JsonFuncIfMonsterDoesntHaveStance"],
+        "IfOtherMonsterHasStance": ["JsonFuncIfOtherMonsterHasStance"],
+        "IfOtherMonsterDoesntHaveStance": ["JsonFuncIfOtherMonsterDoesntHaveStance"],
+        "IfThisMonsterIsInEncounter": ["JsonFuncIfThisMonsterIsInEncounter"],
+    "IfMonsterHasStatusEffect": ["JsonFuncIfMonsterHasStatusEffect", "IfMonsterHasStatusEffect"],
+        "IfMonsterDoesntHaveStatusEffect": ["JsonFuncIfMonsterHasStatusEffect", "IfMonsterDoesntHaveStatusEffect"],
+    "IfMonsterLevelGreaterThan": ["JsonFuncIfMonsterLevelGreaterThan"],
+        "IfMonsterHasStatusEffectWithPotencyEqualOrGreater": ["JsonFuncIfMonsterHasStatusEffectWithPotencyEqualOrGreater"],
+    "IfOtherMonsterHasStatusEffect": ["JsonFuncIfOtherMonsterHasStatusEffect", "IfOtherMonsterHasStatusEffect"],
+        "IfOtherMonsterDoesntHaveStatusEffect": ["JsonFuncIfOtherMonsterHasStatusEffect", "IfOtherMonsterDoesntHaveStatusEffect"],
+    "IfMonsterOrgasm": ["JsonFuncIfMonsterOrgasm"],
+        "IfMonsterArousalGreaterThan": ["JsonFuncIfMonsterArousalGreaterThan"],
+        "IfMonsterEnergyGone": ["JsonFuncIfMonsterEnergyGone"],
+        "IfMonsterSpiritGone": ["JsonFuncIfMonsterSpiritGone"],
+        "IfMonsterHasSkill": ["JsonFuncIfMonsterHasSkill"],
+        "IfMonsterHasPerk": ["JsonFuncIfMonsterHasPerk"],
+    # Give funcs
+    "GiveTreasure": ["JsonFuncGiveTreasure"],
+        "GiveExp": ["JsonFuncGiveExp"],
+    "GiveItem": ["JsonFuncGiveItem"],
+        "GiveItemQuietly": ["JsonFuncGiveItemQuietly"],
+    "GiveSkill": ["JsonFuncGiveSkill"],
+        "GiveSkillQuietly": ["JsonFuncGiveSkillQuietly"],
+    "GivePerkPoint": ["JsonFuncGivePerkPoint"],
+        "GivePerk": ["JsonFuncGivePerk"],
+        "GivePerkQuietly": ["JsonFuncGivePerkQuietly"],
+    "GiveSkillToMonster": ["JsonFuncGiveSkillToMonster"],
+        "GivePerkToMonster": ["JsonFuncGivePerkToMonster"],
+    "GiveSkillThatWasTemporarilyRemoved": ["JsonFuncGiveSkillThatWasTemporarilyRemoved"],
+    # Remove funcs
+    "RemoveStatusEffect": ["JsonFuncRemoveStatusEffect"],
+    "RemovePerk": ["JsonFuncRemovePerk"],
+        "RemovePerkQuietly": ["JsonFuncRemovePerkQuietly"],
+    "RemoveInputFromPlayerEros": ["JsonFuncRemoveInputFromPlayerEros"],
+        "RemoveInputFromProgress": ["JsonFuncRemoveInputFromProgress"],
+        "RemoveProgressFromEros": ["JsonFuncRemoveProgressFromEros"],
+    "RemoveSkillFromPlayer": ["JsonFuncRemoveSkillFromPlayer"],
+        "RemoveSkillFromPlayerQuietly": ["JsonFuncRemoveSkillFromPlayerQuietly"],
+        "RemoveSkillFromPlayerTemporarily": ["JsonFuncRemoveSkillFromPlayerTemporarily"],
+    "RemoveGridNPC": ["JsonFuncRemoveGridNPC"],
+    "RemoveSkillFromMonster": ["JsonFuncRemoveSkillFromMonster"],
+        "RemoveMonster": ["JsonFuncRemoveMonster"],
+        "RemoveStatusEffectFromMonster": ["JsonFuncRemoveStatusEffectFromMonster"],
+        "RemovePerkFromMonster": ["JsonFuncRemovePerkFromMonster"],
+    # Play funcs
+    "PlayerSpeaks": ["JsonFuncPlayerSpeaks"],
+        "PlayerSpeaksSkill": ["JsonFuncPlayerSpeaksSkill"],
+    "PlayerCurrentEnergyCost": ["JsonFuncPlayerCurrentEnergyCost"],
+    "PlayerOrgasm": ["JsonFuncPlayerOrgasm"],
+        "PlayerOrgasmNoSpiritLoss": ["JsonFuncPlayerOrgasmNoSpiritLoss"],
+    "PlayerStep": ["JsonFuncPlayerStep"],
+    "PlayStoredBGM": ["JsonFuncPlayStoredBGM"],
+        "PlayThisSongAfterCombat": ["JsonFuncPlayThisSongAfterCombat"],
+    "PlaySoundEffect": ["JsonFuncPlaySoundEffect"],
+        "PlaySoundEffect2": ["JsonFuncPlaySoundEffect2"],
+    "PlaySoundBankOnce": ["JsonFuncPlaySoundBankOnce"],
+    "PlayLoopingSoundEffect": ["JsonFuncPlayLoopingSoundEffect"],
+        "PlayLoopingSoundEffect2": ["JsonFuncPlayLoopingSoundEffect2"],
+    "PlayVisualEffect": ["JsonFuncPlayVisualEffect"],
+        "PlayVisualEffect2": ["JsonFuncPlayVisualEffect2"],
+        "PlayVisualEffect3": ["JsonFuncPlayVisualEffect3"],
+    "PlayImagePulseLoopingList": ["JsonFuncPlayImagePulseLoopingList"],
+        "PlayImagePulseLoopingList2": ["JsonFuncPlayImagePulseLoopingList2"],
+    "PlayImagePulseLoopingRandom": ["JsonFuncPlayImagePulseLoopingRandom"],
+    "PlayHypnoSpiral": ["JsonFuncPlayHypnoSpiral"],
+        "PlayPendulum": ["JsonFuncPlayPendulum"],
+        "PlayKiss": ["JsonFuncPlayKiss"],
+        "PlayKissingBarrage": ["JsonFuncPlayKissingBarrage"],
+        "PlayKissingBarrageOnce": ["JsonFuncPlayKissingBarrageOnce"],
+    "PlayCustomBarrage": ["JsonFuncPlayCustomBarrage"],
+        "PlayCustomBarrage2": ["JsonFuncPlayCustomBarrage2"],
+    "PlayBlackOut": ["JsonFuncPlayBlackOut"],
+    "PlayMotionEffect": ["JsonFuncPlayMotionEffect"],
+        "PlayMotionEffectLoop": ["JsonFuncPlayMotionEffectLoop"],
+        "PlayMotionEffectCustom": ["JsonFuncPlayMotionEffectCustom"],
+    "PlayerLosesCombat": ["JsonFuncPlayerLosesCombat"],
+    # End funcs
+    "EndVisualEffect": ["JsonFuncEndVisualEffect"],
+        "EndVisualEffect2": ["JsonFuncEndVisualEffect2"],
+        "EndVisualEffect3": ["JsonFuncEndVisualEffect3"],
+    "EndImagePulseLoopingList": ["JsonFuncEndImagePulseLoopingList"],
+        "EndImagePulseLoopingList2": ["JsonFuncEndImagePulseLoopingList2"],
+        "EndImagePulseLoopingRandom": ["JsonFuncEndImagePulseLoopingRandom"],
+    "EndHypnoSpiral": ["JsonFuncEndHypnoSpiral"],
+        "EndPendulum": ["JsonFuncEndPendulum"],
+    "EndKissingBarrage": ["JsonFuncEndKissingBarrage"],
+        "EndCustomBarrage": ["JsonFuncEndCustomBarrage"],
+        "EndCustomBarrage2": ["JsonFuncEndCustomBarrage2"],
+    "EndBlackOut": ["JsonFuncEndBlackOut"],
+    "EndAllVisualEffects": ["JsonFuncEndAllVisualEffects"],
+        "EndMotionEffect": ["JsonFuncEndMotionEffect"],
+    "EndCounterChecks": ["JsonFuncEndCounterChecks"],
+    "EndCombat": ["JsonFuncEndCombat"],
+    # Set funcs
+    "SetFlexibleSpeaker": ["JsonFuncSetFlexibleSpeaker"],
+    "SetProgress": ["JsonFuncSetProgress"],
+    "SetChoice": ["JsonFuncSetChoice"],
+        "SetChoiceToPlayerName": ["JsonFuncSetChoiceToPlayerName"],
+        "SetChoiceToPlayerNameFromOtherEvent": ["JsonFuncSetChoiceToPlayerNameFromOtherEvent"],
+    "SetArousalToMax": ["JsonFuncSetArousalToMax"],
+        "SetArousalToXUnlessHigherThanX": ["JsonFuncSetArousalToXUnlessHigherThanX"],
+        "SetArousalToXUnlessHigherThanXThenAddY": ["JsonFuncSetArousalToXUnlessHigherThanXThenAddY"],
+    "SetSpirit": ["JsonFuncSetSpirit"],
+    "SetFetish": ["JsonFuncSetFetish"],
+    "SetPlayerGridPosition": ["JsonFuncSetPlayerGridPosition"],
+        "SetActiveGridNPC": ["JsonFuncSetActiveGridNPC"],
+    "SetPostName": ["JsonFuncSetPostName"],
+    "SetEros": ["JsonFuncSetEros"],
+    "SetStoredColor": ["JsonFuncSetStoredColor"],
+    # Get funcs
+    "GetEventAndSetProgress": ["JsonFuncGetEventAndSetProgress"],
+        "GetEventAndChangeProgress": ["JsonFuncGetEventAndChangeProgress"],
+    "GetAnEventsProgressThenIfEquals": ["JsonFuncGetAnEventsProgressThenIfEquals"],
+        "GetAnEventsProgressThenIfEqualsOrGreater": ["JsonFuncGetAnEventsProgressThenIfEqualsOrGreater"],
+        "GetAnEventsProgressThenIfEqualsOrLess": ["JsonFuncGetAnEventsProgressThenIfEqualsOrLess"],
+    "GetEventAndIfChoice": ["JsonFuncGetEventAndIfChoice"],
+    "GetEventAndSetChoice": ["JsonFuncGetEventAndSetChoice"],
+    # GoTo funcs
+    "GoToTown": ["JsonFuncGoToTown"],
+    "GoToChurch": ["JsonFuncGoToChurch"],
+    "GoToRandomBrothelWaiterScene": ["JsonFuncGoToRandomBrothelWaiterScene"],
+        "GoToRandomBrothelBarScene": ["JsonFuncGoToRandomBrothelBarScene"],
+        "GoToRandomBrothelHoleScene": ["JsonFuncGoToRandomBrothelHoleScene"],
+        "GoToRandomBrothelDayScene": ["JsonFuncGoToRandomBrothelDayScene"],
+    "GoBackToStoredEvent": ["JsonFuncGoBackToStoredEvent"],
+    "GoToMap": ["JsonFuncGoToMap"],
+    # 'S' funcs
+    "Speak": ["JsonFuncSpeak"],
+    "Speaks": ["JsonFuncSpeaks"],
+        "Speaks2": ["JsonFuncSpeaks2", 2],"Speaks3": ["JsonFuncSpeaks2", 3],
+        "Speaks4": ["JsonFuncSpeaks2", 4],"Speaks5": ["JsonFuncSpeaks2", 5],
+        "Speaks6": ["JsonFuncSpeaks2", 6],"Speaks7": ["JsonFuncSpeaks2", 7],
+        "Speaks8": ["JsonFuncSpeaks2", 8],"Speaks9": ["JsonFuncSpeaks2", 9],
+        "Speaks10": ["JsonFuncSpeaks2", 10],"Speaks11": ["JsonFuncSpeaks2", 11],
+        "Speaks12": ["JsonFuncSpeaks2", 12],
+    "SpawnGridNPC": ["JsonFuncSpawnGridNPC"],
+    "SleepPlayer": ["JsonFuncSleepPlayer"],
+    "StatCheck": ["JsonFuncStatCheck", "StatCheck"],
+        "StatCheckRollUnder": ["JsonFuncStatCheck", "StatCheckRollUnder"],
+    "StatEqualsOrMore": ["JsonFuncStatEqualsOrMore"],
+    "StunGridPlayer": ["JsonFuncStunGridPlayer"],
+    "StoreCurrentEventSpotSkippingLines": ["JsonFuncStoreCurrentEventSpotSkippingLines"],
+        "SaveNextLine": ["JsonFuncSaveNextLine"],
+        "StoreCurrentBG": ["JsonFuncStoreCurrentBG"],
+    "StopBGM": ["JsonFuncStopBGM"],
+        "StopBGMHard": ["JsonFuncStopBGMHard"],
+        "StoreCurrentBGM": ["JsonFuncStoreCurrentBGM"],
+    "StopSoundEffect": ["JsonFuncStopSoundEffect"],
+        "StopSoundEffect2": ["JsonFuncStopSoundEffect2"],
+        "StopSoundEffectLoop": ["JsonFuncStopSoundEffectLoop"],
+        "StopSoundEffectLoop2": ["JsonFuncStopSoundEffectLoop2"],
+    "ShowTreasureChest": ["JsonFuncShowTreasureChest"],
+    "SkillShoppingMenu": ["JsonFuncSkillShoppingMenu"],
+        "ShoppingMenu": ["JsonFuncShoppingMenu"],
+    "SensitivityRestore": ["JsonFuncSensitivityRestore"],
+    "SemenHeal": ["JsonFuncSemenHeal"],
+    "ShuffleMonsterEncounter": ["JsonFuncShuffleMonsterEncounter"],
+    "SkipPlayerAttack": ["JsonFuncSkipPlayerAttack"],
+        "SkipMonsterAttack": ["JsonFuncSkipMonsterAttack"],
+        "SkipAllMonsterAttacks": ["JsonFuncSkipAllMonsterAttacks"],
+    "ShowMonsterEncounter": ["JsonFuncShowMonsterEncounter"],
+    # Clear funcs
+    "ClearPlayerStatusEffects": ["JsonFuncClearPlayerStatusEffects"],
+        "ClearNonPersistentStatusEffects": ["JsonFuncClearNonPersistentStatusEffects"],
+    "ClearMonsterSkillList": ["JsonFuncClearMonsterSkillList"],
+    "ClearMonsterPerks": ["JsonFuncClearMonsterPerks"],
+    "ClearStances": ["JsonFuncClearStances"],
+    "ClearStanceFromMonsterAndPlayer": ["JsonFuncClearStanceFromMonsterAndPlayer"],
+    "ClearMonsterEncounter": ["JsonFuncClearMonsterEncounter"],
+    "ClearMonsterEncounterBossFight": ["JsonFuncClearMonsterEncounterBossFight"],
+    "ClearFightForVictory": ["JsonFuncClearFightForVictory"],
+    # Change funcs
+    "ChangeImageFor": ["JsonFuncChangeImageFor"],
+        "ChangeImageLayer": ["JsonFuncChangeImageLayer"],
+    "ChangeProgress": ["JsonFuncChangeProgress"],
+        "ChangeProgressBasedOnVirility": ["JsonFuncChangeProgressBasedOnVirility"],
+    "ChangeArousal": ["JsonFuncChangeArousal", "ChangeArousal"],
+        "ChangeArousalQuietly": ["JsonFuncChangeArousal", "ChangeArousalQuietly"],
+        "ChangeArousalByPercent": ["JsonFuncChangeArousalByPercent"],
+    "ChangeEnergy": ["JsonFuncChangeEnergy", "ChangeEnergy"],
+        "ChangeEnergyQuietly": ["JsonFuncChangeEnergy", "ChangeEnergyQuietly"],
+        "ChangeEnergyByPercent": ["JsonFuncChangeEnergyByPercent"],
+    "ChangeSpirit": ["JsonFuncChangeSpirit", "ChangeSpirit"],
+        "ChangeSpiritQuietly": ["JsonFuncChangeSpirit", "ChangeSpiritQuietly"],
+    "ChangeMaxArousal": ["JsonFuncChangeMaxArousal"],
+        "ChangeMaxEnergy": ["JsonFuncChangeMaxEnergy"],
+        "ChangeMaxSpirit": ["JsonFuncChangeMaxSpirit"],
+    "ChangePower": ["JsonFuncChangePower"],
+        "ChangeWill": ["JsonFuncChangeWill"],
+        "ChangeInt": ["JsonFuncChangeInt"],
+        "ChangeTech": ["JsonFuncChangeTech"],
+        "ChangeAllure": ["JsonFuncChangeAllure"],
+        "ChangeLuck": ["JsonFuncChangeLuck"],
+    "ChangeSensitivity": ["JsonFuncChangeSensitivity"],
+        "ChangeFetish": ["JsonFuncChangeFetish"],
+    "ChangeGridNPCMovement": ["JsonFuncChangeGridNPCMovement"],
+        "ChangeGridVision": ["JsonFuncChangeGridVision"],
+        "ChangeMapTile": ["JsonFuncChangeMapTile"],
+    "ChangeNextStatCheckDifficulty": ["JsonFuncChangeNextStatCheckDifficulty"],
+    "ChangeBG": ["JsonFuncChangeBG"],
+    "ChangeBGM": ["JsonFuncChangeBGM"],
+        "ChangeBGM-OverrideCombatMusic": ["JsonFuncChangeBGMOverrideCombatMusic"],
+        "ChangeBGM-NoFade": ["JsonFuncChangeBGMNoFade"],
+        "ChangeBGM-List": ["JsonFuncChangeBGMList"],
+    "ChangeEros": ["JsonFuncChangeEros"],
+        "ChangeErosByPercent": ["JsonFuncChangeErosByPercent"],
+    "ChangePerkDuration": ["JsonFuncChangePerkDuration"],
+    # Change monster funcs
+    "ChangeMonsterArousal": ["JsonFuncChangeMonsterArousal"],
+        "ChangeMonsterEnergy": ["JsonFuncChangeMonsterEnergy"],
+        "ChangeMonsterLevel": ["JsonFuncChangeMonsterLevel"],
+        "ChangeMonsterSpirit": ["JsonFuncChangeMonsterSpirit"],
+    "ChangeMonsterMaxArousal": ["JsonFuncChangeMonsterMaxArousal"],
+        "ChangeMonsterMaxEnergy": ["JsonFuncChangeMonsterMaxEnergy"],
+        "ChangeMonsterMaxSpirit": ["JsonFuncChangeMonsterMaxSpirit"],
+    "ChangeMonsterPower": ["JsonFuncChangeMonsterPower"],
+        "ChangeMonsterWill": ["JsonFuncChangeMonsterWill"],
+        "ChangeMonsterInt": ["JsonFuncChangeMonsterInt"],
+        "ChangeMonsterTech": ["JsonFuncChangeMonsterTech"],
+        "ChangeMonsterAllure": ["JsonFuncChangeMonsterAllure"],
+        "ChangeMonsterLuck": ["JsonFuncChangeMonsterLuck"],
+    "ChangeMonsterSensitivity": ["JsonFuncChangeMonsterSensitivity"],
+    "ChangeMonsterStatusEffectResistances": ["JsonFuncChangeMonsterStatusEffectResistances"],
+    "ChangeMonsterFetish": ["JsonFuncChangeMonsterFetish"],
+    "ChangeMonsterErosDrop": ["JsonFuncChangeMonsterErosDrop"],
+    "ChangeMonsterExpDrop": ["JsonFuncChangeMonsterExpDrop"],
+    # The rest just dumped out of Core for now.
+    "FlexibleSpeaks": ["JsonFuncFlexibleSpeaks"],
+    "DisplayCharacters": ["JsonFuncDisplayCharacters"],
+    "AnimateImageLayer": ["JsonFuncAnimateImageLayer"],
+    "HideHealth": ["JsonFuncHideHealth"],
+    "HoldCurrentVirility": ["JsonFuncHoldCurrentVirility"],
+    "HoldCurrentVirilityEnd": ["JsonFuncHoldCurrentVirilityEnd"],
+    "EventsProgressEqualsOtherEventsProgress": ["JsonFuncEventsProgressEqualsOtherEventsProgress"],
+    "EventsProgressEqualsOrGreaterThanOtherEventsProgress": ["JsonFuncEventsProgressEqualsOrGreaterThanOtherEventsProgress"],
+    "VirilityEqualsOrGreater": ["JsonFuncVirilityEqualsOrGreater"],
+    "ChoiceToDisplayPlayer": ["JsonFuncChoiceToDisplayPlayer"],
+    "ChoiceToDisplayMonster": ["JsonFuncChoiceToDisplayMonster"],
+    "ChoiceToDisplayPlayerFromOtherEvent": ["JsonFuncChoiceToDisplayPlayerFromOtherEvent"],
+    "ChoiceToDisplayMonsterFromOtherEvent": ["JsonFuncChoiceToDisplayMonsterFromOtherEvent"],
+    "HealingSickness": ["JsonFuncHealingSickness"],
+    "AdvanceTime": ["JsonFuncAdvanceTime"],
+    "RestPlayer": ["JsonFuncRestPlayer"],
+    "RefreshPlayer": ["JsonFuncRefreshPlayer"],
+    "PermanentlyChangeSensitivity": ["JsonFuncPermanentlyChangeSensitivity"],
+    "PermanentChangeStatusEffectResistances": ["JsonFuncPermanentChangeStatusEffectResistances"],
+    "PermanentlyChangeFetish": ["JsonFuncPermanentlyChangeFetish"],
+    "EmptySpiritCounter": ["JsonFuncEmptySpiritCounter"],
+    "RoledCGEnd": ["JsonFuncRoledCGEnd"],
+    "Menu": ["JsonFuncMenu"],
+    "ApplyStatusEffect": ["JsonFuncApplyStatusEffect"],
+    "AllowRunning": ["JsonFuncAllowRunning"],
+    "CombatEncounter": ["JsonFuncCombatEncounter"],
+    "MiniGameSnake": ["JsonFuncMiniGameSnake"],
+    "FishingMiniGame": ["JsonFuncFishingMiniGame"],
+    "JumpToScene": ["JsonFuncJumpToScene"],
+    "JumpToRandomScene": ["JsonFuncJumpToRandomScene"],
+    "JumpToEvent": ["JsonFuncJumpToEvent"],
+    "JumpToEventThenScene": ["JsonFuncJumpToEventThenScene"],
+    "CallNextSceneJumpThenReturn": ["JsonFuncCallNextSceneJumpThenReturn"],
+    "CallSceneThenReturn": ["JsonFuncCallSceneThenReturn"],
+    "CallEventAndSceneThenReturn": ["JsonFuncCallEventAndSceneThenReturn"],
+    "CallCombatEventAndScene": ["JsonFuncCallCombatEventAndScene"],
+    "JumpToNPCEvent": ["JsonFuncJumpToNPCEvent"],
+    "JumpToNPCEventThenScene": ["JsonFuncJumpToNPCEventThenScene"],
+    "JumpToLossEvent": ["JsonFuncJumpToLossEvent"],
+    "ForceAutoSave": ["JsonFuncForceAutoSave"],
+    "ExitGridmap": ["JsonFuncExitGridmap"],
+    # Combat funcs
+    "ResetStatCheckDifficultyModifer": ["JsonFuncResetStatCheckDifficultyModifer"],
+    "AddMonsterToEncounter": ["JsonFuncAddMonsterToEncounter"],
+    "HideMonsterEncounter": ["JsonFuncHideMonsterEncounter"],
+    "DamagePlayerFromMonster": ["JsonFuncDamagePlayerFromMonster"],
+    # Assorted funcs
+    "TimeBecomesNight": ["JsonFuncTimeBecomesNight"],
+    "TimeBecomesDay": ["JsonFuncTimeBecomesDay"],
+    "TimeBecomesNormal": ["JsonFuncTimeBecomesNormal"],
+    "DisplaySavedLine": ["JsonFuncDisplaySavedLine"],
+    "UseSavedLineInMenu": ["JsonFuncUseSavedLineInMenu"],
+    "CallLossLevelUp": ["JsonFuncCallLossLevelUp"],
+    "UseHeldBG": ["JsonFuncUseHeldBG"],
+    "HideTreasureChest": ["JsonFuncHideTreasureChest"],
+    "HasErosLessThan": ["JsonFuncHasErosLessThan"],
+    "AllowInventory": ["JsonFuncAllowInventory"],
+    "DenyInventory": ["JsonFuncDenyInventory"],
+    "BumpToTown": ["JsonFuncBumpToTown"],
+    "GameOver": ["JsonFuncGameOver"],
+    "TrueGameOver": ["JsonFuncTrueGameOver"],
+    "QuestComplete": ["JsonFuncQuestComplete"],
+    "AdventureComplete": ["JsonFuncAdventureComplete"],
+    "HasErosLessThanInput": ["JsonFuncHasErosLessThanInput"],
+    "AddInputToProgress": ["JsonFuncAddInputToProgress"],
+    "RespecPlayer": ["JsonFuncRespecPlayer"],
+    "AdjustPlayerLevel": ["JsonFuncAdjustPlayerLevel"],
+    "DonateToGoddess": ["JsonFuncDonateToGoddess"],
+    "PurgeFetishes": ["JsonFuncPurgeFetishes"],
+    "AddTributeToProgress": ["JsonFuncAddTributeToProgress"],
+    "LevelUpMonster": ["JsonFuncLevelUpMonster"],
+    "EnergyDrain": ["JsonFuncEnergyDrain"],
+    "ApplyStance": ["JsonFuncApplyStance"],
+    "ApplyStanceToOtherMonster": ["JsonFuncApplyStanceToOtherMonster"],
+    "EncounterSizeGreaterOrEqualTo": ["JsonFuncEncounterSizeGreaterOrEqualTo"],
+    "EncounterSizeLessOrEqualTo": ["JsonFuncEncounterSizeLessOrEqualTo"],
+    "RecalculateMonsterErosDrop": ["JsonFuncRecalculateMonsterErosDrop"],
+    "RecalculateMonsterExpDrop": ["JsonFuncRecalculateMonsterExpDrop"],
+    "RefreshMonster": ["JsonFuncRefreshMonster"],
+    "CallMonsterEncounterOrgasmCheck": ["JsonFuncCallMonsterEncounterOrgasmCheck"],
+    "MonsterOrgasm": ["JsonFuncMonsterOrgasm"],
+    "ApplyStatusEffectToMonster": ["JsonFuncApplyStatusEffectToMonster"],
+    "RefocusOnInitialMonster": ["JsonFuncRefocusOnInitialMonster"],
+    "FocusOnMonster": ["JsonFuncFocusOnMonster"],
+    "FocusOnRandomMonster": ["JsonFuncFocusOnRandomMonster"],
+    "FocusedSpeaks": ["JsonFuncFocusedSpeaks"],
+    "FocusedSpeaksSkill": ["JsonFuncFocusedSpeaksSkill"],
+    "CallMonsterAttack": ["JsonFuncCallMonsterAttack"],
+    "HitPlayerWith": ["JsonFuncHitPlayerWith"],
+    "HitMonsterWith": ["JsonFuncHitMonsterWith"],
+    "DamageMonsterFromMonster": ["JsonFuncDamageMonsterFromMonster"],
+    "DenyPlayerOrgasm": ["JsonFuncDenyPlayerOrgasm"],
+    "DenyMonsterOrgasm": ["JsonFuncDenyMonsterOrgasm"],
+    "DenyTargetOrgasm": ["JsonFuncDenyTargetOrgasm"],
+    "DenyAttackerOrgasm": ["JsonFuncDenyAttackerOrgasm"],
+    "ResumeMonsterAttack": ["JsonFuncResumeMonsterAttack"],
+    "ResumeAllMonsterAttacks": ["JsonFuncResumeAllMonsterAttacks"],
+    "DefeatMonster": ["JsonFuncDefeatMonster"]
+    
+    }
+
 label displayScene:
     if SceneBookMarkRead == 1:
 
@@ -398,7 +777,6 @@ label resumeSceneAfterCombat:
         $ actorNames.append("")
         $ actorNames.append("")
 
-
     python:
         try:
             displayingScene.theScene
@@ -408,10 +786,6 @@ label resumeSceneAfterCombat:
     while lineOfScene < len(displayingScene.theScene):
         $ readLine = 0
         $ notFunction = 0
-        $ noDFunction = 0
-        $ noCombatFunction = 0
-        $ dialogueLineForSure = 0
-        $ noSpecificFuntion = 0
 
         #if DialogueIsFrom == "Event" or DialogueIsFrom == "Monster":
         #    if displayHealthInEvent == 1:
@@ -428,1746 +802,17 @@ label resumeSceneAfterCombat:
                 show screen ON_EnemyCardScreen onlayer master
         else:
             hide screen ON_CharacterDialogueScreen
-
-
-        $ lengthOfInitalLine = 0
-        $ lengthOfInitalLine = len(displayingScene.theScene[lineOfScene])
-
-        if lengthOfInitalLine > 80:
-            $ dialogueLineForSure = 1
-
-
-        if dialogueLineForSure == 0 and displayingScene.theScene[lineOfScene] != "":
-            $ noSpecificFuntion = 0
-
-            if lengthOfInitalLine >= 4:
-                if noSpecificFuntion == 0: #If
-                    if displayingScene.theScene[lineOfScene][0] == "I":
-                        call dialogueICategory from _call_dialogueIfCategory
-
-                if noSpecificFuntion == 0: #Go
-                    if lineOfScene < len(displayingScene.theScene):
-                        if displayingScene.theScene[lineOfScene][0] == "G":
-                            if displayingScene.theScene[lineOfScene][1] == "o":
-                                call dialogueGoCategory from _call_dialogueGoCategory
-                            elif displayingScene.theScene[lineOfScene][1] == "i" and displayingScene.theScene[lineOfScene][2] == "v" and displayingScene.theScene[lineOfScene][3] == "e":
-                                call dialogueGiveCategory from _call_dialogueGiveCategory
-                            elif displayingScene.theScene[lineOfScene][1] == "e" and displayingScene.theScene[lineOfScene][2] == "t":
-                                call dialogueGetCategory from _call_dialogueGetCategory
-
-                if lineOfScene < len(displayingScene.theScene): #Get/Set
-                    if noSpecificFuntion == 0:
-                        if displayingScene.theScene[lineOfScene][0] == "S":
-                            if displayingScene.theScene[lineOfScene][1] == "e" and displayingScene.theScene[lineOfScene][2] == "t":
-                                call dialogueSetCategory from _call_dialogueSetCategory
-                            else:
-                                call dialogueSCategory from _call_dialogueSCategory
-
-                if lineOfScene < len(displayingScene.theScene): #End
-                    if noSpecificFuntion == 0:
-                        if displayingScene.theScene[lineOfScene][0] == "E":
-                            if displayingScene.theScene[lineOfScene][1] == "n" and displayingScene.theScene[lineOfScene][2] == "d":
-                                call dialogueEndCategory from _call_dialogueEndCategory
-
-                if lineOfScene < len(displayingScene.theScene): #Play
-                    if noSpecificFuntion == 0:
-                        if displayingScene.theScene[lineOfScene][0] == "P":
-                            if displayingScene.theScene[lineOfScene][1] == "l" and displayingScene.theScene[lineOfScene][2] == "a" and displayingScene.theScene[lineOfScene][3] == "y":
-                                call dialoguePlayCategory from _call_dialoguePlayCategory
-
-            if lengthOfInitalLine >= 6:
-                if lineOfScene < len(displayingScene.theScene):
-                    if noSpecificFuntion == 0: #Clear
-                        if displayingScene.theScene[lineOfScene][0] == "C":
-                            if displayingScene.theScene[lineOfScene][1] == "l" and displayingScene.theScene[lineOfScene][2] == "e":
-                                call dialogueClearCategory from _call_dialogueClearCategory
-                            elif displayingScene.theScene[lineOfScene][1] == "h" and displayingScene.theScene[lineOfScene][2] == "a" and displayingScene.theScene[lineOfScene][3] == "n":
-                                call dialogueChangeCategory from _call_dialogueChangeCategory
-
-                if lineOfScene < len(displayingScene.theScene):
-                    if noSpecificFuntion == 0: #Remove
-                        if displayingScene.theScene[lineOfScene][0] == "R" and displayingScene.theScene[lineOfScene][1] == "e" and displayingScene.theScene[lineOfScene][2] == "m" and displayingScene.theScene[lineOfScene][3] == "o":
-                            call dialogueRemoveCategory from _call_dialogueRemoveCategory
-
-
-        #noSpecificFuntion == 1 means a specific thing has been checked, but it didnt find a function, so its then a text line
-        #noSpecificFuntion == 2 means it found and did its function!!!
-
-
-        if noSpecificFuntion == 0 and dialogueLineForSure == 0 and lineOfScene < len(displayingScene.theScene):
-            if displayingScene.theScene[lineOfScene] == "FlexibleSpeaks":
-
-                if len(monsterEncounter) >= 2:
-                    $ Speaker = monsterEncounter[FlexibleSpeaker].name+attackTitle
-                else:
-                    $ Speaker = getSpeaker(FlexibleSpeaker, EventDatabase, MonsterDatabase)
-
-                $ lineOfScene += 1
-                $ readLine = 1
-
-            elif displayingScene.theScene[lineOfScene] == "DisplayCharacters":
-                $ showSpeakers = 1
-                $ lineOfScene += 1
-                $ SceneCharacters = []
-                $ RoledCGOn = 0
-                $ CgRoleKeeper = []
-                if len(monsterEncounter) == 0:
-                    $ hidingCombatEncounter = 0
-
-                if hidingCombatEncounter == 0:
-                    $ monsterEncounter = []
-                    $ monsterEncounterCG = []
-                    $ DefeatedEncounterMonsters = []
-                    $ trueMonsterEncounter = []
-                while displayingScene.theScene[lineOfScene] != "EndLoop":
-
-                    python:
-                        try:
-                            targetChar = int(displayingScene.theScene[lineOfScene]) - 1
-                        except:
-                            targetChar = getFromName(displayingScene.theScene[lineOfScene], SceneCharacters)
-
-                    $ characterDataLocation = getFromName(EventDatabase[DataLocation].Speakers[targetChar].name, MonsterDatabase)
-                    if characterDataLocation != -1:
-                        $ SceneCharacters.append(copy.deepcopy(MonsterDatabase[characterDataLocation]))
-                    if EventDatabase[DataLocation].Speakers[targetChar].SpeakerType == "?":
-                        $ SceneCharacters.append(copy.deepcopy(Monster(Stats(),0,  "?", "?")))
-
-                    $ lineOfScene += 1
-                python:
-                    for each in SceneCharacters:
-                        each = initiateImageLayers(each)
-
-                        for SetData in persistantMonSetData:
-                            if SetData.name == each.IDname:
-                                each.currentSet = getFromName(SetData.startingSet, each.ImageSets)
-
-                #if hidingCombatEncounter == 0:
-                #    hide screen ON_HealthDisplayBacking
-                #    hide screen ON_HealthDisplay
-                show screen ON_CharacterDialogueScreen onlayer master
-                #if hidingCombatEncounter == 0:
-                #    if displayHealthInEvent == 1:
-                #        hide screen ON_HealthDisplayBacking
-                #        hide screen ON_HealthDisplay
-                #    else:
-                #        hide screen ON_HealthDisplayBacking
-                #        hide screen ON_HealthDisplay
-
-
-            elif displayingScene.theScene[lineOfScene] == "AnimateImageLayer":
-                $ lineOfScene += 1
-                $ settingToImage = displayingScene.theScene[lineOfScene]
-
-                $ lineOfScene += 1
-                $ layerToChange = displayingScene.theScene[lineOfScene]
-                $ lineOfScene += 1
-
-                python:
-                    try:
-                        settingCharcter = int(displayingScene.theScene[lineOfScene]) - 1
-
-                    except:
-                        ifIsInScene = 0
-                        if len(monsterEncounter) > 0 and hidingCombatEncounter == 0:
-                            searchingCharacters = monsterEncounter
-                        else:
-                            searchingCharacters = SceneCharacters
-                        if len(searchingCharacters) > 0 and hidingCombatEncounter == 0:
-                            #during combat layer change
-                            if getFromName(displayingScene.theScene[lineOfScene], searchingCharacters)!= -1:
-                                ifIsInScene = 1
-                                settingCharcter = getFromName(displayingScene.theScene[lineOfScene], searchingCharacters)
-
-                        if ifIsInScene == 0:
-                            settingCharcter = CombatFunctionEnemytarget
-                if settingToImage == "Animation":
-                    $ animationList = []
-                    $ animationChoice = ""
-                    $ currentAnimationImg = 0
-                elif settingToImage == "Animation2":
-                    $ animationList2 = []
-                    $ animationChoice2 = ""
-                    $ currentAnimationImg2 = 0
-                elif settingToImage == "Animation3":
-                    $ animationList3 = []
-                    $ animationChoice3 = ""
-                    $ currentAnimationImg3 = 0
-
-                $ lineOfScene += 1
-                if settingToImage == "Animation":
-                    $ animationSpeed = float(displayingScene.theScene[lineOfScene])
-                    $ animationTime = float(displayingScene.theScene[lineOfScene])
-                elif settingToImage == "Animation2":
-                    $ animationSpeed2 = float(displayingScene.theScene[lineOfScene])
-                    $ animationTime2 = float(displayingScene.theScene[lineOfScene])
-                elif settingToImage == "Animation3":
-                    $ animationSpeed3 = float(displayingScene.theScene[lineOfScene])
-                    $ animationTime3 = float(displayingScene.theScene[lineOfScene])
-                $ lineOfScene += 1
-
-                if settingToImage == "Animation":
-                    $ animationList = []
-                elif settingToImage == "Animation2":
-                    $ animationList2 = []
-                elif settingToImage == "Animation3":
-                    $ animationList3 = []
-                if displayingScene.theScene[lineOfScene] != "EndLoop":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if settingToImage == "Animation":
-                                $ animationList.append(displayingScene.theScene[lineOfScene])
-                            elif settingToImage == "Animation2":
-                                $ animationList2.append(displayingScene.theScene[lineOfScene])
-                            elif settingToImage == "Animation3":
-                                $ animationList3.append(displayingScene.theScene[lineOfScene])
-                            $ lineOfScene += 1
-
-                if settingToImage == "Animation":
-                    if len(animationList) > 0:
-                        $ animationChoice = animationList[0]
-                elif settingToImage == "Animation2":
-                    if len(animationList2) > 0:
-                        $ animationChoice2 = animationList2[0]
-                elif settingToImage == "Animation3":
-                    if len(animationList3) > 0:
-                        $ animationChoice3 = animationList3[0]
-
-                $ searchingCharacters = AnimateImgLayer(searchingCharacters, settingCharcter, layerToChange, settingToImage)
-
-            elif  displayingScene.theScene[lineOfScene] == "HideHealth":
-                $ displayHealthInEvent = 0
-
-            elif displayingScene.theScene[lineOfScene] == "HoldCurrentVirility":
-                $ heldVirility = copy.deepcopy(getVirility(player))
-            elif displayingScene.theScene[lineOfScene] == "HoldCurrentVirilityEnd":
-                $ heldVirility = 0
-
-            elif displayingScene.theScene[lineOfScene] == "EventsProgressEqualsOtherEventsProgress":
-                $ lineOfScene += 1
-                $ CheckEvent = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-                $ lineOfScene += 1
-                $ CheckEvent2 = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-
-                if ProgressEvent[CheckEvent].eventProgress == ProgressEvent[CheckEvent2].eventProgress:
-                    $ lineOfScene += 1
-                    $ display = displayingScene.theScene[lineOfScene]
-                    call sortMenuD from _call_sortMenuD_66
-                    if len(monsterEncounter) > 0:
-                        return
-                else:
-                    $ lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "EventsProgressEqualsOrGreaterThanOtherEventsProgress":
-                $ lineOfScene += 1
-                $ CheckEvent = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-                $ lineOfScene += 1
-                $ CheckEvent2 = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-
-                if ProgressEvent[CheckEvent].eventProgress >= ProgressEvent[CheckEvent2].eventProgress:
-                    $ lineOfScene += 1
-                    $ display = displayingScene.theScene[lineOfScene]
-                    call sortMenuD from _call_sortMenuD_67
-                    if len(monsterEncounter) > 0:
-                        return
-                else:
-                    $ lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "VirilityEqualsOrGreater":
-                $ lineOfScene += 1
-
-                if int(displayingScene.theScene[lineOfScene]) <= getVirility(player) :
-                    $ lineOfScene += 1
-                    $ display = displayingScene.theScene[lineOfScene]
-                    call sortMenuD from _call_sortMenuD_71
-                    if len(monsterEncounter) > 0:
-                        return
-                else:
-                    $ lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "ChoiceToDisplayPlayer":
-                $ lineOfScene += 1
-                $ choiceToCheck = int(displayingScene.theScene[lineOfScene])
-                $ DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-
-                while choiceToCheck-1 >= len(ProgressEvent[DataLocation].choices):
-                    $ ProgressEvent[DataLocation].choices.append("")
-
-                $ PlayerChoiceToDisplay = ProgressEvent[DataLocation].choices[choiceToCheck-1]
-            elif displayingScene.theScene[lineOfScene] == "ChoiceToDisplayMonster":
-                $ lineOfScene += 1
-                $ choiceToCheck = int(displayingScene.theScene[lineOfScene])
-                $ DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-
-                while choiceToCheck-1 >= len(ProgressEvent[DataLocation].choices):
-                    $ ProgressEvent[DataLocation].choices.append("")
-
-                $ MonsterChoiceToDisplay = ProgressEvent[DataLocation].choices[choiceToCheck-1]
-
-            elif displayingScene.theScene[lineOfScene] == "ChoiceToDisplayPlayerFromOtherEvent":
-                $ lineOfScene += 1
-                $ CheckEvent = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-                $ lineOfScene += 1
-                $ choiceToCheck = int(displayingScene.theScene[lineOfScene])
-
-                while choiceToCheck-1 >= len(ProgressEvent[CheckEvent].choices):
-                    $ ProgressEvent[CheckEvent].choices.append("")
-
-                $ PlayerChoiceToDisplay = ProgressEvent[DataLocation].choices[choiceToCheck-1]
-            elif displayingScene.theScene[lineOfScene] == "ChoiceToDisplayMonsterFromOtherEvent":
-                $ lineOfScene += 1
-                $ CheckEvent = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-                $ lineOfScene += 1
-                $ choiceToCheck = int(displayingScene.theScene[lineOfScene])
-
-                while choiceToCheck-1 >= len(ProgressEvent[CheckEvent].choices):
-                    $ ProgressEvent[CheckEvent].choices.append("")
-
-                $ MonsterChoiceToDisplay = ProgressEvent[DataLocation].choices[choiceToCheck-1]
-
-            elif displayingScene.theScene[lineOfScene] == "HealingSickness":
-                $ HealingSickness = 6
-
-            elif displayingScene.theScene[lineOfScene] == "AdvanceTime":
-                $ lineOfScene += 1
-                if int(displayingScene.theScene[lineOfScene]) > 0:
-                    $ number = int(displayingScene.theScene[lineOfScene])
-                    $ lineOfScene += 1
-                    python:
-                        try:
-                            if displayingScene.theScene[lineOfScene] == "DelayNotifications":
-                                timeNotify = 1
-                            else:
-                                lineOfScene -= 1
-                        except:
-                            lineOfScene -= 1
-                    call advanceTime(number) from _call_advanceTime_4
-            elif displayingScene.theScene[lineOfScene] == "RestPlayer":
-                $ lineOfScene += 1
-                if displayingScene.theScene[lineOfScene] == "DelayNotifications":
-                    $ timeNotify = 1
-                else:
-                    $ lineOfScene -= 1
-                call advanceTime(TimeIncrease=1) from _call_advanceTime_1
-                $ favorPool = CalcGoddessFavor(player)
-                $ favorStrain = 0
-                $ player = Resting(player)
-                $ notFunction = 0
-                $ noCombatFunction = 0
-                $ noDFunction = 0
-
-            elif displayingScene.theScene[lineOfScene] == "RefreshPlayer":
-                $ player = player.statusEffects.refresh(player)
-                $ player.stats.refresh()
-                $ favorPool = CalcGoddessFavor(player)
-                $ favorStrain = 0
-
-            elif displayingScene.theScene[lineOfScene] == "PermanentlyChangeSensitivity":
-                $ lineOfScene += 1
-                $ resTarget = displayingScene.theScene[lineOfScene]
-                $ lineOfScene += 1
-                $ resAmount = int(displayingScene.theScene[lineOfScene])
-
-                $ player.BodySensitivity.changeRes (resTarget, resAmount)
-
-                if (int(displayingScene.theScene[lineOfScene]) < 0):
-                    $ amountLost = resAmount*-1
-                    if resTarget == "Breasts":
-                        $ resTarget = "Nipple"
-                    if resTarget == "Sex":
-                        $ resTarget = "Cock"
-                    $ display = "You {i}permanently{/i} lost " + str(amountLost) + " " + resTarget +  " sensitivity!"
-                else:
-                    if resTarget == "Breasts":
-                        $ resTarget = "Nipple"
-                    if resTarget == "Sex":
-                        $ resTarget = "Cock"
-                    $ display = "You {i}permanently{/i} gained " + displayingScene.theScene[lineOfScene] + " " + resTarget +  " sensitivity!"
-                if (int(displayingScene.theScene[lineOfScene]) != 0):
-                    "[display!i]"
-
-            elif displayingScene.theScene[lineOfScene] == "PermanentChangeStatusEffectResistances":
-                $ lineOfScene += 1
-                $ resTarget = displayingScene.theScene[lineOfScene]
-                $ lineOfScene += 1
-                $ resAmount = int(displayingScene.theScene[lineOfScene])
-
-                $ player.resistancesStatusEffects.changeRes (resTarget, resAmount)
-
-                if (int(displayingScene.theScene[lineOfScene]) < 0):
-                    $ amountLost = resAmount*-1
-
-                    $ display = "You lost " + str(amountLost) + " " + resTarget +  " resistance!"
-                else:
-                    $ display = "You gained " + displayingScene.theScene[lineOfScene] + " " + resTarget +  " resistance!"
-                if (int(displayingScene.theScene[lineOfScene]) != 0):
-                    "[display!i]"
-
-            elif displayingScene.theScene[lineOfScene] == "PermanentlyChangeFetish":
-                $ lineOfScene += 1
-                $ resTarget = displayingScene.theScene[lineOfScene]
-                $ lineOfScene += 1
-                $ resAmount = int(displayingScene.theScene[lineOfScene])
-
-                $ baseFetish = player.getFetish(resTarget)
-                $ baseFetish += resAmount
-
-                $ player.setFetish(resTarget, baseFetish)
-
-                $ fetchFetish = getFromName(resTarget, player.FetishList)
-                if player.FetishList[fetchFetish].Type == "Fetish":
-
-                    if baseFetish < 100:
-                        if (int(displayingScene.theScene[lineOfScene]) >= 1):
-                            if resAmount > 1:
-                                $ display = "You {i}permanently{/i} gained " + str(resAmount) + " fetish levels for " + resTarget +  "..."
-                            else:
-                                $ display = "You have {i}permanently{/i} gained a fetish level for " + resTarget +  "."
-
-                        elif (int(displayingScene.theScene[lineOfScene]) < 0):
-                            $ resAmount *= -1
-                            if resAmount > 1:
-                                $ display = "You have {i}permanently{/i} lost " + str(resAmount) +" fetish levels for " + resTarget +  "."
-                            else:
-                                $ display = "You have {i}permanently{/i} lost a fetish level for " + resTarget +  "."
-                    if baseFetish > 100 and resAmount >= 1:
-                        $ display = "Fantasies of " + resTarget +  " swirl through your mind, and your heart beats faster, you have {i}permanently{/i} gained a fetish level for " + resTarget + ", exceeding your normal obsession..."
-
-                    if (resAmount != 0):
-                        "[display!i]"
-
-
-            elif displayingScene.theScene[lineOfScene] == "EmptySpiritCounter":
-                $ spiritLost0 = 0
-            elif displayingScene.theScene[lineOfScene] == "RoledCGEnd":
-                $ monsterEncounterCG = []
-                $ RoledCGOn = 0
-                $ CgRoleKeeper = []
-
-            elif displayingScene.theScene[lineOfScene] == "Menu":
-                $ index = 0
-                $ lineOfScene += 1
-                $ MenuLineSceneCheckMark = copy.deepcopy(lineOfScene)
-
-                #$ check = ProgressEvent[DataLocation].choices[1]
-                #"[check]"
-
-                label recheckMenu:
-                    $ ind = index
-                    $ lineOfScene = copy.deepcopy(MenuLineSceneCheckMark)
-                    $ menuArray = []
-                    $ passedArray = []
-
-
-                $ MaxMenuSlots = 6
-                if displayingScene.theScene[lineOfScene] == "MaxMenuSlots":
-                    $ lineOfScene += 1
-                    $ MaxMenuSlots = int(displayingScene.theScene[lineOfScene])
-                    $ lineOfScene += 1
-
-                $ eventMenuJumps = []
-                $ eventMenuSceneJumps = []
-                $clear1 = 0
-                $clear2 = 0
-                $clear3 = 0
-                $clear4 = 0
-                $clear5 = 0
-                $clear6 = 0
-
-                $ display1 = ""
-                $ display2 = ""
-                $ display3 = ""
-                $ display4 = ""
-                $ display5 = ""
-                $ display6 = ""
-
-                $ finalOption = ""
-                $ finalOptionEvent = ""
-                $ finalOptionEventScene = ""
-                $ finalSet = 0
-
-                $ ShuffleMenuOptions = 0
-                #$ showOnSide = 1
-                while displayingScene.theScene[lineOfScene] != "EndLoop":
-
-                    $ passcheck = 0
-                    $ override = ""
-                    $ display = ""
-                    $ eventMenuJumps.append("")
-                    $ eventMenuSceneJumps.append("")
-
-                    $ passcheck = SceneRequiresCheck()
-
-                    #"[override]"
-
-                    if override != "":
-                        python:
-                            ova = 0
-                            for each in menuArray:
-                                if each == override:
-                                    del menuArray[ova]
-                                    del passedArray[ova]
-                                    del eventMenuJumps[ova]
-                                    del eventMenuSceneJumps[ova]
-                                    ova -= 1
-                                ova +=1
-
-                    if displayingScene.theScene[lineOfScene] != "EndLoop":
-
-                        if passcheck == 1 :
-                            $ display = ""
-                            $ display = displayingScene.theScene[lineOfScene]
-                            $ passedArray.append(1)
-
-                        else:
-                            if display != "":
-                                $ passedArray.append(0)
-                    if display != "":
-                        $ menuArray.append(copy.deepcopy(display))
-                    else:
-                        $ del eventMenuJumps[-1]
-                        $ del eventMenuSceneJumps[-1]
-
-
-                    if displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-
-                if ShuffleMenuOptions == 1:
-                    $ menuArrays = list(zip(menuArray, passedArray, eventMenuJumps, eventMenuSceneJumps))
-                    $ renpy.random.shuffle(menuArrays)
-                    $ menuArray, passedArray, eventMenuJumps, eventMenuSceneJumps = zip(*menuArrays)
-
-
-                $ choiceName = ""
-
-                $ exist1 = 0
-                $ exist2 = 0
-                $ exist3 = 0
-                $ exist4 = 0
-                $ exist5 = 0
-                $ exist6 = 0
-
-                $ setEventJump1 = ""
-                $ setEventJump2 = ""
-                $ setEventJump3 = ""
-                $ setEventJump4 = ""
-                $ setEventJump5 = ""
-                $ setEventJump6 = ""
-
-                $ setEventSceneJump1 = ""
-                $ setEventSceneJump2 = ""
-                $ setEventSceneJump3 = ""
-                $ setEventSceneJump4 = ""
-                $ setEventSceneJump5 = ""
-                $ setEventSceneJump6 = ""
-
-
-
-                if finalOption != "" and finalSet == 0:
-                    python:
-                        ova = 0
-                        for each in menuArray:
-                            if each == finalOption:
-                                del menuArray[ova]
-                                del passedArray[ova]
-                                del eventMenuJumps[ova]
-                                del eventMenuSceneJumps[ova]
-                                ova -= 1
-                            ova +=1
-
-                    if MaxMenuSlots == 6:
-                        $ MaxMenuSlots = 5
-
-                if len(menuArray) > MaxMenuSlots:
-                    show screen MenuPageButtons
-                else:
-                    hide screen MenuPageButtons
-
-                while ind < len(menuArray):
-                    if display1 == ""and MaxMenuSlots >= 1:
-                        $ display1 = menuArray[ind]
-                        $ clear1 = passedArray[ind]
-                        $ setEventJump1 = eventMenuJumps[ind]
-                        $ setEventSceneJump1 = eventMenuSceneJumps[ind]
-                    elif display2 == "" and MaxMenuSlots >= 2:
-                        $ display2 = menuArray[ind]
-                        $ clear2 = passedArray[ind]
-                        $ setEventJump2 = eventMenuJumps[ind]
-                        $ setEventSceneJump2 = eventMenuSceneJumps[ind]
-                    elif display3 == "" and MaxMenuSlots >= 3:
-                        $ display3 = menuArray[ind]
-                        $ clear3 = passedArray[ind]
-                        $ setEventJump3 = eventMenuJumps[ind]
-                        $ setEventSceneJump3 = eventMenuSceneJumps[ind]
-                    elif display4 == "" and MaxMenuSlots >= 4:
-                        $ display4 = menuArray[ind]
-                        $ clear4 = passedArray[ind]
-                        $ setEventJump4 = eventMenuJumps[ind]
-                        $ setEventSceneJump4 = eventMenuSceneJumps[ind]
-                    elif display5 == "" and MaxMenuSlots >= 5:
-                        $ display5 = menuArray[ind]
-                        $ clear5 = passedArray[ind]
-                        $ setEventJump5 = eventMenuJumps[ind]
-                        $ setEventSceneJump5 = eventMenuSceneJumps[ind]
-                    elif display6 == "" and finalOption == "" and MaxMenuSlots >= 6:
-                        $ display6 = menuArray[ind]
-                        $ clear6 = passedArray[ind]
-                        $ setEventJump6 = eventMenuJumps[ind]
-                        $ setEventSceneJump6 = eventMenuSceneJumps[ind]
-                    $ ind +=1
-
-
-                if display1 != "":
-                    $ exist1 = 1
-                if display2 != "":
-                    $ exist2 = 1
-                if display3 != "":
-                    $ exist3 = 1
-                if display4 != "":
-                    $ exist4 = 1
-                if display5 != "":
-                    $ exist5 = 1
-                if finalOption != "" and finalSet == 0:
-                    $ finalSet =1
-                elif display6 != "":
-                    $ exist6 = 1
-
-
-                $ damageToPlayer = " [CritText] [EffectiveText]" + "You gain " + str(finalDamage) + " arousal."
-                if len(monsterEncounter) > 0 and CombatFunctionEnemytarget < len(monsterEncounter):
-                    $ damageToEnemy = " [CritText] [EffectiveText]" + monsterEncounter[CombatFunctionEnemytarget].name + " gains " + str(finalDamage) + " arousal."
-                else:
-                    $ damageToEnemy = ""
-
-                $ DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-                $ progressDisplay = copy.deepcopy(ProgressEvent[DataLocation].eventProgress)
-
-                if savedLine != "" and savedLineInMenu == 1:
-                    $ LastLine = copy.deepcopy(savedLine)
-                    $ savedLine = ""
-                    $ savedLineInMenu = 0
-                elif LastLine != "StartCombat" and LastLine != "EndLoop" and LastLine != "end":
-                    pass
-                else:
-                    $ LastLine = ""
-
-
-                call playSpecialEffects(VisualEffect, 1) from _call_playSpecialEffects
-                call playSpecialEffects(VisualEffect2, 2) from _call_playSpecialEffects_1
-                call playSpecialEffects(VisualEffect3, 3) from _call_playSpecialEffects_2
-
-                show screen fakeTextBox
-                window hide
-
-                if mgdAutosaveCount <= 0:
-                    $ renpy.force_autosave()
-                    #$ renpy.pause(1, True)
-                    $ mgdAutosaveCount = copy.deepcopy(mgdAutosaveFrequency)
-                else:
-                    if len(monsterEncounter) == 0:
-                        $ mgdAutosaveCount -= 2
-                    else:
-                        $ mgdAutosaveCount -= 1
-
-                menu menuList:
-                    "[display1!i]" if exist1 == 1:
-                        if clear1 == 1:
-                            hide screen MenuPageButtons
-                            hide screen fakeTextBox
-                            if setEventJump1 == "":
-                                $ display = display1
-                                $ choiceName = display1
-                                $ MenuLineSceneCheckMark = -1
-                                call sortMenuD from _call_sortMenuD_9
-                                if len(monsterEncounter) > 0:
-                                    return
-                            else:
-                                $ isEventNow = 1
-                                $ currentChoice = 0
-                                $ DataLocation = getFromName(setEventJump1, EventDatabase)
-                                if setEventSceneJump1 != "":
-                                    $ currentChoice = getFromNameOfScene(setEventSceneJump1, EventDatabase[DataLocation].theEvents)
-                                jump sortMenuD
-                        else:
-                            call recheckMenu from _call_recheckMenu
-                            if len(monsterEncounter) > 0:
-                                return
-                    "[display2!i]" if exist2 == 1 :
-                        if clear2 == 1:
-                            hide screen MenuPageButtons
-                            hide screen fakeTextBox
-                            if setEventJump2 == "":
-                                $ display = display2
-                                $ choiceName = display2
-                                $ MenuLineSceneCheckMark = -1
-                                call sortMenuD from _call_sortMenuD_10
-                                if len(monsterEncounter) > 0:
-                                    return
-                            else:
-                                $ isEventNow = 1
-                                $ currentChoice = 0
-                                $ DataLocation = getFromName(setEventJump2, EventDatabase)
-                                if setEventSceneJump2 != "":
-                                    $ currentChoice = getFromNameOfScene(setEventSceneJump2, EventDatabase[DataLocation].theEvents)
-                                jump sortMenuD
-                        else:
-                            call recheckMenu from _call_recheckMenu_1
-                            if len(monsterEncounter) > 0:
-                                return
-                    "[display3!i]" if exist3 == 1:
-                        if clear3 == 1:
-                            hide screen MenuPageButtons
-                            hide screen fakeTextBox
-                            if setEventJump3 == "":
-                                $ display = display3
-                                $ choiceName = display3
-                                $ MenuLineSceneCheckMark = -1
-                                call sortMenuD from _call_sortMenuD_14
-                                if len(monsterEncounter) > 0:
-                                    return
-                            else:
-                                $ isEventNow = 1
-                                $ currentChoice = 0
-                                $ DataLocation = getFromName(setEventJump3, EventDatabase)
-                                if setEventSceneJump3 != "":
-                                    $ currentChoice = getFromNameOfScene(setEventSceneJump3, EventDatabase[DataLocation].theEvents)
-                                jump sortMenuD
-                        else:
-                            call recheckMenu from _call_recheckMenu_2
-                            if len(monsterEncounter) > 0:
-                                return
-                    "[display4!i]" if exist4 == 1:
-                        if clear4 == 1:
-                            hide screen MenuPageButtons
-                            hide screen fakeTextBox
-                            if setEventJump4 == "":
-                                $ display = display4
-                                $ choiceName = display4
-                                $ MenuLineSceneCheckMark = -1
-                                call sortMenuD from _call_sortMenuD_16
-                                if len(monsterEncounter) > 0:
-                                    return
-                            else:
-                                $ isEventNow = 1
-                                $ currentChoice = 0
-                                $ DataLocation = getFromName(setEventJump4, EventDatabase)
-                                if setEventSceneJump4 != "":
-                                    $ currentChoice = getFromNameOfScene(setEventSceneJump4, EventDatabase[DataLocation].theEvents)
-                                jump sortMenuD
-                        else:
-                            call recheckMenu from _call_recheckMenu_3
-                            if len(monsterEncounter) > 0:
-                                return
-                    "[display5!i]" if exist5 == 1:
-                        if clear5 == 1:
-                            hide screen MenuPageButtons
-                            hide screen fakeTextBox
-                            if setEventJump5 == "":
-                                $ display = display5
-                                $ choiceName = display5
-                                $ MenuLineSceneCheckMark = -1
-                                call sortMenuD from _call_sortMenuD_18
-                                if len(monsterEncounter) > 0:
-                                    return
-                            else:
-                                $ isEventNow = 1
-                                $ currentChoice = 0
-                                $ DataLocation = getFromName(setEventJump5, EventDatabase)
-                                if setEventSceneJump5 != "":
-                                    $ currentChoice = getFromNameOfScene(setEventSceneJump5, EventDatabase[DataLocation].theEvents)
-                                jump sortMenuD
-                        else:
-                            call recheckMenu from _call_recheckMenu_4
-                            if len(monsterEncounter) > 0:
-                                return
-                    "[display6!i]" if exist6 == 1 :
-                        if clear6 == 1:
-                            hide screen MenuPageButtons
-                            hide screen fakeTextBox
-                            if setEventJump6 == "":
-                                $ display = display6
-                                $ choiceName = display6
-                                $ MenuLineSceneCheckMark = -1
-                                call sortMenuD from _call_sortMenuD_19
-                                if len(monsterEncounter) > 0:
-                                    return
-                            else:
-                                $ isEventNow = 1
-                                $ currentChoice = 0
-                                $ DataLocation = getFromName(setEventJump6, EventDatabase)
-                                if setEventSceneJump6 != "":
-                                    $ currentChoice = getFromNameOfScene(setEventSceneJump6, EventDatabase[DataLocation].theEvents)
-                                jump sortMenuD
-                        else:
-                            call recheckMenu from _call_recheckMenu_5
-                            if len(monsterEncounter) > 0:
-                                return
-                    "[finalOption!i]" if hasattr(store, "finalSet") and finalSet == 1:
-                        hide screen MenuPageButtons
-                        hide screen fakeTextBox
-                        if finalOptionEvent == "":
-                            $ display = finalOption
-                            $ choiceName = finalOption
-                            $ MenuLineSceneCheckMark = -1
-                            call sortMenuD from _call_sortMenuD_82
-                            if len(monsterEncounter) > 0:
-                                return
-                        else:
-                            $ isEventNow = 1
-                            $ currentChoice = 0
-                            $ DataLocation = getFromName(finalOptionEvent, EventDatabase)
-                            if finalOptionEventScene != "":
-                                $ currentChoice = getFromNameOfScene(finalOptionEventScene, EventDatabase[DataLocation].theEvents)
-                            jump sortMenuD
-
-            elif displayingScene.theScene[lineOfScene] == "ApplyStatusEffect":
-                $ lineOfScene += 1
-                $ skillAt = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
-                $ statusSkill = SkillsDatabase[skillAt]
-
-                if statusSkill.statusEffect != "Damage" and statusSkill.statusEffect != "Defence" and statusSkill.statusEffect != "Power" and statusSkill.statusEffect != "Technique" and statusSkill.statusEffect != "Willpower" and statusSkill.statusEffect != "Intelligence" and statusSkill.statusEffect != "Allure" and statusSkill.statusEffect != "Luck" and skillChoice.statusEffect != "%Power" and skillChoice.statusEffect != "%Technique" and skillChoice.statusEffect != "%Intelligence" and skillChoice.statusEffect != "%Willpower" and skillChoice.statusEffect != "%Allure" and skillChoice.statusEffect != "%Luck" and statusSkill.statusEffect != "Escape" and statusSkill.statusEffect != "Crit":
-                    if len(monsterEncounter) > 0:
-                        $ player = statusAfflict(player, statusSkill, monsterEncounter[CombatFunctionEnemytarget])
-                    else:
-                        $ player = statusAfflict(player, statusSkill)
-                else:
-                    if len(monsterEncounter) > 0:
-                        $ holder = statusBuff(player, monsterEncounter[CombatFunctionEnemytarget], statusSkill, 1)
-                    else:
-                        $ holder = statusBuff(player, player, statusSkill, 1)
-
-                    $ player = holder[0]
-
-                if statusSkill.statusEffect == "Restrain":
-                    $ player.restraintStruggle = copy.deepcopy(statusSkill.restraintStruggle)
-                    $ player.restraintStruggleCharmed = copy.deepcopy(statusSkill.restraintStruggleCharmed)
-                    $ player.restraintEscaped = copy.deepcopy(statusSkill.restraintEscaped)
-                    $ player.restraintEscapedFail = copy.deepcopy(statusSkill.restraintEscapedFail)
-                    if len(monsterEncounter) >= 1:
-                        $ player.restrainer = monsterEncounter[CombatFunctionEnemytarget]
-
-            elif displayingScene.theScene[lineOfScene] == "AllowRunning":
-                $ canRun = True
-
-            elif displayingScene.theScene[lineOfScene] == "CombatEncounter":
-                $ lineOfScene += 1
-                $ monsterEncounter = []
-                $ monsterEncounterCG = []
-                $ trueMonsterEncounter = []
-                $ monNum = 0
-                $ runBG = ""
-                $ runAndStayInEvent = 0
-                $ checkPreFuncs = 0
-                $ combatItems = 0
-
-                while checkPreFuncs == 0:
-                    if displayingScene.theScene[lineOfScene] == "NoRunning":
-                        $ canRun = False
-                        $ lineOfScene += 1
-
-                    elif displayingScene.theScene[lineOfScene] == "SetBGOnRun":
-                        $ lineOfScene += 1
-                        $ runBG = changeBG(displayingScene.theScene[lineOfScene])
-                        $ lineOfScene += 1
-                    elif displayingScene.theScene[lineOfScene] == "DenyInventory":
-                        $ combatItems = 1
-                        $ lineOfScene += 1
-                    elif displayingScene.theScene[lineOfScene] == "RunningWontSkipEvent":
-                        $ runAndStayInEvent = 1
-                        $ lineOfScene += 1
-                    else:
-                        $ checkPreFuncs += 1
-
-                while displayingScene.theScene[lineOfScene] != "StartCombat":
-                    $ insertToLocation = len(monsterEncounter)
-                    $ addMonsterTo(displayingScene.theScene[lineOfScene], monsterEncounter, insertToLocation)
-                    #$ monsterEncounter[monNum] = monsterEncounter[monNum].statusEffects.refresh( monsterEncounter[monNum])
-                    $ addMonsterTo(displayingScene.theScene[lineOfScene], trueMonsterEncounter, insertToLocation)
-                    #$ trueMonsterEncounter[monNum] = trueMonsterEncounter[monNum].statusEffects.refresh(trueMonsterEncounter[monNum])
-                    $ lineOfScene += 1
-                    $ checkPreFuncs = 0
-                    while checkPreFuncs == 0:
-                        if displayingScene.theScene[lineOfScene] == "ApplyStance":
-                            $ lastAttack = Skill()
-                            $ lineOfScene += 1
-                            $ givingStance = displayingScene.theScene[lineOfScene]
-                            $ lineOfScene += 1
-                            python:
-                                try:
-                                    if displayingScene.theScene[lineOfScene] == "SetAttack":
-                                         lineOfScene += 1
-                                         lastAttack = SkillsDatabase[getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)]
-                                    else:
-                                        lineOfScene -= 1
-                                except:
-                                    lineOfScene -= 1
-                            $ monsterEncounter[monNum].giveStance(givingStance, player, lastAttack)
-                            $ player.giveStance(givingStance, monsterEncounter[monNum], lastAttack)
-                            $ lineOfScene += 1
-                        elif displayingScene.theScene[lineOfScene] == "Restrainer":
-                            $ player.restrainer = monsterEncounter[monNum]
-                            $ lineOfScene += 1
-                        else:
-                            $ checkPreFuncs += 1
-                    $ monNum += 1
-                $ monsterEncounter = NumberMonsters(monsterEncounter)
-                $ SceneCharacters = []
-                if len(monsterEncounter) > 0:
-                    $ HoldingSceneForCombat = copy.deepcopy(displayingScene)
-                    $ HoldingLineForCombat = copy.deepcopy(lineOfScene)
-                    $ HoldingDataLocForCombat = copy.deepcopy(DataLocation)
-                    call combat from _call_combat_1
-                    label endCombatCalled:
-                    if HoldingSceneForCombat != Dialogue():
-                        #$ test = HoldingSceneForCombat[HoldingLineForCombat].NameOfScene
-                        $ displayingScene = copy.deepcopy(HoldingSceneForCombat)
-                        $ lineOfScene = copy.deepcopy(HoldingLineForCombat)
-                        $ DataLocation = copy.deepcopy(HoldingDataLocForCombat)
-                        $ HoldingSceneForCombat = Dialogue()
-                        $ HoldingLineForCombat = 0
-                        $ HoldingDataLocForCombat = 0
-
-                $ stunnedGridPlayer = -1
-            elif displayingScene.theScene[lineOfScene] == "MiniGameSnake":
-                call ParadeGameInit from _call_ParadeGameInit
-                hide screen SnakeGameScreen
-
-            elif displayingScene.theScene[lineOfScene] == "FishingMiniGame":
-                $ AppearTimerMin = 100
-                $ AppearTimerMax = 500
-                $ DifficultyTimerMin = 175
-                $ DifficultyTimerMax = 250
-                $ ReelsNeeded = 1
-                $ FishingPassJump = ""
-                $ FishingFailJump = ""
-                $ FishingJump = ""
-
-                while displayingScene.theScene[lineOfScene] != "EndLoop":
-                    $ lineOfScene += 1
-                    if displayingScene.theScene[lineOfScene] == "AppearTimerRange":
-                        $ lineOfScene += 1
-                        $ AppearTimerMin = int(displayingScene.theScene[lineOfScene])
-                        $ lineOfScene += 1
-                        $ AppearTimerMax = int(displayingScene.theScene[lineOfScene])
-                    elif displayingScene.theScene[lineOfScene] == "FailTimerRange":
-                        $ lineOfScene += 1
-                        $ DifficultyTimerMin = int(displayingScene.theScene[lineOfScene])
-                        $ lineOfScene += 1
-                        $ DifficultyTimerMax = int(displayingScene.theScene[lineOfScene])
-                    elif displayingScene.theScene[lineOfScene] == "ReelsNeeded":
-                        $ lineOfScene += 1
-                        $ ReelsNeeded = int(displayingScene.theScene[lineOfScene])
-                    elif displayingScene.theScene[lineOfScene] == "FishingPassJump":
-                        $ lineOfScene += 1
-                        $ FishingPassJump = displayingScene.theScene[lineOfScene]
-                    elif displayingScene.theScene[lineOfScene] == "FishingFailJump":
-                        $ lineOfScene += 1
-                        $ FishingFailJump = displayingScene.theScene[lineOfScene]
-
-                call fishingMiniGame from _call_fishingMiniGame
-
-                $ display = FishingJump
-
-                call sortMenuD from _call_sortMenuD_102
-
-            elif displayingScene.theScene[lineOfScene] == "JumpToScene":
-                $ lineOfScene += 1
-                $ display = displayingScene.theScene[lineOfScene]
-
-                call sortMenuD from _call_sortMenuD_20
-
-                if len(monsterEncounter) > 0:
-                    return
-            elif displayingScene.theScene[lineOfScene] == "JumpToRandomScene":
-                $ lineOfScene += 1
-
-                $ randomSelection = []
-
-                while displayingScene.theScene[lineOfScene] != "EndLoop":
-                    $ passcheck = 0
-                    $ display = ""
-                    $ passcheck = SceneRequiresCheck()
-
-                    if passcheck == 1:
-                        $ randomSelection.append(displayingScene.theScene[lineOfScene])
-                    $ lineOfScene += 1
-
-                $ renpy.random.shuffle(randomSelection)
-                $ display = randomSelection[0]
-                $ randomSelection = []
-                call sortMenuD from _call_sortMenuD_22
-                if len(monsterEncounter) > 0:
-                    return
-            elif displayingScene.theScene[lineOfScene] == "JumpToEvent":
-                $ lineOfScene += 1
-                $ DialogueIsFrom = "Event"
-                $ isEventNow = 1
-                $ currentChoice = 0
-                $ Speaker = Character(_(''))
-                $ DataLocation = getFromName(displayingScene.theScene[lineOfScene], EventDatabase)
-
-                jump sortMenuD
-            elif displayingScene.theScene[lineOfScene] == "JumpToEventThenScene":
-                $ lineOfScene += 1
-                $ DialogueIsFrom = "Event"
-                $ isEventNow = 1
-                $ currentChoice = 0
-                $ Speaker = Character(_(''))
-                $ DataLocation = getFromName(displayingScene.theScene[lineOfScene], EventDatabase)
-                $ lineOfScene += 1
-                $ currentChoice = getFromNameOfScene(displayingScene.theScene[lineOfScene], EventDatabase[DataLocation].theEvents)
-
-                jump sortMenuD
-
-            elif displayingScene.theScene[lineOfScene] == "CallNextSceneJumpThenReturn":
-                $ callNextJump = 2
-                $ inCalledSceneJump = 2
-
-                $ specifyCurrentChoice = 0
-                $ showingDream = []
-
-                label playSceneJump:
-                    if callNextJump == 1:
-                        $ specifyCurrentChoice = getFromNameOfScene(display, EventDatabase[DataLocation].theEvents)
-                        $ showingDream.append(copy.deepcopy(EventDatabase[DataLocation]))
-                        $ callNextJump = 0
-                        $ inCalledSceneJump = 0
-                        call TimeEvent(CardType="Any", LoopedList=showingDream) from _call_TimeEvent_17
-                        $ noDFunction = 0
-                        return
-
-            elif displayingScene.theScene[lineOfScene] == "CallSceneThenReturn":
-                $ lineOfScene += 1
-                $ specifyCurrentChoice = 0
-                $ specifyCurrentChoice = getFromNameOfScene(displayingScene.theScene[lineOfScene], EventDatabase[DataLocation].theEvents)
-
-                $ showingDream = []
-                $ showingDream.append(copy.deepcopy(EventDatabase[DataLocation]))
-                call TimeEvent(CardType="Any", LoopedList=showingDream) from _call_TimeEvent_8
-                $ noDFunction = 0
-
-            elif displayingScene.theScene[lineOfScene] == "CallEventAndSceneThenReturn":
-                $ lineOfScene += 1
-
-                $ specifyDataLocation = getFromName(displayingScene.theScene[lineOfScene], EventDatabase)
-
-                $ lineOfScene += 1
-                $ specifyCurrentChoice = 0
-                $ specifyCurrentChoice = getFromNameOfScene(displayingScene.theScene[lineOfScene], EventDatabase[specifyDataLocation].theEvents)
-
-                $ showingDream = []
-                $ showingDream.append(copy.deepcopy(EventDatabase[specifyDataLocation]))
-
-                call TimeEvent(CardType="Any", LoopedList=showingDream) from _call_TimeEvent_9
-
-                $ noDFunction = 0
-
-            elif displayingScene.theScene[lineOfScene] == "CallCombatEventAndScene":
-                $ lineOfScene += 1
-                $ DialogueIsFrom = "Event"
-                $ isEventNow = 1
-                $ currentChoice = 0
-                $ HideOrgasmLine = 1
-
-                $ DataLocation = getFromName(displayingScene.theScene[lineOfScene], EventDatabase)
-                $ lineOfScene += 1
-                $ currentChoice = getFromNameOfScene(displayingScene.theScene[lineOfScene], EventDatabase[DataLocation].theEvents)
-
-                call sortMenuD from _call_sortMenuD_30
-                return
-            elif displayingScene.theScene[lineOfScene] == "JumpToNPCEvent":
-                $ lineOfScene += 1
-                $ DialogueIsFrom = "NPC"
-                $ isEventNow = 1
-                $ currentChoice = 0
-                $ EnteringLocationCheck = 0
-                $ DataLocation = getFromName(displayingScene.theScene[lineOfScene], EventDatabase)
-                jump sortMenuD
-            elif displayingScene.theScene[lineOfScene] == "JumpToNPCEventThenScene":
-                $ lineOfScene += 1
-                $ DialogueIsFrom = "NPC"
-                $ isEventNow = 1
-                $ currentChoice = 0
-
-                $ DataLocation = getFromName(displayingScene.theScene[lineOfScene], EventDatabase)
-                $ lineOfScene += 1
-                $ currentChoice = getFromNameOfScene(displayingScene.theScene[lineOfScene], EventDatabase[DataLocation].theEvents)
-                $ EnteringLocationCheck = 0
-                jump sortMenuD
-            elif displayingScene.theScene[lineOfScene] == "JumpToLossEvent":
-                hide screen ON_EnemyCardScreen
-                $ lineOfScene += 1
-                $ DialogueIsFrom = "LossEvent"
-                $ isEventNow = 1
-                $ currentChoice = 0
-
-                $ DataLocation = getFromName(displayingScene.theScene[lineOfScene], EventDatabase)
-                jump sortMenuD
-            elif displayingScene.theScene[lineOfScene] == "ForceAutoSave":
-                $ renpy.force_autosave()
-
-    ############################################### Grid map functions ########################################################
-
-            elif displayingScene.theScene[lineOfScene] == "ExitGridmap":
-                $ onGridMap = 0
-                $ runAndStayInEvent = 0
-                $ RanAway = "False"
-                $ InventoryAvailable = True
-                $ DenyGridInventory = False
-                hide screen Gridmap
-                hide screen GridmapPlayer
-                hide screen GridmapNPCs
-                hide screen GridmapObstacles
-                hide screen gridMoveKeys
-                $ TheGrid = []
-
-
-    ####################################################combat specific functions######################################################
-
-
-            elif displayingScene.theScene[lineOfScene] == "ResetStatCheckDifficultyModifer":
-                $ increaseStatCheck = 0
-
-
-            elif displayingScene.theScene[lineOfScene] == "AddMonsterToEncounter":
-                $ lineOfScene += 1
-                $ replacingMonster = 0
-                $ insertToLocation = len(monsterEncounter)
-                if displayingScene.theScene[lineOfScene] == "ChangeForm":
-                    $ lineOfScene += 1
-                    $ replacingMonster = 1
-                    $ insertToLocation = copy.deepcopy(CombatFunctionEnemytarget)
-                    $ KeepingHP = copy.deepcopy(monsterEncounter[CombatFunctionEnemytarget].stats.hp)
-                    $ KeepingSP = copy.deepcopy(monsterEncounter[CombatFunctionEnemytarget].stats.sp)
-                    $ KeepingStatusEffects = copy.deepcopy(monsterEncounter[CombatFunctionEnemytarget].statusEffects)
-                    $ KeepingStances = copy.deepcopy(monsterEncounter[CombatFunctionEnemytarget].combatStance)
-
-                    python:
-                        del monsterEncounter[CombatFunctionEnemytarget]
-                        del trueMonsterEncounter[CombatFunctionEnemytarget]
-
-                $ addMonsterTo(displayingScene.theScene[lineOfScene], monsterEncounter, insertToLocation)
-                $ monsterEncounter[insertToLocation] = monsterEncounter[insertToLocation].statusEffects.refresh(monsterEncounter[insertToLocation])
-                $ addMonsterTo(displayingScene.theScene[lineOfScene], trueMonsterEncounter,insertToLocation)
-                $ trueMonsterEncounter[insertToLocation] = trueMonsterEncounter[insertToLocation].statusEffects.refresh(trueMonsterEncounter[insertToLocation])
-
-                if replacingMonster == 0:
-                    $ monInititive.append(-999)
-                    $ monSkillChoice.append( getSkill(" ", SkillsDatabase))
-
-                else:
-                    $ monsterEncounter[insertToLocation].stats.hp = copy.deepcopy(KeepingHP)
-                    $ monsterEncounter[insertToLocation].stats.sp = copy.deepcopy(KeepingSP)
-                    $ monsterEncounter[insertToLocation].statusEffects = copy.deepcopy(KeepingStatusEffects)
-                    $ monsterEncounter[insertToLocation].combatStance = copy.deepcopy(KeepingStances)
-
-                    python:
-                        del KeepingHP, KeepingStatusEffects, KeepingStances
-                        try:
-                            del KeepingStatusEffects
-                        except:
-                            pass
-
-                if nightmare == 1:
-                    $ goToLevel = player.stats.lvl
-                    python:
-                        if goToLevel > monsterEncounter[insertToLocation].stats.lvl:
-                            monsterEncounter[insertToLocation].levelUp(goToLevel)
-
-                            eroMod = 0.5
-                            lvlchek = monsterEncounter[insertToLocation].stats.lvl
-                            monsterEncounter[insertToLocation].moneyDropped = int(((lvlchek)^2+(lvlchek*10)+48)*eroMod)
-
-                            expMod = 0.35
-                            lvlchek = monsterEncounter[insertToLocation].stats.lvl
-                            monsterEncounter[insertToLocation].stats.Exp = int(((0.4*(lvlchek*lvlchek))+(2*lvlchek)+(15*math.sqrt(lvlchek)-8))*expMod)
-
-                $ monsterEncounter[insertToLocation] = initiateImageLayers(monsterEncounter[insertToLocation])
-                python:
-                    for SetData in persistantMonSetData:
-                        if SetData.name == monsterEncounter[insertToLocation].IDname:
-                            monsterEncounter[insertToLocation].currentSet = getFromName(SetData.startingSet, monsterEncounter[insertToLocation].ImageSets)
-
-                    c = 0
-                    for each in monsterEncounter:
-                        monsterEncounter[c].name = copy.deepcopy(trueMonsterEncounter[c].name)
-
-                        c += 1
-                $ monsterEncounter = NumberMonsters(monsterEncounter)
-
-                $ m = -1
-                $ ar = 0
-                while ar < len(monsterEncounter[m].combatDialogue):
-                    $ specifyStance = 0
-                    if ar < len(monsterEncounter[m].combatDialogue):
-                        if monsterEncounter[m].combatDialogue[ar].lineTrigger == "MonsterArrived":
-                            $ CombatFunctionEnemytarget = m
-                            $ Speaker = Character(_(monsterEncounter[m].name))
-                            $ display = monsterEncounter[m].combatDialogue[ar].theText[renpy.random.randint(-1, len(monsterEncounter[m].combatDialogue[ar].theText)-1)]
-                            call read from _call_read_55
-                    $ ar += 1
-
-            elif displayingScene.theScene[lineOfScene] == "DamagePlayerFromMonster":
-                $ recoil = 0
-                $ critText = ""
-                $ effectiveText = ""
-                $ lineOfScene += 1
-                $ MonAt = getFromName(displayingScene.theScene[lineOfScene], MonsterDatabase)
-                $ holder = MonsterDatabase[MonAt]
-                $ lineOfScene += 1
-                $ skillAt = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
-                $ holder = AttackCalc(holder, player,  SkillsDatabase[skillAt], 1)
-                $ finalDamage = holder[0]
-                $ critText = holder[2]
-                $ effectiveText = holder[5]
-                if len(monsterEncounter) >= 1:
-                    $ recoil = holder[4]
-                    $ recoil =  int(math.floor(recoil))
-                    $ monsterEncounter[CombatFunctionEnemytarget].stats.hp += recoil
-
-                $ player.stats.hp += holder[0]
-                $ holder = []
-
-    ###########################################Assorted functions####################################################
-
-
-            elif displayingScene.theScene[lineOfScene] == "TimeBecomesNight":
-                if TimeOfDay == Morning:
-                    $ TimeOfDay = MorningNight
-                elif TimeOfDay == Noon:
-                    $ TimeOfDay = NoonNight
-                elif TimeOfDay == Afternoon:
-                    $ TimeOfDay = AfternoonNight
-                elif TimeOfDay == DuskDay:
-                    $ TimeOfDay = Dusk
-                elif TimeOfDay == EveningDay:
-                    $ TimeOfDay = Evening
-                elif TimeOfDay == MidnightDay:
-                    $ TimeOfDay = Midnight
-                $ bg =  bgToNightDay(bg, ".png", "Night.png")
-            elif displayingScene.theScene[lineOfScene] == "TimeBecomesDay":
-                if TimeOfDay == MorningNight:
-                    $ TimeOfDay = Morning
-                elif TimeOfDay == NoonNight:
-                    $ TimeOfDay = Noon
-                elif TimeOfDay == AfternoonNight:
-                    $ TimeOfDay = Afternoon
-                elif TimeOfDay == Dusk:
-                    $ TimeOfDay = DuskDay
-                elif TimeOfDay == Evening:
-                    $ TimeOfDay = EveningDay
-                elif TimeOfDay == Midnight:
-                    $ TimeOfDay = MidnightDay
-                $ bg = bgToNightDay(bg, "Night.png", ".png")
-            elif displayingScene.theScene[lineOfScene] == "TimeBecomesNormal":
-                if TimeOfDay == MorningNight:
-                    $ TimeOfDay = Morning
-                    $ bg = bgToNightDay(bg, "Night.png", ".png")
-                elif TimeOfDay == NoonNight:
-                    $ TimeOfDay = Noon
-                    $ bg = bgToNightDay(bg, "Night.png", ".png")
-                elif TimeOfDay == AfternoonNight:
-                    $ TimeOfDay = Afternoon
-                    $ bg = bgToNightDay(bg, "Night.png", ".png")
-
-                if TimeOfDay == DuskDay:
-                    $ TimeOfDay = Dusk
-                    $ bg =  bgToNightDay(bg, ".png", "Night.png")
-                elif TimeOfDay == EveningDay:
-                    $ TimeOfDay = Evening
-                    $ bg =  bgToNightDay(bg, ".png", "Night.png")
-                elif TimeOfDay == MidnightDay:
-                    $ TimeOfDay = Midnight
-                    $ bg =  bgToNightDay(bg, ".png", "Night.png")
-
-            elif displayingScene.theScene[lineOfScene] == "DisplaySavedLine":
-                $ display = savedLine
-                call read from _call_read_52
-            elif displayingScene.theScene[lineOfScene] == "UseSavedLineInMenu":
-                $ savedLineInMenu = 1
-            elif displayingScene.theScene[lineOfScene] == "CallLossLevelUp":
-                $ NoGameOver = 1
-                call lostExpCheck from _call_lostExpCheck
-
-            elif displayingScene.theScene[lineOfScene] == "UseHeldBG":
-                if heldBG != "":
-                    $ heldBG =  bgToNightDay(heldBG, "Night.png", ".png")
-                    $ bg  = changeBG(copy.deepcopy(heldBG))
-
-                $ heldBG = ""
-
-            elif displayingScene.theScene[lineOfScene] == "HideTreasureChest":
-                hide chest
-
-            elif displayingScene.theScene[lineOfScene] == "HasErosLessThan":
-                $ lineOfScene += 1
-                if int(displayingScene.theScene[lineOfScene]) > player.inventory.money:
-                    $ lineOfScene += 1
-                    $ display = displayingScene.theScene[lineOfScene]
-                    call sortMenuD from _call_sortMenuD_15
-                    if len(monsterEncounter) > 0:
-                        return
-                else:
-                    $ lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "AllowInventory":
-                $ InventoryAvailable = True
-            elif displayingScene.theScene[lineOfScene] == "DenyInventory":
-                $ InventoryAvailable = False
-
-            elif displayingScene.theScene[lineOfScene] == "BumpToTown":
-                jump Town
-
-            elif displayingScene.theScene[lineOfScene] == "GameOver":
-                $ LostGameOver = 1
-                $ NoGameOver = 0
-
-                jump lostExpCheck
-            elif displayingScene.theScene[lineOfScene] == "TrueGameOver":
-                $ renpy.full_restart()
-            elif displayingScene.theScene[lineOfScene] == "QuestComplete":
-                if DialogueIsFrom == "Event":
-                    $ ProgressEvent[DataLocation].questComplete = 1
-            elif displayingScene.theScene[lineOfScene] == "AdventureComplete":
-                $ lineOfScene += 1
-                $ AdvLocation = getFromName(displayingScene.theScene[lineOfScene], ProgressAdventure)
-                $ ProgressAdventure[AdvLocation].questComplete = 1
-
-            elif displayingScene.theScene[lineOfScene] == "HasErosLessThanInput":
-                if debt > player.inventory.money:
-                    $ lineOfScene += 1
-                    $ display = displayingScene.theScene[lineOfScene]
-                    call sortMenuD from _call_sortMenuD_3
-                    if len(monsterEncounter) > 0:
-                        return
-                else:
-                    $ lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "AddInputToProgress":
-                $ DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-                $ ProgressEvent[DataLocation].eventProgress += int(math.floor(debt))
-
-            elif displayingScene.theScene[lineOfScene] == "RespecPlayer":
-                $ player.respec()
-                $ sexResCap = 150
-                $ assResCap = 150
-                $ nipResCap = 200
-                $ chuResCap = 150
-                $ seducResCap = 150
-                $ magResCap = 150
-                $ painResCap = 150
-                $ hpFloor = 50
-                $ epFloor = 20
-                $ spFloor = 1
-                $ powFloor = 1
-                $ spdFloor = 1
-                $ intFloor = 1
-                $ allFloor = 1
-                $ wilFloor = 1
-                $ lukFloor = 1
-                $ respeccing = 1
-                $ hasResPoints = 1
-                hide screen ON_HealthDisplay
-                hide screen ON_HealthDisplayBacking
-
-                $ tentativeStats = copy.deepcopy(player)
-                call characterCreation from _call_characterCreation_2
-                call setStatFloors from _call_setStatFloors_5
-                show screen ON_HealthDisplayBacking #(_layer="hplayer")
-                show screen ON_HealthDisplay #(_layer="sayScreen")
-                $ respeccing = 0
-            #CODEMOD
-            elif displayingScene.theScene[lineOfScene] == "AdjustPlayerLevel":
-                $ lineOfScene += 1
-                $ newLevel = 1
-                if displayingScene.theScene[lineOfScene] == "Cap":
-                    if levelCapEnabled():
-                        $ newLevel = getMaxLevelCap()
-                    else:
-                        $ newLevel = -1
-                elif displayingScene.theScene[lineOfScene] == "Input":
-                    $ newLevel = renpy.input(_("What level should the player be changed to (Currently [player.stats.lvl])?"), length=3, allow="0123456789") or _("-1")
-                else:
-                    $ newLevel = displayingScene.theScene[lineOfScene]
-
-                python:
-                    try:
-                        newLevel = int(newLevel)
-                    except:
-                        newLevel = -1
-
-                    if newLevel != -1:
-                        respecPlayerToLevel(newLevel)
-                        
-            elif displayingScene.theScene[lineOfScene] == "DonateToGoddess":
-                call DonateToGoddess from _call_DonateToGoddess
-
-            elif displayingScene.theScene[lineOfScene] == "PurgeFetishes":
-                call PurgeFetishes from _call_PurgeFetishes
-            elif displayingScene.theScene[lineOfScene] == "AddTributeToProgress":
-                $ DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-                $ ProgressEvent[DataLocation].eventProgress += int(math.floor(tribute))
-                $ tribute = 0
-            else:
-                $ noDFunction = 1
-
-            if len(monsterEncounter) > 0:
-                if noDFunction == 1 and lineOfScene < len(displayingScene.theScene):
-                    if displayingScene.theScene[lineOfScene] == "LevelUpMonster":
-                        $ lineOfScene += 1
-                        $ goToLevel = monsterEncounter[CombatFunctionEnemytarget].stats.lvl
-                        if displayingScene.theScene[lineOfScene] == "MatchPlayer":
-                            $ goToLevel = player.stats.lvl
-                        elif displayingScene.theScene[lineOfScene] == "GoUpByProgress":
-                            $ goToLevel += ProgressEvent[DataLocation].eventProgress
-                        elif displayingScene.theScene[lineOfScene] == "GoUpByProgressFromOtherEvent":
-                            $ lineOfScene += 1
-                            $ locOfProg = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-                            $ goToLevel += ProgressEvent[locOfProg].eventProgress
-                        else:
-                            $ goToLevel += int(displayingScene.theScene[lineOfScene])
-
-                        if goToLevel > monsterEncounter[CombatFunctionEnemytarget].stats.lvl:
-                            $ monsterEncounter[CombatFunctionEnemytarget].levelUp(goToLevel)
-
-                    elif displayingScene.theScene[lineOfScene] == "EnergyDrain":
-                        $ lineOfScene += 1
-                        $ energyLost = int(displayingScene.theScene[lineOfScene])
-                        $ Drain = energyLost * (1+getVirility(player)*0.01)
-                        $ Drain *= (renpy.random.randint(75, 125)*0.01)
-                        $ Drain = math.floor(Drain)
-                        $ Drain = int(Drain)
-                        $ player.stats.ep -= Drain
-                        $ finalDamage = Drain
-
-                    elif displayingScene.theScene[lineOfScene] == "ApplyStance":
-                        if len(monsterEncounter) > 0:
-                            $ lineOfScene += 1
-                            $ givingStance = displayingScene.theScene[lineOfScene]
-
-                            $ lineOfScene += 1
-                            python:
-                                try:
-                                    if displayingScene.theScene[lineOfScene] == "SetAttack":
-                                         lineOfScene += 1
-                                         lastAttack = SkillsDatabase[getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)]
-                                    else:
-                                        lineOfScene -= 1
-                                except:
-                                    lineOfScene -= 1
-
-                            $ monsterEncounter[CombatFunctionEnemytarget].giveStance(givingStance, player, lastAttack, holdoverDura=stanceDurabilityHoldOverAttacker)
-                            $ player.giveStance(givingStance, monsterEncounter[CombatFunctionEnemytarget], lastAttack, holdoverDura=stanceDurabilityHoldOverTarget)
-
-                    elif displayingScene.theScene[lineOfScene] == "ApplyStanceToOtherMonster":
-                        if len(monsterEncounter) > 0:
-                            $ lineOfScene += 1
-                            $ monName = displayingScene.theScene[lineOfScene]
-                            $ lineOfScene += 1
-                            $ givingStance = displayingScene.theScene[lineOfScene]
-
-                            $ stancePass = 0
-                            $ found = -1
-                            $ C = 0
-                            python:
-                                for each in trueMonsterEncounter:
-                                    stancePass = 0
-                                    if C != CombatFunctionEnemytarget:
-                                        if each.name == monName:
-                                            for stance in monsterEncounter[C].combatStance:
-                                                if stance.Stance == givingStance:
-                                                    stancePass = 2
-                                            if stancePass != 2:
-                                                stancePass = 1
-                                                found = copy.deepcopy(C)
-                                    C += 1
-                            if found != -1:
-                                $ lineOfScene += 1
-                                python:
-                                    try:
-                                        if displayingScene.theScene[lineOfScene] == "SetAttack":
-                                             lineOfScene += 1
-                                             lastAttack = SkillsDatabase[getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)]
-                                        else:
-                                            lineOfScene -= 1
-                                    except:
-                                        lineOfScene -= 1
-
-                                $ monsterEncounter[found].giveStance(givingStance, player, lastAttack, holdoverDura=stanceDurabilityHoldOverAttacker)
-                                $ player.giveStance(givingStance, monsterEncounter[found], lastAttack, holdoverDura=stanceDurabilityHoldOverTarget)
-                                $ CombatFunctionEnemytarget = copy.deepcopy(found)
-
-                    elif displayingScene.theScene[lineOfScene] == "EncounterSizeGreaterOrEqualTo":
-                        if len(monsterEncounter) > 0:
-                            $ lineOfScene += 1
-                            if len(monsterEncounter) >= int(displayingScene.theScene[lineOfScene]):
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                                call sortMenuD from _call_sortMenuD_37
-                                return
-                            else:
-                                $ lineOfScene += 1
-                    elif displayingScene.theScene[lineOfScene] == "EncounterSizeLessOrEqualTo":
-                        if len(monsterEncounter) > 0:
-                            $ lineOfScene += 1
-                            if len(monsterEncounter) <= int(displayingScene.theScene[lineOfScene]):
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                                call sortMenuD from _call_sortMenuD_38
-                                return
-                            else:
-                                $ lineOfScene += 1
-
-                    elif displayingScene.theScene[lineOfScene] == "RecalculateMonsterErosDrop":
-                        $ lineOfScene += 1
-                        $ eroMod = 1
-                        if lineOfScene < len(displayingScene.theScene):
-                            if displayingScene.theScene[lineOfScene] == "AlterByPercent":
-                                $ lineOfScene += 1
-                                $ eroMod = int(displayingScene.theScene[lineOfScene])*0.01
-                            else:
-                                $ lineOfScene -= 1
-                        else:
-                            $ lineOfScene -= 1
-                        $ lvlchek = monsterEncounter[CombatFunctionEnemytarget].stats.lvl
-                        $ monsterEncounter[CombatFunctionEnemytarget].moneyDropped = int(((lvlchek)^2+(lvlchek*10)+48)*eroMod)
-
-                    elif displayingScene.theScene[lineOfScene] == "RecalculateMonsterExpDrop":
-                        $ lineOfScene += 1
-                        $ expMod = 1
-                        if lineOfScene < len(displayingScene.theScene):
-                            if displayingScene.theScene[lineOfScene] == "AlterByPercent":
-                                $ lineOfScene += 1
-                                $ expMod = int(displayingScene.theScene[lineOfScene])*0.01
-                            else:
-                                $ lineOfScene -= 1
-                        else:
-                            $ lineOfScene -= 1
-                        $ lvlchek = monsterEncounter[CombatFunctionEnemytarget].stats.lvl
-                        $ monsterEncounter[CombatFunctionEnemytarget].stats.Exp = int(((0.4*(lvlchek*lvlchek))+(2*lvlchek)+(15*math.sqrt(lvlchek)-8))*expMod)
-
-                    elif displayingScene.theScene[lineOfScene] == "RefreshMonster":
-                        $ monsterEncounter[CombatFunctionEnemytarget] = monsterEncounter[CombatFunctionEnemytarget].statusEffects.refresh(monsterEncounter[CombatFunctionEnemytarget])
-                        $ monsterEncounter[CombatFunctionEnemytarget].stats.refresh()
-
-                    elif displayingScene.theScene[lineOfScene] == "CallMonsterEncounterOrgasmCheck":
-                        $ orgasmTarget = monsterEncounter[CombatFunctionEnemytarget]
-                        $ orgasmCauser = player
-                        call setDefender(monsterEncounter[CombatFunctionEnemytarget]) from _call_setDefender_2
-
-                        call theOrgasmCheck from _call_theOrgasmCheck_1
-                        call MonsterLossCheck from _call_MonsterLossCheck_2
-
-                        if len(monsterEncounter) <= 0:
-                            jump combatWin
-                    elif displayingScene.theScene[lineOfScene] == "MonsterOrgasm":
-                        $ lineOfScene += 1
-                        $ monsterEncounter[CombatFunctionEnemytarget].stats.hp = 0
-                        $ spiritLost = SpiritCalulation(monsterEncounter[CombatFunctionEnemytarget], int(displayingScene.theScene[lineOfScene]))
-                        $ monsterEncounter[CombatFunctionEnemytarget].stats.sp -= spiritLost
-                        if monsterEncounter[CombatFunctionEnemytarget].stats.sp <= 0:
-                            $ monsterEncounter[CombatFunctionEnemytarget].stats.sp = 0
-                        if monsterEncounter[CombatFunctionEnemytarget].stats.sp > monsterEncounter[CombatFunctionEnemytarget].stats.max_true_sp:
-                            $ monsterEncounter[CombatFunctionEnemytarget].stats.sp = monsterEncounter[CombatFunctionEnemytarget].stats.max_true_sp
-                    elif displayingScene.theScene[lineOfScene] == "ApplyStatusEffectToMonster":
-                        $ lineOfScene += 1
-                        $ skillAt = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
-                        $ statusSkill = SkillsDatabase[skillAt]
-
-                        if statusSkill.statusEffect != "Damage" and statusSkill.statusEffect != "Defence" and statusSkill.statusEffect != "Power" and statusSkill.statusEffect != "Technique" and statusSkill.statusEffect != "Intelligence" and statusSkill.statusEffect != "Willpower" and statusSkill.statusEffect != "Allure" and statusSkill.statusEffect != "Luck" and skillChoice.statusEffect != "%Power" and skillChoice.statusEffect != "%Technique" and skillChoice.statusEffect != "%Intelligence" and skillChoice.statusEffect != "%Willpower" and skillChoice.statusEffect != "%Allure" and skillChoice.statusEffect != "%Luck" and statusSkill.statusEffect != "Escape" and statusSkill.statusEffect != "Crit":
-                            $ monsterEncounter[CombatFunctionEnemytarget] = statusAfflict(monsterEncounter[CombatFunctionEnemytarget], statusSkill)
-                        else:
-                            $ holder = statusBuff(monsterEncounter[CombatFunctionEnemytarget], monsterEncounter[CombatFunctionEnemytarget], statusSkill, 1)
-                            $ monsterEncounter[CombatFunctionEnemytarget] = holder[0]
-                        if statusSkill.statusEffect == "Restrain":
-                            $ monsterEncounter[CombatFunctionEnemytarget].restraintStruggle = copy.deepcopy(statusSkill.restraintStruggle)
-                            $ monsterEncounter[CombatFunctionEnemytarget].restraintStruggleCharmed = copy.deepcopy(statusSkill.restraintStruggleCharmed)
-                            $ monsterEncounter[CombatFunctionEnemytarget].restraintEscaped = copy.deepcopy(statusSkill.restraintEscaped)
-                            $ monsterEncounter[CombatFunctionEnemytarget].restraintEscapedFail = copy.deepcopy(statusSkill.restraintEscapedFail)
-                            $ monsterEncounter[CombatFunctionEnemytarget].restrainer = player
-
-                    elif displayingScene.theScene[lineOfScene] == "RefocusOnInitialMonster":
-                        $ CombatFunctionEnemytarget = copy.deepcopy(CombatFunctionEnemyInitial)
-                    elif displayingScene.theScene[lineOfScene] == "FocusOnMonster":
-                        $ lineOfScene += 1
-                        if int(displayingScene.theScene[lineOfScene]) <= len(monsterEncounter):
-                            $ CombatFunctionEnemytarget = int(displayingScene.theScene[lineOfScene])-1
-                        else:
-                            $ CombatFunctionEnemytarget = len(monsterEncounter)-1
-                    elif displayingScene.theScene[lineOfScene] == "FocusOnRandomMonster":
-                        if len(monsterEncounter) >= 1:
-                            $ CombatFunctionEnemytarget = renpy.random.randint(0, len(monsterEncounter)-1)
-                    elif displayingScene.theScene[lineOfScene] == "FocusedSpeaks":
-                        if len(monsterEncounter) >= 1:
-                            #$ Speaker = monsterEncounter[CombatFunctionEnemytarget].name + attackTitle
-
-                            $ Speaker = Character(_(monsterEncounter[CombatFunctionEnemytarget].name) + attackTitle,
-                                                    what_prefix='"',
-                                                    what_suffix='"')
-                            $ lineOfScene += 1
-                            $ readLine = 1
-                    elif displayingScene.theScene[lineOfScene] == "FocusedSpeaksSkill":
-                        if len(monsterEncounter) >= 1:
-                            #$ Speaker = monsterEncounter[CombatFunctionEnemytarget].name + attackTitle
-
-                            $ Speaker = Character(_(monsterEncounter[CombatFunctionEnemytarget].name) + attackTitle )
-                            $ lineOfScene += 1
-                            $ readLine = 1
-                    elif displayingScene.theScene[lineOfScene] == "CallMonsterAttack":
-                        if len(monsterEncounter) > 0:
-                            $ specified = 0
-                            $ lineOfScene += 1
-                            $ m = CombatFunctionEnemytarget
-                            python:
-                                try:
-                                    if displayingScene.theScene[lineOfScene] == "SpecificAttack":
-                                         lineOfScene += 1
-                                         specified = 1
-                                         monSkillChoice[CombatFunctionEnemytarget] = SkillsDatabase[getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)]
-                                    else:
-                                        lineOfScene -= 1
-                                except:
-                                    lineOfScene -= 1
-
-                            $ HoldingSceneCA = copy.deepcopy(displayingScene)
-                            $ HoldingLineCA = copy.deepcopy(lineOfScene+1)
-                            $ HoldingDataLocCA = copy.deepcopy(DataLocation)
-
-                            if(monsterEncounter[CombatFunctionEnemytarget].statusEffects.stunned.duration > 0):
-                                $ display = monsterEncounter[CombatFunctionEnemytarget].name + " is stunned and cannot act!"
-                                "[display!i]"
-                            else:
-                                if specified == 0:
-                                    $ pickNewSkill = 1
-                                    call enemySkillChoice(mSC=CombatFunctionEnemytarget) from _call_enemySkillChoice_1
-
-                                $ skillcheck = monSkillChoice[CombatFunctionEnemytarget]
-                                if player.statusEffects.sleep.potency < 5:
-                                    $ Speaker = Character(_(monsterEncounter[CombatFunctionEnemytarget].name + " - " + monSkillChoice[CombatFunctionEnemytarget].name))
-                                else:
-                                    $ Speaker = Character(_(monsterEncounter[CombatFunctionEnemytarget].name))
-                                $ attacker = monsterEncounter[CombatFunctionEnemytarget]
-                                $ defender = player
-                                $ skillChoice = monSkillChoice[CombatFunctionEnemytarget]
-                                call combatActionTurn from _call_combatActionTurn_2
-                                #call EnemyTurn from _call_EnemyTurn
-
-                            #$ display = ""
-                            $ LastDisplayOrder = []
-                            if HoldingSceneCA != Dialogue():
-                                $ displayingScene = copy.deepcopy(HoldingSceneCA)
-                                $ lineOfScene = copy.deepcopy(HoldingLineCA)
-                                $ DataLocation = copy.deepcopy(HoldingDataLocCA)
-                            $ HoldingSceneCA = Dialogue()
-                            $ HoldingLineCA = 0
-                            $ HoldingDataLocCA = 0
-
-                            if len(monsterEncounter) == 0: #combat is over due to recoil
-                                jump combatWin
-
-                            jump resumeSceneAfterCombat
-
-                    elif displayingScene.theScene[lineOfScene] == "HitPlayerWith":
-                        $ recoil = 0
-                        $ lineOfScene += 1
-                        $ skillAt = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
-                        $ holder = AttackCalc(monsterEncounter[CombatFunctionEnemytarget], player,  SkillsDatabase[skillAt], 1)
-                        $ finalDamage = holder[0]
-                        $ critText = holder[2]
-                        $ effectiveText = holder[5]
-                        $ recoil = holder[4]
-                        $ recoil =  int(math.floor(recoil))
-                        $ monsterEncounter[CombatFunctionEnemytarget].stats.hp += recoil
-                        $ player.stats.hp += holder[0]
-
-                    elif displayingScene.theScene[lineOfScene] == "HitMonsterWith":
-                        $ lineOfScene += 1
-                        $ skillAt = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
-                        $ holder = AttackCalc(player, monsterEncounter[CombatFunctionEnemytarget],  SkillsDatabase[skillAt], 1)
-                        $ finalDamage = holder[0]
-                        $ critText = holder[2]
-                        $ effectiveText = holder[5]
-                        $ recoil = holder[4]
-                        $ recoil =  int(math.floor(recoil))
-                        $ player.stats.hp += recoil
-                        $ monsterEncounter[CombatFunctionEnemytarget].stats.hp += holder[0]
-
-                    elif displayingScene.theScene[lineOfScene] == "DamageMonsterFromMonster":
-                        $ recoil = 0
-                        $ lineOfScene += 1
-                        $ MonAt = getFromName(displayingScene.theScene[lineOfScene], MonsterDatabase)
-                        $ holder = MonsterDatabase[MonAt]
-                        $ lineOfScene += 1
-                        $ skillAt = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
-                        $ holder = AttackCalc(holder, monsterEncounter[CombatFunctionEnemytarget],  SkillsDatabase[skillAt], 1)
-                        $ finalDamage = holder[0]
-                        if len(monsterEncounter) >= 1:
-                            $ critText = holder[2]
-                            $ effectiveText = holder[5]
-                        #    $ recoil = holder[4]
-                        #    $ recoil =  int(math.floor(recoil))
-                            #$ monsterEncounter[CombatFunctionEnemytarget].stats.hp += recoil
-                        $ monsterEncounter[CombatFunctionEnemytarget].stats.hp += holder[0]
-                        $ holder = []
-
-                    elif displayingScene.theScene[lineOfScene] == "DenyPlayerOrgasm":
-                        $ skipPlayerOrgasm = 1
-                    elif displayingScene.theScene[lineOfScene] == "DenyMonsterOrgasm":
-                        $ skipMonsterOrgasm = 1
-                    elif displayingScene.theScene[lineOfScene] == "DenyTargetOrgasm":
-                        $ skipTargetOrgasm = 1
-                    elif displayingScene.theScene[lineOfScene] == "DenyAttackerOrgasm":
-                        $ skipAttackOrgasm = 1
-
-                    elif displayingScene.theScene[lineOfScene] == "ResumeMonsterAttack":
-                        $ monsterEncounter[CombatFunctionEnemytarget].skippingAttack = 0
-
-                    elif displayingScene.theScene[lineOfScene] == "ResumeAllMonsterAttacks":
-                        python:
-                            for each in monsterEncounter:
-                                each.skippingAttack = 0
-
-                    elif displayingScene.theScene[lineOfScene] == "HideMonsterEncounter":
-                        if len(monsterEncounter) >= 1:
-                            hide screen ON_EnemyCardScreen onlayer master
-                            $ hidingCombatEncounter = 1
-
-                    elif displayingScene.theScene[lineOfScene] == "DefeatMonster":
-
-                        if monsterEncounter[CombatFunctionEnemytarget].restraintOnLoss[0] != "":
-                            $ restrainholdyLine = copy.deepcopy(lineOfScene)
-                            $ restrainholdyScene= copy.deepcopy(displayingScene)
-                            $ restrainholdyData = copy.deepcopy(DataLocation)
-
-                            $ display = monsterEncounter[CombatFunctionEnemytarget].restraintOnLoss[renpy.random.randint(-1, len(monsterEncounter[CombatFunctionEnemytarget].restraintOnLoss)-1)]
-                            call read from _call_read_41
-
-                            $ lineOfScene = copy.deepcopy(restrainholdyLine)
-                            $ displayingScene = copy.deepcopy(restrainholdyScene)
-                            $ DataLocation = copy.deepcopy(restrainholdyData)
-
-                        $ DefeatMonster(CombatFunctionEnemytarget)
-
-                        if len(monsterEncounter) <=0:
-                            call combatWin from _call_combatWin
-                    else:
-                        $ noCombatFunction = 1
-                else:
-                    $ noCombatFunction = 1
-            else:
-                $ noCombatFunction = 1
-
-
+        #$ benchstart = time.perf_counter()
+        if displayingScene.theScene[lineOfScene] != "" and displayingScene.theScene[lineOfScene] in JsonFuncRegistry:
+            $ theJsonFunc = JsonFuncRegistry[displayingScene.theScene[lineOfScene]]
+            $ renpy.call(*theJsonFunc)
+                # except:
+                #     print(theJsonFunc,functionNameToPass, jsonFuncArgs)
+            $ notFunction = 0
+        else:
+            $ notFunction = 1
+        
         #End of functions
-
-        $ notFunction = 0
-        if noCombatFunction == 1 and noDFunction == 1 and noSpecificFuntion != 2:
-            $ notFunction = 1
-
-        if dialogueLineForSure == 1 or noSpecificFuntion == 1:
-            $ notFunction = 1
-        $ dialogueLineForSure = 0
-        $ noSpecificFuntion = 0
-
         if notFunction == 1:
             $ Speaker = Character(_(''))
             $ readLine = 1
@@ -2180,7 +825,9 @@ label resumeSceneAfterCombat:
 
         #if onGridMap == 1:
         #    jump displayTileMap
-
+        #$ benchtime = time.perf_counter()
+        #$ benchtimeseconds = benchtime - benchstart
+        #$ print("FuncLoadTimes:", f"{benchtimeseconds:.6f} seconds") 
         if lineOfScene < len(displayingScene.theScene):
             if displayingScene.theScene[lineOfScene] == "SwapLineIf":
                 $ lineOfScene += 1
@@ -2432,8 +1079,6 @@ label resumeSceneAfterCombat:
                 if display == "":
                     $ readLine = 0
 
-
-
         if RanAway == "True" and runAndStayInEvent == 0:
             $ RanAway = "False"
             return
@@ -2445,7 +1090,6 @@ label resumeSceneAfterCombat:
         else:
             $ callNextJump = 0
 
-
         python:
             try:
                 if lineOfScene < len(displayingScene.theScene) and readLine == 1:
@@ -2455,7 +1099,6 @@ label resumeSceneAfterCombat:
 
         if readLine == -10:
             return
-
 
         if readLine >= 2 and lineOfScene < len(displayingScene.theScene):
             if readLine == 2 :
@@ -2467,9 +1110,6 @@ label resumeSceneAfterCombat:
                 call read from _call_read_11
 
         $ lineOfScene += 1
-
-
-
 
     if len(monsterEncounter) > 0:
         return
@@ -2491,14 +1131,12 @@ label resumeSceneAfterCombat:
         $ DialogueIsFrom = "Event"
         call PostCombatWin from _call_PostCombatWin
 
-
     $ displayingScene = Dialogue()
 
     if len(explorationDeck) >= deckProgress and len(monsterEncounter) == 0  and runAndStayInEvent == 1 and TimeAdvancedCheckArray[-1] == 0:
         $ runAndStayInEvent = 0
         $ DialogueIsFrom = "Event"
         jump PostCombatWin
-
 
     return
 
@@ -2620,7 +1258,6 @@ label sortMenuD:
 
     if DialogueIsFrom == "Event":
         jump postAdventureEvent
-
 
 label TownLocation:
     $ LastLine = ""
@@ -2774,7 +1411,6 @@ label lastNPCPage:
 
     jump getNPCPage
 
-
 label nextMenuPage:
     $ index += MaxMenuSlots
 
@@ -2803,8 +1439,6 @@ label lastMenuPage:
 
 
     jump recheckMenu
-
-
 
 label EnterTownLocation:
     $ LastLine = ""

@@ -380,7 +380,7 @@ screen ON_StatsListDisplay(showMainStats=False):
         use ON_SingleStatDisplayNoVar("Intelligence:", "[player.stats.Int]", tooltipDisplay="Cast magic, resist some temptations, increase your chance to apply status effects, and increase the duration of your status effect! Every 5 points gained naturally increases your max energy by 10. Boosts how much damage you do with core skills!\nYou have [intDisplay] base intelligence out of 100. Intelligence skills deal [intBoost] extra arousal based on the (square root of the stat*4)-5. Said skills also get an increase of [intPerBoost]% to their base power!")
         use ON_SingleStatDisplayNoVar("Allure:", "[player.stats.Allure]", tooltipDisplay="Seduce and charm your foes! It increases how much arousal you deal with all skills, including increased critical arousal, and boosts how much damage you do with core skills! Also increases the recoil damage your opponent takes, from sex skills for example!\nYou have [allureDisplay] base allure out of 100. Allure skills deal [allureBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [allurePerBoost]% to their base power!")
         use ON_SingleStatDisplayNoVar("Willpower:", "[player.stats.Willpower]", tooltipDisplay="Greatly resist temptation, status effects, and reduces how much arousal you take! Every 5 points increases your max arousal and max energy by 5.\nYou have [willDisplay] base willpower out of 100. Willpower skills deal [willBoost] extra arousal based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [willPerBoost]% to their base power!")
-        use ON_SingleStatDisplayNoVar("Luck:", "[player.stats.Luck]", tooltipDisplay="Helps a little bit across the board. Such as acting before others, getting out of restraints, running away, hitting or dodging attacks, and improves your critical chance! It even gives you the stat check auto passing Goddess Favor at a rate of Luck/10! But best of all it helps you find more treasure!\nYou have [luckDisplay] base luck out of 100. Luck skills(?) deal [luckBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [luckPerBoost]% to their base power!")
+        use ON_SingleStatDisplayNoVar("Luck:", "[player.stats.Luck]", tooltipDisplay="Helps a little bit across the board. Such as acting before others, getting out of restraints, running away, hitting or dodging attacks, and improves your critical chance! It even gives you the stat check auto passing Goddess Favor at a rate of base Luck/10! But best of all it helps you find more treasure!\nYou have [luckDisplay] base luck out of 100. Luck skills(?) deal [luckBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [luckPerBoost]% to their base power!")
 
         use ON_MoreStatsListDisplay
 
@@ -398,7 +398,7 @@ screen ON_MoreStatsListDisplay():
         use ON_SingleStatDisplay("Acc: ", "[AccuracyBonus]%/"+ "[InStanceAccuracyBonus]%", tooltipDisplay="Attack accuracy bonus out of stances/Accuracy bonus in stance. Out of stance accuracy is based on tech-5(0.3% per point) + luck-5(0.15% per point), while In stance accuracy is based on power-5(0.3% per point) + tech-5(0.15% per point) + 10. Both are effected by any respective perks and get a random roll(d100) added, that are added together to decide if the skill hits vs the targets evade.")
         use ON_SingleStatDisplay("Reduction: ", "[damageReduction]%", tooltipDisplay="Your % damage reduction to arousal, calculated from your willpower and relevant perks.")
         textbutton "" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
-        use ON_SingleStatDisplay("Effect Duration: ", "[statusDuration]%", tooltipDisplay="The bonus duration of your own status effects, base duration of a skill is increased by this percentage. Which is calculated by (int*0.5)% + perks. So at 100 int, skills would last 50% longer. Keep in mind skills that last 1 turn will be increased to 2, as all effects also last the turn they are cast. The turn count is always rounded down. This also boosts restraints and sleep effects by the same amount.")
+        use ON_SingleStatDisplay("Effect Duration: ", "[statusDuration]%", tooltipDisplay="The bonus duration of your own status effects, base duration of a skill is increased by this percentage. Which is calculated by (int*0.5)% + perks. So at 100 int, skills would last 50% longer. Keep in mind skills that last 1 turn will be increased to 2, as all effects also last the turn they are cast. The turn count is always rounded down.")
         use ON_SingleStatDisplay("Effect Chance: ", "[statusAccuracyBonus]%", tooltipDisplay="Your base status effect accuracy is derived by the the individual skills stat used, its base chance, and this stat. Which is calculated from int-5(0.25% per point) + luck-5(0.1% per point) + perks. There's also a random roll(d100) added, that are then all added together to decide if the skill applies its status effect.")
         use ON_SingleStatDisplay("Status Res: ", "[statusEvadeBonus]%", tooltipDisplay="Your base status effect resistance based on your stats, this isn't counting any res to specific effects you might have, or any of the multiple other factors in combat that can increase your chance to be effected, such as being restrained, the attacks innate res stat, or its fetishes. This is calculated via will-5(0.25% per point) + luck-5(0.1% per point) + perks.")
         textbutton "" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
@@ -581,7 +581,6 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
             vbox:
                 yalign 0.5
                 text "[player.name]" size fontsize xoffset -2
-                $ exp = player.stats.ExpNeeded - player.stats.Exp
                 $ showLevelUp = InventoryAvailable and respeccing == 0 and (player.perkPoints >= 1 or player.SensitivityPoints >=1 or player.statPoints >= 1)
                 #CODEMOD
                 $ cap = ("/" + str(getMaxLevelCap())) if levelCapEnabled() else ""
@@ -595,9 +594,9 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
                         range player.stats.ExpNeeded
                         alt ""
                     textbutton "XP: [player.stats.Exp]/[player.stats.ExpNeeded]" text_size 24 text_color "#fff":
-                        alt "[exp] XP needed to level up."
+                        alt "[player.stats.ExpNeeded - player.stats.Exp] XP needed to level up."
                     textbutton "                            " text_size 24: # If Renpy allows for either SetVariable or has working tooltip for bar in future, proceed to do the normal thing.
-                        tooltip "[exp] XP needed to level up."
+                        tooltip "[player.stats.ExpNeeded - player.stats.Exp] XP needed to level up."
                         alt ""
                         action NullAction()
                 textbutton _("Virility: {color=#fff}[PlayerVirility]%{/color}") text_size 24 yalign 0.5:

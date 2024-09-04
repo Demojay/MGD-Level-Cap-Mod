@@ -14,10 +14,6 @@ init python:
     finalDamage = 0
     finalSleepy = 0
 
-    noDFunction = 0
-    noCombatFunction = 0
-    noSpecificFuntion = 0
-
     slimeSnakeHighScore = 0
     minigameQuickMenuHide = 0
 
@@ -180,7 +176,7 @@ init python:
     playerOrgasmLine = ""
     monsterOrgasmLine = ""
 
-    lineBank = ["Do your best!", "Can't we just hold hands?", "Or maybe, it's a nightmare?", "Free adventuring school!", "Why would you resist love?", "The goddess will protect you.", "Hot succubi are in your area.♥"]
+    lineBank = ["Do your best!", "Can't we just hold hands?", "Or maybe, it's a nightmare?", "Free adventuring school!", "Why would you resist love?", "The goddess will protect you.", "Hot succubi are in your area.♥", "Don't stay up {i}too{/i} late.♥", "Ten out of ten mimics say you should open every treasure chest.", "Relax and enjoy.♥", "Awaken a new kink, today!", "Not guaranteed to give you lewd dreams.", "Cozy, sexy, and more!", "No imps were harmed in the making of this production.", "Surrendering is a fun option.♥", "A manticore is rapidly approaching your location.", "There is no secret slime society.", "Harpy Delivery is not responsible for any damage to your mail.", "Don't forget to stop and smell the sweet alraunes.♥", "Being a hero never felt so good.♥"]
 
     sexBank = ["pussy", "pussy", "slit", "honeypot"]
     assBank = ["ass", "ass", "rear", "behind", "derriere"]
@@ -413,6 +409,7 @@ init:
     default persistent.validatorAtStartup = False
     default persistent.validatorAtReload = False
     default persistent.genModData = False
+    default persistent.animatedUI = True
 
     call setDatabase from _call_setDatabase_1
 
@@ -534,14 +531,6 @@ init:
 
     transform LossSceneZoom:
         zoom 1.0
-
-    transform QuickMenuFade:
-        on show:
-            alpha 0.0
-            linear 1.0 alpha 1.0
-        on hide:
-            linear 0.5 alpha 0.0
-
 
 
     $ God = Character(_('???'),

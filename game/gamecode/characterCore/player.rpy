@@ -300,7 +300,7 @@ label playerClass:
                                 if checkTag == fetishE.name:
                                     fetishMod += (fetishE.Level)
                         durability += durability*(fetishMod*0.005) + (fetishMod*0.1)
-                    self.combatStance.append(CombatStance(name, durability+holdoverDura))
+                    self.combatStance.append(CombatStance(name, durability+holdoverDura, durability+holdoverDura))
 
             def getStanceDurability(self, theName):
                 i = 0

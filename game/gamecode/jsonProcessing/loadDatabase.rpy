@@ -35,7 +35,7 @@ init python:
                     for skillKey, skills in condition["addingToSkills"].items():
                         for eachSkill in skills:
                             if validateJsons and not loadingDatabaseType:
-                                validator.validateIDname(eachSkill, skillJson.name, "Skills", "Skills", "stanceCondition")
+                                validator.validateIDname(eachSkill, skillJson.name, "Skills", "Skills", "stanceCondition", jsonType="Skills")
                             for skillData in SkillsDatabase:
                                 if skillData.name == eachSkill:
                                     try:
@@ -78,12 +78,7 @@ label loadDatabase:
             validator = LoadValidator()
         # Follow these comments to benchmark processing loops. View from either terminal or log.txt
         # You can uncomment any '#print(each)' to get the file names next to the timings. Affects timings. Side note, time.clock() is deprecated in python 3.3
-        #if sys.version_info[0] == 2:
-            # Python 2
-        #    benchstart = time.clock()
-        #else:
-            # Python 3
-        #    benchstart = time.perf_counter()
+        # benchstart = time.perf_counter()
         # ...at the end of the loop/process you're benchmarking... (Python 3)
         # benchtime = time.perf_counter()
         # print("Section Name Here:", benchtime - benchstart)
@@ -91,7 +86,8 @@ label loadDatabase:
         if loadingDatabaseType == 0:
             for each in dynamic_loader(".*/Fetishes/.*"):
                 #print(each)
-                fileName = renpy.file(each).read().decode("utf-8")
+                with renpy.file(each) as file:
+                    fileName = file.read().decode("utf-8")
                 try:
                     currentData = json.loads(fileName)
                 except:
@@ -108,7 +104,7 @@ label loadDatabase:
                     newFetish.toolTip = (FL.get("ToolTip", ""))
                     newFetish.levelText = [[int(fet[0]), fet[1]] for fet in FL.get("LevelText", [])]
                     FetishList.append(newFetish)
-                
+
                     if validateJsons and not loadingDatabaseType:
                         validator.addIDToDatabase(newFetish.name, "Fetishes")
 
@@ -116,7 +112,8 @@ label loadDatabase:
         if loadingDatabaseType == 0:
             for each in dynamic_loader(".*/Skills/.*"):
                 #print(each)
-                fileName = renpy.file(each).read().decode("utf-8")
+                with renpy.file(each) as file:
+                    fileName = file.read().decode("utf-8")
                 try:
                     currentData = json.loads(fileName)
                 except:
@@ -284,7 +281,7 @@ label loadDatabase:
                         ]
 
                         validator.addIDToDatabase(blankSkill.name, "Skills")
-                        
+
                         for skill_value in validate_skill_arrays:
                             if isinstance(skill_value, list):
                                 for string in skill_value:
@@ -311,7 +308,8 @@ label loadDatabase:
             perkListData = []
             for perks in dynamic_loader(".*/Perks/.*"):
                 #print(each)
-                fileName = renpy.file(perks).read().decode("utf-8")
+                with renpy.file(perks) as file:
+                    fileName = file.read().decode("utf-8")
                 try:
                     currentData = json.loads(fileName)
                 except:
@@ -369,7 +367,8 @@ label loadDatabase:
         if loadingDatabaseType == 0:
             for each in dynamic_loader(".*/Items/.*"):
                 #print(each)
-                fileName = renpy.file(each).read().decode("utf-8")
+                with renpy.file(each) as file:
+                    fileName = file.read().decode("utf-8")
                 try:
                     currentData = json.loads(fileName)
                 except:
@@ -466,7 +465,8 @@ label loadDatabase:
     ############################### LOAD MONSTERS #############################
         for each in dynamic_loader(".*/Monsters/.*"):
             #print(each)
-            fileName = renpy.file(each).read().decode("utf-8")
+            with renpy.file(each) as file:
+                fileName = file.read().decode("utf-8")
             try:
                 currentData = json.loads(fileName)
             except:
@@ -502,10 +502,10 @@ label loadDatabase:
                 if each != "":
                     dataTarget = getFromName(each, SkillsDatabase)
                     blankSkill = SkillsDatabase[dataTarget]
-                    
+
                     if validateJsons and not loadingDatabaseType:
-                        validator.validateIDname(each, currentData["IDname"], "Skills", "Monsters", "skillList")
-                    
+                        validator.validateIDname(each, currentData["IDname"], "Skills", "Monsters", "skillList", jsonType="Monsters")
+
                     if additionLocation != None:
                         if loadingDatabaseType == 0:
                             MonsterDatabase[additionLocation].skillList.append(blankSkill)
@@ -520,14 +520,14 @@ label loadDatabase:
 
             if validateJsons and not loadingDatabaseType:
                 for each in currentData["perks"]:
-                    validator.validateIDname(each, currentData["IDname"], "Perks", "Monsters", "perks")
+                    validator.validateIDname(each, currentData["IDname"], "Perks", "Monsters", "perks", jsonType="Monsters")
 
             for each in currentData["ItemDropList"]:
                 blankItemDrop = ItemDrop()
                 blankItemDrop.name = each["name"]
                 blankItemDrop.dropChance = int(each["dropChance"])
                 if validateJsons and not loadingDatabaseType:
-                    validator.validateIDname(each["name"], currentData["IDname"], "Items", "Monsters", "ItemDropList")
+                    validator.validateIDname(each["name"], currentData["IDname"], "Items", "Monsters", "ItemDropList", jsonType="Monsters")
                 if additionLocation != None:
                     if loadingDatabaseType == 0:
                         MonsterDatabase[additionLocation].ItemDropList.append(blankItemDrop)
@@ -580,7 +580,7 @@ label loadDatabase:
                         if fetish.name == fetishSplit[0]:
                             fetish.Level += int(fetishSplit[2])
                         if validateJsons and not loadingDatabaseType:
-                            validator.validateIDname(fetishSplit[0], currentData["IDname"], "Fetishes", "Monsters", "Fetishes")
+                            validator.validateIDname(fetishSplit[0], currentData["IDname"], "Fetishes", "Monsters", "Fetishes", jsonType="Monsters")
 
 
             for each in currentData["lossScenes"]:
@@ -596,7 +596,7 @@ label loadDatabase:
 
                 blankScene.picture = each["picture"]
                 if validateJsons and not loadingDatabaseType:
-                    validator.checkEventText(currentData["IDname"], blankScene, fileName)
+                    validator.checkEventText(currentData["IDname"], blankScene, fileName, jsonType="Monsters")
                 if additionLocation != None:
                     if loadingDatabaseType == 0:
                         MonsterDatabase[additionLocation].lossScenes.append(blankScene)
@@ -617,9 +617,9 @@ label loadDatabase:
 
                 blankScene.picture = each["picture"]
                 if validateJsons and not loadingDatabaseType:
-                    validator.checkEventText(currentData["IDname"], blankScene, fileName)
+                    validator.checkEventText(currentData["IDname"], blankScene, fileName, jsonType="Monsters")
                 if additionLocation != None:
-                    if loadingDatabaseType == 0: 
+                    if loadingDatabaseType == 0:
                         MonsterDatabase[additionLocation].victoryScenes.append(blankScene)
                 else:
                     newVictoryScenes.append(blankScene)
@@ -642,9 +642,9 @@ label loadDatabase:
                     # try:
                     #     evilRenpyIsIstanceNoWork = each["move"] + []
                     #     for move in each["move"]:
-                    #         validator.validateIDname(move, currentData["IDname"], "Skills", "Monsters", "combatDialogue")
+                    #         validator.validateIDname(move, currentData["IDname"], "Skills", "Monsters", "combatDialogue", jsonType="Monsters")
                     # except TypeError:
-                    #     validator.validateIDname(each["move"], currentData["IDname"], "Skills", "Monsters", "combatDialogue")
+                    #     validator.validateIDname(each["move"], currentData["IDname"], "Skills", "Monsters", "combatDialogue", jsonType="Monsters")
 
                 if additionLocation != None:
                     if loadingDatabaseType == 0:
@@ -833,7 +833,8 @@ label loadDatabase:
         for each in dynamic_loader(".*/Events/.*"):
             #print(each)
             try:
-                fileName = renpy.file(each).read().decode("utf-8")
+                with renpy.file(each) as file:
+                    fileName = file.read().decode("utf-8")
             except IOError as e:
                 if 'Json/Events/CombatEvents/AlrauneTestEvent.json' in str(e):
                     renpy.error("Save file is likely broken! There is no way to recover it. Try a different save, or start a new game.")
@@ -885,9 +886,9 @@ label loadDatabase:
                 if validateJsons and not loadingDatabaseType:
                     if len(blankDia.theScene) > 0:
                         if blankDia.theScene[0] != "MenuAddition":
-                            validator.checkEventText(currentData["name"], blankDia, fileName)
+                            validator.checkEventText(currentData["name"], blankDia, fileName, jsonType="Events")
                     else:
-                        validator.checkEventText(currentData["name"], blankDia, fileName)
+                        validator.checkEventText(currentData["name"], blankDia, fileName, jsonType="Events")
 
 
                 if additionLocation != None:
@@ -977,10 +978,10 @@ label loadDatabase:
                     requirementList,
                     BaseComplete)
                     EventDatabase.append(copy.copy(blankEvent))    #add to list
-                    
+
                     if validateJsons and not loadingDatabaseType:
                         validator.addIDToDatabase(blankEvent.name, "Events")
-                
+
                 if loadingDatabaseType == 1:
                     progEvent = Event(
                     currentData["name"],
@@ -998,8 +999,16 @@ label loadDatabase:
                     BaseComplete)
                     ProgressEvent.append(copy.copy(progEvent))
 
-
-
+            if validateJsons and not loadingDatabaseType and "IgnoredDebugChoices" in currentData:
+                if currentData["name"] not in validator.ignoredChoices:
+                    validator.ignoredChoices[currentData["name"]] = {}
+                for choice in currentData["IgnoredDebugChoices"]:
+                    try:
+                        choiceNumber, choiceValues = next(iter(choice.items()))
+                        choiceNumber = str(choiceNumber)
+                        validator.ignoredChoices[currentData["name"]][choiceNumber] = choiceValues
+                    except:
+                        validator.ignoredChoices[currentData["name"]][str(choice)] = []
         if loadingDatabaseType == 1:
             for each in eventProgHolder:
                 if getFromName(each.name, ProgressEvent) == -1:
@@ -1026,7 +1035,8 @@ label loadDatabase:
     ############################### LOAD LOCATIONS ############################
         for each in dynamic_loader(".*/Locations/.*"):
             #print(each)
-            fileName = renpy.file(each).read().decode("utf-8")
+            with renpy.file(each) as file:
+                fileName = file.read().decode("utf-8")
             try:
                 currentData = json.loads(fileName)
             except:
@@ -1229,7 +1239,8 @@ label loadDatabase:
     ############################## LOAD ADVENTURES ############################
         for each in dynamic_loader(".*/Adventures/.*"):
             #print(each)
-            fileName = renpy.file(each).read().decode("utf-8")
+            with renpy.file(each) as file:
+                fileName = file.read().decode("utf-8")
             try:
                 currentData = json.loads(fileName)
             except:
@@ -1329,7 +1340,7 @@ label loadDatabase:
                     erosDropList,
                     BaseComplete)
                     AdventureDatabase.append(blankAdventure)    #add to list
-                    
+
                     if validateJsons and not loadingDatabaseType:
                         validator.addIDToDatabase(blankAdventure.name, "Adventures")
 
@@ -1410,129 +1421,136 @@ label loadDatabase:
             for monster in MonsterDatabase:
                 # TODO: Stances implementation to get combatDialogue with its mixed use of move.
                 for each in monster.requiresEvent:
-                    validator.validateIDname(each.NameOfEvent, monster.IDname, "Events", "Monsters", "requiresEvent")
+                    validator.validateIDname(each.NameOfEvent, monster.IDname, "Events", "Monsters", "requiresEvent", jsonType="Monsters")
+                    validator.addChoiceSource(each.NameOfEvent, str(each.ChoiceNumber), each.Choice)
                 for each in monster.requires:
-                    validator.validateIDname(each, monster.IDname, "Items", "Monsters", "requires")
+                    validator.validateIDname(each, monster.IDname, "Items", "Monsters", "requires", jsonType="Monsters")
                 for each in monster.lossScenes:
-                    validator.validateIDname(each.move, monster.IDname, "Skills", "Monsters", "lossScenes(move)", ["None", "Unavalible", "theScene", "OnlyJumpedTo"])
+                    validator.validateIDname(each.move, monster.IDname, "Skills", "Monsters", "lossScenes(move)", ["None", "Unavalible", "theScene", "OnlyJumpedTo"], jsonType="Monsters")
                     for includes in each.includes:
-                        validator.validateIDname(includes, monster.IDname, "Monsters", "Monsters", "lossScenes(includes)", ["None", "OnlyJumpedTo"])
+                        validator.validateIDname(includes, monster.IDname, "Monsters", "Monsters", "lossScenes(includes)", ["None", "OnlyJumpedTo"], jsonType="Monsters")
                 for each in monster.victoryScenes:
-                    validator.validateIDname(each.move, monster.IDname, "Skills", "Monsters", "victoryScenes(move)", ["None", "Unavalible", "theScene", "OnlyJumpedTo"])
+                    validator.validateIDname(each.move, monster.IDname, "Skills", "Monsters", "victoryScenes(move)", ["None", "Unavalible", "theScene", "OnlyJumpedTo"], jsonType="Monsters")
                     for includes in each.includes:
-                        validator.validateIDname(includes, monster.IDname, "Monsters", "Monsters", "victoryScenes(includes)", ["None", "OnlyJumpedTo"])
+                        validator.validateIDname(includes, monster.IDname, "Monsters", "Monsters", "victoryScenes(includes)", ["None", "OnlyJumpedTo"], jsonType="Monsters")
             for item in ItemDatabase:
                 for each in item.requiresEvent:
-                    validator.validateIDname(each.NameOfEvent, item.name, "Events", "Items", "requiresEvent")
+                    validator.validateIDname(each.NameOfEvent, item.name, "Events", "Items", "requiresEvent", jsonType="Items")
+                    validator.addChoiceSource(each.NameOfEvent, str(each.ChoiceNumber), each.Choice)
                 for each in item.requires:
-                    validator.validateIDname(each, item.name, "Items", "Items", "requires")
+                    validator.validateIDname(each, item.name, "Items", "Items", "requires", jsonType="Items")
 
                 for each in item.perks:
-                    validator.validateIDname(each, item.name, "Perks", "Items", "perks")
+                    validator.validateIDname(each, item.name, "Perks", "Items", "perks", jsonType="Items")
                 for each in item.skills:
-                    validator.validateIDname(each, item.name, "Skills", "Items", "skills")
+                    validator.validateIDname(each, item.name, "Skills", "Items", "skills", jsonType="Items")
             for skill in SkillsDatabase:
                 for each in skill.requiresPerk:
-                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresPerk")
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresPerk", jsonType="Skills")
                 for each in skill.requiresOnePerk:
-                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresOnePerk")
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresOnePerk", jsonType="Skills")
                 for each in skill.unusableIfPerk:
-                    validator.validateIDname(each, skill.name, "Perks", "Skills", "unusableIfPerk")
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "unusableIfPerk", jsonType="Skills")
                 for each in skill.requiresPerkSelf:
-                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresPerkSelf")
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresPerkSelf", jsonType="Skills")
                 for each in skill.requiresOnePerkSelf:
-                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresOnePerkSelf")
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "requiresOnePerkSelf", jsonType="Skills")
                 for each in skill.unusableIfPerkSelf:
-                    validator.validateIDname(each, skill.name, "Perks", "Skills", "unusableIfPerkSelf")
+                    validator.validateIDname(each, skill.name, "Perks", "Skills", "unusableIfPerkSelf", jsonType="Skills")
 
 
                 for each in skill.fetishTags:
-                    validator.validateIDname(each, skill.name, "Fetishes", "Skills", "fetishTags", ["Foreplay", "Penetration", "Seduction", "Sex Toy", "Indulgent"])
+                    validator.validateIDname(each, skill.name, "Fetishes", "Skills", "fetishTags", ["Foreplay", "Penetration", "Seduction", "Sex Toy", "Indulgent"], jsonType="Fetishes")
                 # for each in skill.requiresEvent:
-                #     validator.validateIDname(each.NameOfEvent, skill.name, "Events", "Skills", "requiresEvent")
+                #     validator.validateIDname(each.NameOfEvent, skill.name, "Events", "Skills", "requiresEvent", , jsonType="Fetishes")
             for event in EventDatabase:
                 for each in event.Speakers:
                     if each.SpeakerType != "?":
-                        validator.validateIDname(each.name, event.name, "Monsters", "Events", "Speakers", ["???", "??? 1", "??? 2", "??? 3", "??? 4", "??? 5", "??? 6", "??? 7", "??? 8", "??? 9", "??? 10", "??? 11", "??? 12", "character", "Venereae"])
+                        validator.validateIDname(each.name, event.name, "Monsters", "Events", "Speakers", ["???", "??? 1", "??? 2", "??? 3", "??? 4", "??? 5", "??? 6", "??? 7", "??? 8", "??? 9", "??? 10", "??? 11", "??? 12", "character", "Venereae"], jsonType="Events")
 
                 for each in event.requiresEvent:
-                    validator.validateIDname(each.NameOfEvent, event.name, "Events", "Events", "requiresEvent")
+                    validator.validateIDname(each.NameOfEvent, event.name, "Events", "Events", "requiresEvent", jsonType="Events")
+                    validator.addChoiceSource(each.NameOfEvent, str(each.ChoiceNumber), each.Choice)
                 for each in event.requires:
-                    validator.validateIDname(each, event.name, "Items", "Events", "requires")
+                    validator.validateIDname(each, event.name, "Items", "Events", "requires", jsonType="Events")
             for perk in PerkDatabase:
                 for each in perk.PerkReq:
-                    validator.validateIDname(each, perk.name, "Perks", "Perks", "PerkReq")
+                    validator.validateIDname(each, perk.name, "Perks", "Perks", "PerkReq", jsonType="Perks")
                 # for each in perk.requiresEvent:
-                #     validator.validateIDname(each.NameOfEvent, perk.name, "Events", "Perks", "requiresEvent")
+                #     validator.validateIDname(each.NameOfEvent, perk.name, "Events", "Perks", "requiresEvent", jsonType="Perks")
             for adventure in AdventureDatabase:
                 # TODO: Decks.
                 for each in adventure.randomEvents:
-                    validator.validateIDname(each, adventure.name, "Events", "Adventures", "RandomEvents")
-                
+                    validator.validateIDname(each, adventure.name, "Events", "Adventures", "RandomEvents", jsonType="Adventures")
+
                 for each in adventure.monsterGroups:
                     for monster in each:
-                        validator.validateIDname(monster, adventure.name, "Monsters", "Adventures", "MonsterGroups")
+                        validator.validateIDname(monster, adventure.name, "Monsters", "Adventures", "MonsterGroups", jsonType="Adventures")
                 for each in adventure.randomMonsters:
-                    validator.validateIDname(each, adventure.name, "Monsters", "Adventures", "RandomMonsters")
-                
+                    validator.validateIDname(each, adventure.name, "Monsters", "Adventures", "RandomMonsters", jsonType="Adventures")
+
                 for index, each in enumerate(adventure.Treasure):
                     if index == 0:
                         for treasure in each:
-                            validator.validateIDname(treasure, adventure.name, "Items", "Adventures", "Treasure(Common)")
+                            validator.validateIDname(treasure, adventure.name, "Items", "Adventures", "Treasure(Common)", jsonType="Adventures")
                     if index == 1:
                         for treasure in each:
-                            validator.validateIDname(treasure, adventure.name, "Items", "Adventures", "Treasure(Uncommon)")
+                            validator.validateIDname(treasure, adventure.name, "Items", "Adventures", "Treasure(Uncommon)", jsonType="Adventures")
                     if index == 2:
                         for treasure in each:
-                            validator.validateIDname(treasure, adventure.name, "Items", "Adventures", "Treasure(Rare)")
+                            validator.validateIDname(treasure, adventure.name, "Items", "Adventures", "Treasure(Rare)", jsonType="Adventures")
 
-                
+
                 for each in adventure.requiresEvent:
-                    validator.validateIDname(each.NameOfEvent, adventure.name, "Events", "Adventures", "requiresEvent")
+                    validator.validateIDname(each.NameOfEvent, adventure.name, "Events", "Adventures", "requiresEvent", jsonType="Adventures")
+                    validator.addChoiceSource(each.NameOfEvent, str(each.ChoiceNumber), each.Choice)
                 for each in adventure.requires:
-                    validator.validateIDname(each, adventure.name, "Items", "Adventures", "requires")
-            
+                    validator.validateIDname(each, adventure.name, "Items", "Adventures", "requires", jsonType="Adventures")
+
             for location in LocationDatabase:
                 for each in location.ExplorationUnlockedByEvent:
-                    validator.validateIDname(each.NameOfEvent, location.name, "Events", "Locations", "ExplorationUnlockedByEvent")
+                    validator.validateIDname(each.NameOfEvent, location.name, "Events", "Locations", "ExplorationUnlockedByEvent", jsonType="Locations")
+                    validator.addChoiceSource(each.NameOfEvent, str(each.ChoiceNumber), each.Choice)
                 for each in location.ExplorationUnlockedBy:
-                    validator.validateIDname(each, location.name, "Items", "Locations", "ExplorationUnlockedBy", ["CantBeUnlocked"])
+                    validator.validateIDname(each, location.name, "Items", "Locations", "ExplorationUnlockedBy", ["CantBeUnlocked"], jsonType="Locations")
 
                 for each in location.FullyUnlockedByEvent:
-                    validator.validateIDname(each.NameOfEvent, location.name, "Events", "Locations", "FullyUnlockedByEvent")
+                    validator.validateIDname(each.NameOfEvent, location.name, "Events", "Locations", "FullyUnlockedByEvent", jsonType="Locations")
+                    validator.addChoiceSource(each.NameOfEvent, str(each.ChoiceNumber), each.Choice)
                 for each in location.FullyUnlockedBy:
-                    validator.validateIDname(each, location.name, "Items", "Locations", "FullyUnlockedBy", ["CantBeUnlocked"])
+                    validator.validateIDname(each, location.name, "Items", "Locations", "FullyUnlockedBy", ["CantBeUnlocked"], jsonType="Locations")
 
                 for each in location.requiresEvent:
-                    validator.validateIDname(each.NameOfEvent, location.name, "Events", "Locations", "requiresEvent")
+                    validator.validateIDname(each.NameOfEvent, location.name, "Events", "Locations", "requiresEvent", jsonType="Locations")
+                    validator.addChoiceSource(each.NameOfEvent, str(each.ChoiceNumber), each.Choice)
                 for each in location.requires:
-                    validator.validateIDname(each, location.name, "Items", "Locations", "requires", ["CantBeUnlocked"])
+                    validator.validateIDname(each, location.name, "Items", "Locations", "requires", ["CantBeUnlocked"], jsonType="Locations")
 
 
                 for index, each in enumerate(location.Treasure):
                     if index == 0:
                         for treasure in each:
-                            validator.validateIDname(treasure, location.name, "Items", "Locations", "Treasure(Common)")
+                            validator.validateIDname(treasure, location.name, "Items", "Locations", "Treasure(Common)", jsonType="Locations")
                     if index == 1:
                         for treasure in each:
-                            validator.validateIDname(treasure, location.name, "Items", "Locations", "Treasure(Uncommon)")
+                            validator.validateIDname(treasure, location.name, "Items", "Locations", "Treasure(Uncommon)", jsonType="Locations")
                     if index == 2:
                         for treasure in each:
-                            validator.validateIDname(treasure, location.name, "Items", "Locations", "Treasure(Rare)")
+                            validator.validateIDname(treasure, location.name, "Items", "Locations", "Treasure(Rare)", jsonType="Locations")
 
                 for each in location.MonsterGroups:
                     for monster in each:
-                        validator.validateIDname(monster, location.name, "Monsters", "Locations", "MonsterGroups")
+                        validator.validateIDname(monster, location.name, "Monsters", "Locations", "MonsterGroups", jsonType="Locations")
                 for each in location.Monsters:
-                    validator.validateIDname(each, location.name, "Monsters", "Locations", "Monsters")
+                    validator.validateIDname(each, location.name, "Monsters", "Locations", "Monsters", jsonType="Locations")
 
                 for each in location.Monsters:
-                    validator.validateIDname(each, location.name, "Monsters", "Locations", "Monsters")
+                    validator.validateIDname(each, location.name, "Monsters", "Locations", "Monsters", jsonType="Locations")
 
                 for each in location.Events:
-                    validator.validateIDname(each, location.name, "Events", "Locations", "Events")
+                    validator.validateIDname(each, location.name, "Events", "Locations", "Events", jsonType="Locations")
                 for each in location.Quests:
-                    validator.validateIDname(each, location.name, "Events", "Locations", "Quests")
+                    validator.validateIDname(each, location.name, "Events", "Locations", "Quests", jsonType="Locations")
 
 
     ############################ UPDATE SAVED PLAYER ##########################
@@ -1780,7 +1798,8 @@ label loadDatabase:
             FetishList = []
             for each in dynamic_loader(".*/Fetishes/.*"):
                 #print(each)
-                fileName = renpy.file(each).read().decode("utf-8")
+                with renpy.file(each) as file:
+                    fileName = file.read().decode("utf-8")
                 try:
                     currentData = json.loads(fileName)
                 except:

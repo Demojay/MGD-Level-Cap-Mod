@@ -292,7 +292,6 @@ label combat:
     $ display = ""
     $ pushAwayAttempt = 0
     $ turnsStunnedByParalysis = 0
-    $ restraintMaxHP = 0
     $ refreshMenu = 1
     $ manualSort = ""
     $ swappingSkill = -1
@@ -1694,6 +1693,8 @@ label combatLossEnd:
     hide screen GridmapObstacles
     $ TheGrid = []
 
+    $ restraintMaxHP = 0
+
     #$ player.stats.refresh()
     $ player.stats.sp = 1
     $ player.clearStance()
@@ -1735,9 +1736,6 @@ label combatLossEnd:
                 $ timeNotify = 1
                 call advanceTime(TimeIncrease=1) from _call_advanceTime_7
     $ notFunction = 0
-    $ noOtherFunction = 0
-    $ noCombatFunction = 0
-    $ noDFunction = 0
 
     "You wake up in the church the next day, still feeling completely exhausted and drained."
     $ findLily = getFromName("Lillian", MonsterDatabase)
@@ -2065,9 +2063,6 @@ label levelUpSpot:
 
     if NoGameOver == 1 or expGiven == 1 or LostGameOver == 1:
         return
-
-    if runAndStayInEvent == 1:
-        jump endCombatCalled
 
     return
 
@@ -2638,8 +2633,6 @@ label combatRunAttempt:
     $ combatItems = 0
     $ player = ClearNonPersistentEffects(player)
     $ renpy.set_return_stack(lastReturn)
-    if runAndStayInEvent == 1:
-        jump endCombatCalled
     return
 
 label functionEnd:

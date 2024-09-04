@@ -37,7 +37,9 @@ label after_load:
 
     if favorPool == -1:
         $ favorPool = CalcGoddessFavor(player)
-
+    $ previousHP = player.stats.hp
+    $ previousEP = player.stats.ep
+    $ previousSP = player.stats.sp
     $ needToUpdate = 0
     hide screen FishingHitEffect
     show screen input_detection
