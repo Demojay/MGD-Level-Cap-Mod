@@ -305,6 +305,7 @@ label combat:
     $ skipMonsterOrgasm = 0
     $ skipTargetOrgasm = 0
     $ skipAttackOrgasm = 0
+    $ triggeredDict = {}
     $ m = 0
     $ monInititive = []
     $ itemChoice = Item("Blank", "Null", 0)
@@ -467,7 +468,9 @@ label combatPlayer:
     $ waiting = 0
 
     $ orgasmTarget = player
-    $ theLastAttacker = monsterEncounter[0]
+
+    if len(monsterEncounter) > 0: #may not fix the problem people are having with a rare crash, but may lead to figuring out whats actually happpening
+        $ theLastAttacker = monsterEncounter[0]
     call PlayerLossCheck from _call_PlayerLossCheck_2
 
 
@@ -746,7 +749,6 @@ label enemySkillChoice(mSC):
             for skillStatus, skillPotency in itertools.zip_longest(eachSkillOption.unusableIfStatusEffect, eachSkillOption.unusableIfStatusPotency, fillvalue=0):
                 if skillPotency > 0:
                     if (player.statusEffects.hasThisStatusEffectPotency(skillStatus, skillPotency)) and (player.statusEffects.hasThisStatusEffect(skillStatus)):
-                        print(player.statusEffects.hasThisStatusEffectPotency(skillStatus, skillPotency))
                         showSkill = 0
                 else:
                     if player.statusEffects.hasThisStatusEffect(skillStatus) == True:
@@ -1409,6 +1411,23 @@ label combatEndTurn:
                 CombatFunctionEnemytarget = mi
                 CombatFunctionEnemyInitial = mi
                 if each.lineTrigger == "EndOfRound":
+                        if hasattr(each, 'triggersOnce'):
+                            if each.triggersOnce == "ForSameMonsters":
+                                if each.lineTrigger not in triggeredDict:
+                                    triggeredDict[each.lineTrigger] = set()
+                                if monsterEncounter[mi].name not in triggeredDict[each.lineTrigger]:
+                                    triggeredDict[each.lineTrigger].add(monsterEncounter[mi].name)
+                                else:
+                                    if True: # Ren'Py borks the break without these for some reason.
+                                        pass
+                                    break
+                            elif each.triggersOnce == "ForAllMonsters":
+                                if each.lineTrigger not in triggeredDict:
+                                    triggeredDict[each.lineTrigger] = set()
+                                else:
+                                    if True:
+                                        pass
+                                    break
                         Speaker = Character(_(monsterEncounter[mi].name))
                         display = each.theText[renpy.random.randint(-1, len(each.theText)-1)]
                         foundLine = 1
@@ -1509,7 +1528,7 @@ label combatEndTurn:
     $ justEscapedStance -= 1
     if difficulty == "Hard":
         $ justEscapedStance -= 1
-
+    $ triggeredDict = {}
     call PerkTimers(TimerType="TurnDuration", targetedCharacter=player) from _call_PerkTimers_1
 
     call TimeEvent(CardType="EndOfTurn", LoopedList=EndOfTurnList) from _call_TimeEvent_2
@@ -1536,10 +1555,27 @@ label TurnStart:
                 CombatFunctionEnemytarget = mi
                 CombatFunctionEnemyInitial = mi
                 if each.lineTrigger == "StartOfRound":
-                        Speaker = Character(_(monsterEncounter[mi].name))
-                        display += each.theText[renpy.random.randint(-1, len(each.theText)-1)]
-                        foundLine = 1
-                        break
+                    if hasattr(each, 'triggersOnce'):
+                        if each.triggersOnce == "ForSameMonsters":
+                            if each.lineTrigger not in triggeredDict:
+                                triggeredDict[each.lineTrigger] = set()
+                            if monsterEncounter[mi].name not in triggeredDict[each.lineTrigger]:
+                                triggeredDict[each.lineTrigger].add(monsterEncounter[mi].name)
+                            else:
+                                if True: # Ren'Py borks the break without these for some reason.
+                                    pass
+                                break
+                        elif each.triggersOnce == "ForAllMonsters":
+                            if each.lineTrigger not in triggeredDict:
+                                triggeredDict[each.lineTrigger] = set()
+                            else:
+                                if True:
+                                    pass
+                                break
+                    Speaker = Character(_(monsterEncounter[mi].name))
+                    display += each.theText[renpy.random.randint(-1, len(each.theText)-1)]
+                    foundLine = 1
+                    break
                 if i >= 10:
                     break
         if foundLine == 1:
@@ -2410,9 +2446,9 @@ label combatDefend:
     if GetParalFlatEnergyChange(player) > 0:
         $ player.stats.ep -= int(math.floor(GetParalFlatEnergyChange(player)))
 
-    
+
     $ DefendBonus = 0
-    python: 
+    python:
         for perk in player.perks:
             p = 0
             while  p < len(perk.PerkType):
@@ -2429,7 +2465,7 @@ label combatDefend:
         for perk in player.perks:
             p = 0
             while  p < len(perk.PerkType):
-                if perk.PerkType[p] == "DefendEscapeRestraint":
+                if perk.PerkType[p] == "DefendEscape":
                     DefendBonus += (perk.EffectPower[p])*0.01
                 p += 1
 
@@ -2438,17 +2474,17 @@ label combatDefend:
             $ stanceDamageTotal = (getStanceStruggleRoll(player))*DefendBonus
             python:
                 TotalStances = 0
-                for mon in monsterEncounter: 
+                for mon in monsterEncounter:
                     TotalStances += len(mon.combatStance)
-                stanceDamageTotal/= TotalStances                
+                stanceDamageTotal/= TotalStances
                 for mon in monsterEncounter:
                     for stance in mon.combatStance:
                         stance.potency -= stanceDamageTotal
 
-    if player.statusEffects.restrained.duration > 0:         
+    if player.statusEffects.restrained.duration > 0:
         python:
             if DefendBonus > 0:
-                restraintEscapeBoost = 0                
+                restraintEscapeBoost = 0
                 for perk in player.perks:
                     p = 0
                     while  p < len(perk.PerkType):

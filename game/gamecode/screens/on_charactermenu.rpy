@@ -600,8 +600,8 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
                         alt ""
                         action NullAction()
                 textbutton _("Virility: {color=#fff}[PlayerVirility]%{/color}") text_size 24 yalign 0.5:
-                    tooltip "Measures the fertility of a man, as well as his semen's thickness, flavour, and nutritional value to monster girls. Increases the effectiveness of holy skills, and increases the effectiveness of monster girls energy draining and semen eating abilities on you. Equal to your (level-1)*0.5 + spirit*5 + 10 + any perks you have!"
-                    alt "Virility: [PlayerVirility]%" + "\n\nMeasures the fertility of a man, as well as his semen's thickness, flavour, and nutritional value to monster girls. Increases the effectiveness of holy skills, and increases the effectiveness of monster girls energy draining and semen eating abilities on you. Equal to your (level-1)*0.5 + spirit*5 + 10 + any perks you have!"
+                    tooltip "Measures the fertility of a man, as well as his semen's thickness, flavor, and nutritional value to monster girls. Increases the effectiveness of holy skills, and increases the effectiveness of monster girls energy draining and semen eating abilities on you. Equal to your (level-1)*0.5 + spirit*5 + 10 + any perks you have!"
+                    alt "Virility: [PlayerVirility]%" + "\n\nMeasures the fertility of a man, as well as his semen's thickness, flavor, and nutritional value to monster girls. Increases the effectiveness of holy skills, and increases the effectiveness of monster girls energy draining and semen eating abilities on you. Equal to your (level-1)*0.5 + spirit*5 + 10 + any perks you have!"
                     action NullAction()
                 if showLevelUp:
                     textbutton "Spend Unused stat points!":
@@ -649,6 +649,7 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
             fixed:
                 xsize 240 ysize 45
                 imagebutton:
+                    default_focus True
                     idle "gui/tab_idle.png"
                     hover "gui/tab_hover.png"
                     selected_idle "gui/tab_selected.png" selected_hover "gui/tab_selected.png"

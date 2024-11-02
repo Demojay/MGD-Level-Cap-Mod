@@ -1312,7 +1312,7 @@ label TownLocation:
     elif currentLocation == "Church":
         $ locationDescrip = "The church is rather spacious for how small it is, with pews lining the sides and a well kept white carpet going down the center aisle leading to a stone statue of the Goddess Venereae. The only person who never seems to leave is the cleric girl, while others drift in and out to offer prayers or give small donations."
     elif currentLocation == "Shopping":
-        $ locationDescrip = "You stand in the rustic looking adventuring store in the market district of town. The walls and shelves are lined with all different kinds of gear an adventurer in Lucidia could use, ranging from potions, runes and magical artifacts, to just straight up sex toys."
+        $ locationDescrip = "You stand before the rustic looking adventuring store in the market district of town. Peeking through the window you see the walls and shelves are lined with all different kinds of gear an adventurer in Lucidia could use, ranging from potions, runes and magical artifacts, to just straight up sex toys."
     elif currentLocation == "Bed":
         $ DialogueIsFrom = "NPC"
         $ isEventNow = 1

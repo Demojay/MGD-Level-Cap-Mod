@@ -30,7 +30,9 @@ label after_load:
         $ player.inventory.give("Respec Ticket", 1)
         $ _version = "Alpha-v26.3a"
 
-    hide screen ON_MapMenu 
+    if (_version in ["Alpha-v26.3a", "Alpha-v26.4", "Alpha-v26.4a", "Alpha-v26.4b"]):
+        hide screen ON_MapMenu onlayer master
+        $ _version = "Alpha-v26.5"
 
     if onGridMap == 0:
         hide screen gridMoveKeys
