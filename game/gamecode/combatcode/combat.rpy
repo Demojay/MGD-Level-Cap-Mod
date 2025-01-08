@@ -616,6 +616,8 @@ label targeting:
 
     if len(monsterEncounter) == 1 or combatChoice.targetType == "all" or  combatChoice.targetType == "Escape":
         $ target = -1
+        if len(monsterEncounter) == 1:
+            $ target = 0
         if stanceBreaking == 0:
             jump combatEnemies
         else:
@@ -668,7 +670,7 @@ label enemySkillChoice(mSC):
                 if player.statusEffects.hasThisStatusEffect(eachSkillOption.requiresStatusEffect) == False:
                     showSkill = 0
 
-            if eachSkillOption.requiresStatusPotency > 0:
+            if eachSkillOption.requiresStatusPotency != 0:
                 if player.statusEffects.hasThisStatusEffectPotency(eachSkillOption.requiresStatusEffect, eachSkillOption.requiresStatusPotency) == False:
                     showSkill = 0
 
@@ -676,7 +678,7 @@ label enemySkillChoice(mSC):
                 if monsterEncounter[mSC].statusEffects.hasThisStatusEffect(eachSkillOption.requiresStatusEffectSelf) == False:
                     showSkill = 0
 
-            if eachSkillOption.requiresStatusPotencySelf > 0:
+            if eachSkillOption.requiresStatusPotencySelf != 0:
                 if monsterEncounter[mSC].statusEffects.hasThisStatusEffectPotency(eachSkillOption.requiresStatusEffectSelf, eachSkillOption.requiresStatusPotencySelf) == False:
                     showSkill = 0
 
@@ -747,7 +749,7 @@ label enemySkillChoice(mSC):
 
 
             for skillStatus, skillPotency in itertools.zip_longest(eachSkillOption.unusableIfStatusEffect, eachSkillOption.unusableIfStatusPotency, fillvalue=0):
-                if skillPotency > 0:
+                if skillPotency != 0:
                     if (player.statusEffects.hasThisStatusEffectPotency(skillStatus, skillPotency)) and (player.statusEffects.hasThisStatusEffect(skillStatus)):
                         showSkill = 0
                 else:

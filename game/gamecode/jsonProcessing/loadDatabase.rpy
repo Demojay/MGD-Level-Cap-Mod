@@ -126,6 +126,7 @@ label loadDatabase:
                 powerSFScaling = int(currentData.get("flatDamageSF-FlatScaling", 0))
                 flatSFScaling = float(currentData.get("flatDamageSF-PercentScaling", 0.0))
                 totalSFScaling = int(currentData.get("totalDamageSF-PercentScaling", 0))
+                statusStacks = int(currentData.get("statusStacks", 0))
 
                 try:
                     unusableSets = []
@@ -265,7 +266,8 @@ label loadDatabase:
                     flatSFScaling,
                     totalSFScaling,
                     unusableSets,
-                    currentData.get("stanceConditions", []))
+                    currentData.get("stanceConditions", []),
+                    statusStacks)
 
                     if validateJsons and not loadingDatabaseType:
                         validate_skill_arrays = [
@@ -1674,11 +1676,15 @@ label loadDatabase:
                     if each.name == eachNew.name:
                         player.skillList[i] = copy.deepcopy(each)
 
+                        try:
+                            eachNew.statusStacks = eachNew.statusStacks
+                        except:
+                            eachNew.statusStacks = 0
 
                         try:
                             eachNew.scalesWithStatusScale = eachNew.scalesWithStatusScale
                         except:
-                            eachNew.scalesWithStatusScale = 100
+                            eachNew.scalesWithStatusScale = 100                            
                         try:
                             eachNew.scalesWithStatusEffect = eachNew.scalesWithStatusEffect
                         except:

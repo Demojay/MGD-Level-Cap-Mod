@@ -41,8 +41,7 @@ label playerClass:
                 self.statPoints = statPoints
                 self.BodySensitivity = BodySensitivity
                 self.statusEffects = StatusEffects()
-                self.species = species
-                self.BodySensitivity = BodySensitivity
+                self.species = species 
                 self.SensitivityPoints = 3
                 self.FetishList = FetishList
                 self.combatStance = combatStance
