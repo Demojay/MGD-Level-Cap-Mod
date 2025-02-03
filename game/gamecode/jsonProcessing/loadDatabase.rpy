@@ -1684,7 +1684,7 @@ label loadDatabase:
                         try:
                             eachNew.scalesWithStatusScale = eachNew.scalesWithStatusScale
                         except:
-                            eachNew.scalesWithStatusScale = 100                            
+                            eachNew.scalesWithStatusScale = ""                            
                         try:
                             eachNew.scalesWithStatusEffect = eachNew.scalesWithStatusEffect
                         except:

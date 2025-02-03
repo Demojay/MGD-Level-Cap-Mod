@@ -26,7 +26,7 @@ init python:
     config.pause_after_rollback = True
 
     config.autosave_frequency = 0
-    mgdAutosaveFrequency = 75
+    mgdAutosaveFrequency = 100
     mgdAutosaveCount = copy.deepcopy(mgdAutosaveFrequency)
     config.autosave_on_choice = False
     config.autosave_on_quit = True

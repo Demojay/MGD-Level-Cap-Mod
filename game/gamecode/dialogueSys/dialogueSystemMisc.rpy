@@ -995,7 +995,7 @@ label JsonFuncJumpToLossEvent:
     jump sortMenuD
     return
 label JsonFuncForceAutoSave:
-    $ renpy.force_autosave()
+    $ renpy.force_autosave(block=True)
     return
 label JsonFuncExitGridmap:
     $ onGridMap = 0
