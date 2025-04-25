@@ -613,12 +613,15 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
                 yalign 0.83
                 textbutton _("Goddess' Favor: {color=#fff}[favorPool]/[PlayerFavor]{/color}") text_size 24 yalign 0.5:
                         if difficulty == "Hard":
-                            tooltip "Whether or not you're actually blessed, Goddess' Favor allows you to automatically pass a number of failed checks per rest! Your pool of Goddess' Favor is equal to Luck/20, plus any extras from Perks. When you run out, you can still spend Energy to pass, but with increasing energy costs."
+                            tooltip "Whether or not you're actually blessed, Goddess' Favor allows you to automatically pass a number of failed checks! Your pool of Goddess' Favor is equal to Luck/20, plus any extras from Perks. When you run out, you can still spend Energy to pass, but with increasing energy costs. Restores fully when you sleep or are fully restored by some means."
                         else:
-                            tooltip "Whether or not you're actually blessed, Goddess' Favor allows you to automatically pass a number of failed checks per rest! Your pool of Goddess' Favor is equal to 1 + Luck/20, plus any extras from Perks. When you run out, you can still spend Energy to pass, but with increasing energy costs."
+                            tooltip "Whether or not you're actually blessed, Goddess' Favor allows you to automatically pass a number of failed checks! Your pool of Goddess' Favor is equal to 1 + Luck/20, plus any extras from Perks. When you run out, you can still spend Energy to pass, but with increasing energy costs. Restores fully when you sleep or are fully restored by some means."
                         action NullAction()
                 textbutton _("Strain: {color=#fff}[favorStrain]%{/color}") text_size 24 yalign 0.5:
-                    tooltip "Increases Energy costs for surpassing stat checks. Resets to 0 on a rest."
+                    if difficulty == "Hard":
+                        tooltip "Increases Energy costs for surpassing stat checks. Decreases on by 25 rest (Increaseable by perks), and resets to 0 when sleeping or fully restored by some other means."
+                    else:
+                        tooltip "Increases Energy costs for surpassing stat checks. Decreases on by 50 rest (Increaseable by perks), and resets to 0 when sleeping or fully restored by some other means."
                     action NullAction()
 
             vbox:

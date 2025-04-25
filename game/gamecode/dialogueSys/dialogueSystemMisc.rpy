@@ -13,6 +13,7 @@ label JsonFuncDisplayCharacters:
     $ lineOfScene += 1
     $ SceneCharacters = []
     $ RoledCGOn = 0
+    $ textboxCGXAdjust = 0
     $ CgRoleKeeper = []
     if len(monsterEncounter) == 0:
         $ hidingCombatEncounter = 0
@@ -245,9 +246,7 @@ label JsonFuncRestPlayer:
         $ timeNotify = 1
     else:
         $ lineOfScene -= 1
-    call advanceTime(TimeIncrease=1) from _call_advanceTime_1
-    $ favorPool = CalcGoddessFavor(player)
-    $ favorStrain = 0
+    call advanceTime(TimeIncrease=1) from _call_advanceTime_1 
     $ player = Resting(player)
     $ notFunction = 0
     return
@@ -527,11 +526,11 @@ label JsonFuncMenu:
         $ exist6 = 1
 
 
-    $ damageToPlayer = " [CritText] [EffectiveText]" + "You gain " + str(finalDamage) + " arousal."
-    if len(monsterEncounter) > 0 and CombatFunctionEnemytarget < len(monsterEncounter):
-        $ damageToEnemy = " [CritText] [EffectiveText]" + monsterEncounter[CombatFunctionEnemytarget].name + " gains " + str(finalDamage) + " arousal."
-    else:
-        $ damageToEnemy = ""
+    #$ damageToPlayer = " [CritText] [EffectiveText]" + "You gain " + str(finalDamage) + " arousal."
+    #if len(monsterEncounter) > 0 and CombatFunctionEnemytarget < len(monsterEncounter):
+    #    $ damageToEnemy = " [CritText] [EffectiveText]" + monsterEncounter[CombatFunctionEnemytarget].name + " gains " + str(finalDamage) + " arousal."
+    #else:
+    #    $ damageToEnemy = ""
 
     $ DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
     $ progressDisplay = copy.deepcopy(ProgressEvent[DataLocation].eventProgress)
@@ -812,7 +811,6 @@ label JsonFuncCombatEncounter:
         $ HoldingDataLocForCombat = copy.deepcopy(DataLocation)
         call combat from _call_combat_1
         if HoldingSceneForCombat != Dialogue():
-            #$ test = HoldingSceneForCombat[HoldingLineForCombat].NameOfScene
             $ displayingScene = copy.deepcopy(HoldingSceneForCombat)
             $ lineOfScene = copy.deepcopy(HoldingLineForCombat)
             $ DataLocation = copy.deepcopy(HoldingDataLocForCombat)

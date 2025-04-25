@@ -357,10 +357,11 @@ label loadDatabase:
                     if perk.name == orderedPerk:
                         LevelingPerkDatabase.append(perk)
                         break
-            PerkDatabaseLVLDisplay = copy.copy(LevelingPerkDatabase)
-
+           
             AdditionalLevelPerks = [perk for perk in PerkDatabase if perk.PlayerCanPurchase == "Yes" and perk not in LevelingPerkDatabase]
             LevelingPerkDatabase.extend(AdditionalLevelPerks)
+
+            PerkDatabaseLVLDisplay = copy.copy(LevelingPerkDatabase)
 
             if loadingDatabaseType == 0:
                 perkLenCheck = copy.deepcopy(len(PerkDatabase))
@@ -700,14 +701,14 @@ label loadDatabase:
                         tempSet.name = "Base"
                         newSet = currentData["pictures"]
                         hasSets = 0
-
+ 
+                    
 
                     for contents in newSet:
 
                         blankLayer = ImageLayer()
                         blankLayer.Images = []
-
-
+ 
                         blankRole = CGRole()
                         blankRole.Translators = []
                         blankRole.ToggledOnPartsWhenReqMet = []
@@ -716,7 +717,12 @@ label loadDatabase:
 
                         CheckRole = contents.get("Role", "")
 
-                        if CheckRole == "":
+                        CheckXAdjust = ""
+                        CheckXAdjust = contents.get("TextBoxXAdjust", "")
+
+                        if CheckXAdjust != "": 
+                            tempSet.TextBoxXAdjust = int(contents["TextBoxXAdjust"]) 
+                        elif CheckRole == "":
                             layerInserted = -1
                             if additionLocation != None:
                                 l = 0
@@ -762,6 +768,7 @@ label loadDatabase:
                                 tempSet.ImageSet.append(copy.deepcopy(blankLayer))
 
                             inSet += 1
+                        
                         else:
                             blankRole.name = contents["Role"]
                             blankRole.StanceReq = contents["StanceRequired"]
@@ -1852,10 +1859,6 @@ label loadDatabase:
                         if each.name == eachNew.name:
                             player.FetishList[i].Level = eachNew.Level
                 i+=1
-        
-        #CODEMOD
-        loadLevelCapJSON()
-
         if renpy.windows or renpy.linux:
             if validateJsons and not loadingDatabaseType:
                 persistent.validatorAtReload = False

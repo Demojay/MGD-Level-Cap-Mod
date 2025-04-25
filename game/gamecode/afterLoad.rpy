@@ -26,7 +26,8 @@ label after_load:
     #never contains the current game version you are intending to ship.
 
     if (_version in ["Alpha-v26", "Alpha-v26a", "Alpha-v26b", "Alpha-v26.3"]) or _version.startswith("Alpha-v26.1") or _version.startswith("Alpha-v26.2"):
-        "The wind blows in a sudden gust and a small silver ticket flies into your face. It seems like you happend across a Guild Approved respec ticket!"
+        $ recoilHit = 0
+        "The wind blows in a sudden gust and a small silver ticket flies into your face. It seems like you happened across a Guild-Approved respec ticket!"
         $ player.inventory.give("Respec Ticket", 1)
         $ _version = "Alpha-v26.3a"
 

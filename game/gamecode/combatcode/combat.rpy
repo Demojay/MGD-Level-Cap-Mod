@@ -266,7 +266,7 @@ init python:
         blankMon =  copy.deepcopy(MonsterDatabase[dataTarget])
         if IfTime("Night") == 1:
             if IfTime("Evening") == 1:
-                blankMon.giveOrTakePerk("Moonlit Glamor", 1)
+                blankMon.giveOrTakePerk("Moonlit Glamour", 1)
             elif IfTime("Midnight") == 1:
                 blankMon.giveOrTakePerk("Moonlit Mystique", 1)
             else:
@@ -459,6 +459,9 @@ label combatPlayer:
     $ stanceBreaking = 0
     $ target = -2
     $ targeting = 0
+    $ finalDamage = 0
+    $ statusEffectiveText = ""
+    $ recoilHit = 0
 
     $ skipAttack = 0
     hide kiss onlayer visualEffects
@@ -1342,16 +1345,21 @@ label combatEndTurn:
     $ attackerHisOrHer = getHisOrHer(player)
     $ attackerHimOrHer = getHimOrHer(player)
     $ attackerYouOrMonsterName = getYouOrMonsterName(player)
+    $ attacker = Monster(Stats())
     $ display = ""
 
 
 
 
 
-    if(player.statusEffects.aphrodisiac.duration > 0):
+    if(player.statusEffects.aphrodisiac.duration > 0):       
         $ player = applyPoison(player)
+        $ critText = ""
+        $ effectiveText = ""
+        $ statusEffectiveText = ""
         $ display = "Aphrodisiac courses through [ThePlayerName], arousing [AttackerHimOrHer] by [FinalDamage]!"
         call read from _call_read_10
+        $ finalDamage = 0
     $ display = ""
     if player.statusEffects.sleep.potency > 0:
         $ player = applySleepy(player)
@@ -1404,6 +1412,7 @@ label combatEndTurn:
         $ attackerHisOrHer = getHisOrHer(monsterEncounter[mi])
         $ attackerHimOrHer = getHimOrHer(monsterEncounter[mi])
         $ attackerYouOrMonsterName = getYouOrMonsterName(monsterEncounter[mi])
+        $ attacker = player
 
         $ foundLine = 0
         python:
@@ -1444,9 +1453,14 @@ label combatEndTurn:
 
 
         if(monsterEncounter[mi].statusEffects.aphrodisiac.duration > 0):
+            
             $ monsterEncounter[mi] = applyPoison(monsterEncounter[mi])
+            $ critText = ""
+            $ effectiveText = ""
+            $ statusEffectiveText = ""
             $ display = "Aphrodisiac courses through [AttackerName], arousing [AttackerHimOrHer] by [FinalDamage]."
             call read from _call_read_28
+            $ finalDamage = 0
         $ display = ""
         if monsterEncounter[mi].statusEffects.sleep.potency >= 1:
             $ monsterEncounter[mi] = applySleepy(monsterEncounter[mi])
@@ -1597,9 +1611,9 @@ label combatLoss:
     $ ttCombat = ""
     $ CombatFunctionEnemytarget = 0
     $ canRun = True
-    $ HoldingSceneForCombat = ""
+    $ HoldingSceneForCombat = Dialogue()
     $ HoldingLineForCombat = 0
-    $ HoldingDataLocForCombat = ""
+    $ HoldingDataLocForCombat = 0
     $ runAndStayInEvent = 0
     $ player = ClearNonPersistentEffects(player)
     hide screen ON_CombatMenuTooltip
@@ -1725,6 +1739,7 @@ label combatLossEnd:
     $ displayingScene = Dialogue()
     $ player = player.statusEffects.refresh(player)
     $ onGridMap = 0
+    $ textboxCGXAdjust = 0
     hide screen Gridmap
     hide screen GridmapPlayer
     hide screen GridmapNPCs
@@ -1812,43 +1827,46 @@ label combatWin:
 
     call TimeEvent(CardType="EndOfCombat", LoopedList=EndOfCombatList) from _call_TimeEvent_12
 
-    if (len((DefeatedEncounterMonsters[-1]).victoryScenes) > 0):
-        if (DefeatedEncounterMonsters[-1].victoryScenes[-1].theScene[0] != ""):
-            $ victoryScene = 1
-            if displayingScene != []:
-                if lineOfScene + 1 < len(displayingScene.theScene):
-                    $ HoldingScene = copy.deepcopy(displayingScene)
-                    $ HoldingLine = copy.deepcopy(lineOfScene) + 1
-                    $ HoldingDataLoc = copy.deepcopy(DataLocation)
+    if len(DefeatedEncounterMonsters) > 0: #this will (should) prevent the game from crashing when it starts a combat with no monsters by some means, it may still do funky things after that, but im not sure, this is not a proper fix to the issue with beris or ceris, however it occurs, but with how finnicky and hard to pin down the issue is this should be done, and may reveal more insights to whats going on with future potential reports on the issue
+        if (len((DefeatedEncounterMonsters[-1]).victoryScenes) > 0):
+            if (DefeatedEncounterMonsters[-1].victoryScenes[-1].theScene[0] != ""):
+                $ victoryScene = 1
+                if displayingScene != []:
+                    if lineOfScene + 1 < len(displayingScene.theScene):
+                        $ HoldingScene = copy.deepcopy(displayingScene)
+                        $ HoldingLine = copy.deepcopy(lineOfScene) + 1
+                        $ HoldingDataLoc = copy.deepcopy(DataLocation) #may also be soruce of crash?
 
-            #$ test = len(DefeatedEncounterMonsters[-1].victoryScenes[5].includes)
-            #"[test]"
+                #$ test = len(DefeatedEncounterMonsters[-1].victoryScenes[5].includes)
+                #"[test]"
 
-            $ displayTest = DefeatedEncounterMonsters[-1].victoryScenes
-            $ VicChosenScene = getTheEndScene(DefeatedEncounterMonsters[-1].victoryScenes, DefeatedEncounterMonsters[-1], monsterEncounter, DefeatedEncounterMonsters, lastAttack)
-            if VicChosenScene != -5:
-                $ DialogueIsFrom = "Monster"
-                python:
-                    for each in DefeatedEncounterMonsters:
-                        #print(each)
-                        SceneCharacters.append(each)
+                $ displayTest = DefeatedEncounterMonsters[-1].victoryScenes
+                $ VicChosenScene = getTheEndScene(DefeatedEncounterMonsters[-1].victoryScenes, DefeatedEncounterMonsters[-1], monsterEncounter, DefeatedEncounterMonsters, lastAttack)
+                if VicChosenScene != -5:
+                    $ DialogueIsFrom = "Monster"
+                    python:
+                        for each in DefeatedEncounterMonsters:
+                            #print(each)
+                            SceneCharacters.append(each)
 
-                $ displayingScene = DefeatedEncounterMonsters[-1].victoryScenes[VicChosenScene]
-                $ actorNames[0] =  DefeatedEncounterMonsters[-1].name
-            else:
-                $ displayingScene = [""]
+                    $ displayingScene = DefeatedEncounterMonsters[-1].victoryScenes[VicChosenScene]
+                    $ actorNames[0] =  DefeatedEncounterMonsters[-1].name
+                else:
+                    $ displayingScene = [""]
 
-            $ monsterEncounter = []
-            $ monsterEncounterCG = []
-            $ RoledCGOn = 0
-            $ CgRoleKeeper = []
-            $ lineOfScene = 0
-            $ combatItems = 0
-            $ runAndStayInEvent = 1
-            call displayScene from _call_displayScene_8
-            $ DialogueIsFrom = "Event"
-            $ victoryScene = 0
-
+                $ monsterEncounter = []
+                $ monsterEncounterCG = []
+                $ RoledCGOn = 0
+                $ textboxCGXAdjust = 0
+                $ CgRoleKeeper = []
+                $ lineOfScene = 0
+                $ combatItems = 0
+                $ runAndStayInEvent = 1
+                call displayScene from _call_displayScene_8
+                $ DialogueIsFrom = "Event"
+                $ victoryScene = 0
+    else:
+        $ noDoubleRewards = 1
 
 
 label PostCombatWin:
@@ -1883,6 +1901,7 @@ label PostCombatWin:
     $ DefeatedEncounterMonsters = []
     $ SceneCharacters = []
     $ RoledCGOn = 0
+    $ textboxCGXAdjust = 0
     $ CgRoleKeeper = []
     $ ttCombat = ""
     #give rewards, Exp

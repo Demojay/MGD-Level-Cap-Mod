@@ -867,6 +867,16 @@ label resumeSceneAfterCombat:
                                 $ display = displayingScene.theScene[lineOfScene]
                             else:
                                 $ lineOfScene += 1
+                elif checking == "ArousalByPercent":
+                    while displayingScene.theScene[lineOfScene] != "EndLoop":
+                        $ lineOfScene += 1
+                        if displayingScene.theScene[lineOfScene] != "EndLoop":
+                            if player.stats.hp >= player.stats.max_true_hp*float(displayingScene.theScene[lineOfScene])*0.01 and linefound == 0:
+                                $ linefound = 1
+                                $ lineOfScene += 1
+                                $ display = displayingScene.theScene[lineOfScene]
+                            else:
+                                $ lineOfScene += 1                                
                 elif checking == "MaxArousal":
                     while displayingScene.theScene[lineOfScene] != "EndLoop":
                         $ lineOfScene += 1
@@ -887,6 +897,16 @@ label resumeSceneAfterCombat:
                                 $ display = displayingScene.theScene[lineOfScene]
                             else:
                                 $ lineOfScene += 1
+                elif checking == "EnergyByPercent":
+                    while displayingScene.theScene[lineOfScene] != "EndLoop":
+                        $ lineOfScene += 1
+                        if displayingScene.theScene[lineOfScene] != "EndLoop":
+                            if player.stats.ep >= player.stats.max_true_ep*float(displayingScene.theScene[lineOfScene])*0.01 and linefound == 0:
+                                $ linefound = 1
+                                $ lineOfScene += 1
+                                $ display = displayingScene.theScene[lineOfScene]
+                            else:
+                                $ lineOfScene += 1   
                 elif checking == "MaxEnergy":
                     while displayingScene.theScene[lineOfScene] != "EndLoop":
                         $ lineOfScene += 1
@@ -1108,6 +1128,9 @@ label resumeSceneAfterCombat:
             $ LastLine = copy.deepcopy(display)
             if displayingScene.theScene[lineOfScene] != "StartCombat" and display != "EndLoop":
                 call read from _call_read_11
+                $ finalDamage = 0
+                $ statusEffectiveText = ""
+                $ recoilHit = 0
 
         $ lineOfScene += 1
 

@@ -20,6 +20,21 @@ init python:
     favorPool = -1
     favorStrain = 0
 
+    textboxCGXAdjust = 0
+
+    lastMonDamage = 0
+    lastMonDamageCrit = ""
+    lastMonDamageWeak = ""
+    lastMonStatusRes = ""
+    lastMonRecoil = 0
+    recoilHit = 0
+
+    lastPlayerDamage = 0
+    lastPlayerDamageCrit = ""
+    lastPlayerDamageWeak = ""
+    lastPlayerStatusRes = ""
+    lastPlayerRecoil = 0
+
     #config.rollback_length = 10
     config.longpress_vibrate = 0.1
     config.quicksave_slots = 12
@@ -175,6 +190,7 @@ init python:
     progressDisplay = 0
     playerOrgasmLine = ""
     monsterOrgasmLine = ""
+    PostOrgasmLine = ""
 
     lineBank = ["Do your best!", "Can't we just hold hands?", "Or maybe, it's a nightmare?", "Free adventuring school!", "Why would you resist love?", "The goddess will protect you.", "Hot succubi are in your area.♥", "Don't stay up {i}too{/i} late.♥", "Ten out of ten mimics say you should open every treasure chest.", "Relax and enjoy.♥", "Awaken a new kink, today!", "Not guaranteed to give you lewd dreams.", "Cozy, sexy, and more!", "No imps were harmed in the making of this production.", "Surrendering is a fun option.♥", "A manticore is rapidly approaching your location.", "There is no secret slime society.", "Harpy Delivery is not responsible for any damage to your mail.", "Don't forget to stop and smell the sweet alraunes.♥", "Being a hero never felt so good.♥"]
 
