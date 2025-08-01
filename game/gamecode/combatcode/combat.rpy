@@ -1469,7 +1469,15 @@ label combatEndTurn:
             if monsterEncounter[mi].stats.ep <= 0:
                 $ monsterEncounter[mi].statusEffects.sleep.duration = getSleepingDuration(monsterEncounter[mi])
                 $ monsterEncounter[mi].statusEffects.sleep.potency = -99
-                $ display = "With no energy left, [AttackerName]'s eyes close completely as [AttackerHeOrShe] drifts off into a peaceful slumber..."
+                $ foundLine = 0
+                $ display = ""
+                python:
+                    for each in monsterEncounter[mi].combatDialogue:
+                        if each.lineTrigger == "Sleeping":
+                            if foundLine == 0:
+                                display = each.theText[renpy.random.randint(-1, len(each.theText)-1)]
+                                foundLine = 1
+                $ display += "With no energy left, [AttackerName]'s eyes close completely as [AttackerHeOrShe] drifts off into a peaceful slumber..."
                 if display != "":
                     call read from _call_read_5
                 $ monsterEncounter[mi].stats.ep += int(math.floor(monsterEncounter[mi].stats.max_true_ep))
@@ -2536,6 +2544,7 @@ label combatSurrender:
     window hide
     $ combatChoice = copy.deepcopy(getSkill(" ", SkillsDatabase))
     $ player.statusEffects.surrender.duration = 1
+    $ spiritLostO = SpiritCalulation(player, 1) #this is just here to make sure the blueballs perks esplode on loss
     $ player.stats.sp = 0
     $ target = 0
 

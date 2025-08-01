@@ -461,12 +461,12 @@ screen ON_PerkListDisplay():
         if len(player.perks) == 0:
             use ON_SingleDisplay("None... yet!", "")
 
-screen ON_PerkDisplay(perkTab, columns=1):
+screen ON_PerkDisplay(perksTab, columns=1):
     $ perkDisplayItems = []
     $ spaceNext = 0
     for perk in player.perks:
-        if (perkTab == 1 and perk.PlayerCanPurchase == "Yes" or
-            perkTab == 2 and perk.PlayerCanPurchase == "No"):
+        if (perksTab == 1 and perk.PlayerCanPurchase == "Yes" or
+            perksTab == 2 and perk.PlayerCanPurchase == "No"):
             $ perkDisplayItems.append(perk)
 
     use ON_Scrollbox(""):
@@ -496,13 +496,13 @@ screen ON_ResistanceListDisplay():
         use ON_SingleStatDisplay("Paralysis:", "[player.resistancesStatusEffects.Paralysis]%", tooltipDisplay="Your resistance chance to being afflicted by paralysis and further increases to its potency.")
         use ON_SingleStatDisplay("Debuff:", "[player.resistancesStatusEffects.Debuff]%", tooltipDisplay="Your resistance chance to being afflicted by general debuffs. Not including the other resistance types!")
 
-screen ON_InventoryDisplay(inventoryType, columns=1):
+screen ON_InventoryDisplay(inventoryType, runeOrAccessoryType, columns=1):
     $ items = []
     $ spaceNext = 0
     for item in player.inventory.items:
         if (inventoryType == "Consumables" and (item.itemType == "Consumable" or item.itemType == "DissonantConsumable" or item.itemType == "CombatConsumable" or item.itemType == "NotCombatConsumable")
-            or inventoryType == "RuneOrAccessory" and (item.itemType == "Rune" and RuneOrAccessory == "Rune")
-            or inventoryType == "RuneOrAccessory" and (item.itemType == "Accessory"  and RuneOrAccessory == "Accessory")
+            or inventoryType == "RuneOrAccessory" and (item.itemType == "Rune" and runeOrAccessoryType == "Rune")
+            or inventoryType == "RuneOrAccessory" and (item.itemType == "Accessory"  and runeOrAccessoryType == "Accessory")
             or inventoryType == "KeyItems" and (item.itemType == "Key")
             or inventoryType == "Loot" and (item.itemType == "Loot")):
                 $ items.append(item)
@@ -521,12 +521,10 @@ screen ON_InventoryDisplay(inventoryType, columns=1):
         add "gui/framedivider211partial.png" xalign pct
 
 init python:
-    inventoryTab = "Consumables"
-    perkTab = 1
     characterMenuCanHover = True
     charSticky = ""
 
-screen ON_CharacterDisplayScreen(TabToUse="Stats"):
+screen ON_CharacterDisplayScreen(UseTab="Stats", UseInventoryMenuTab="Consumables", UseRuneOrAccessoryTab="Rune"):
     $ _game_menu_screen = "ON_CharacterDisplayScreen"
 
     tag menu
@@ -534,7 +532,11 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
     $ tt = GetTooltip()
     default stickyDone = True
 
-    default characterMenuTab = TabToUse
+    default perksTab = 1
+    
+    default InventoryMenuTab = UseInventoryMenuTab
+    default RuneOrAccessoryTab = UseRuneOrAccessoryTab
+    default characterMenuTab = UseTab
 
     $ relatedStat = player.stats.getStat("Power")
     $ powerBoost = float("{0:.2f}".format(getStatFlatBonus(relatedStat)))
@@ -687,7 +689,7 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
                     selected_idle "gui/tab_selected.png" selected_hover "gui/tab_selected.png"
                     insensitive "gui/tab_insensitive.png"
                     action [SensitiveIf(InventoryAvailable == True), SelectedIf(characterMenuTab == "Inventory"),
-                    SetScreenVariable("characterMenuTab", "Inventory"), SetScreenVariable("theInventoryTab", "Consumables"), SetVariable("inventoryTab", "Consumables")]
+                    SetScreenVariable("characterMenuTab", "Inventory")]
                     alt "Inventory"
                 text "Inventory" xalign 0.5 yalign 0.5
 
@@ -705,11 +707,11 @@ screen ON_CharacterDisplayScreen(TabToUse="Stats"):
             if characterMenuTab == "Stats":
                 use stats_tab
             elif characterMenuTab == "Perks":
-                use perks_tab
+                use perks_tab(perksTab=perksTab)
             elif characterMenuTab == "Skills" and InventoryAvailable:
                 use skills_tab
             elif characterMenuTab == "Inventory" and InventoryAvailable:
-                use inventory_tab
+                use inventory_tab(InventoryMenuTab=InventoryMenuTab, RuneOrAccessoryTab=RuneOrAccessoryTab)
             else:
                 $ characterMenuTab = "Stats"
                 use stats_tab
@@ -794,7 +796,7 @@ screen stats_tab():
                 ysize 352
                 use ON_ResistanceListDisplay
 
-screen perks_tab():
+screen perks_tab(perksTab):
     hbox:
         vbox:
             hbox:
@@ -804,8 +806,9 @@ screen perks_tab():
                     imagebutton:
                         idle "gui/smalltab_idle.png"
                         hover "gui/smalltab_hover.png"
-                        insensitive "gui/smalltab_selected.png"
-                        action [SensitiveIf(perkTab != 1), SetVariable ("perkTab", 1)]
+                        selected_idle "gui/smalltab_selected.png"
+                        selected_hover "gui/smalltab_selected.png"
+                        action [SetScreenVariable("perksTab", 1)]
                         alt "Level Up Perks"
                     text "Level Up" xalign 0.5 yalign 0.5 size 22
                 fixed:
@@ -813,8 +816,9 @@ screen perks_tab():
                     imagebutton:
                         idle "gui/smalltab_idle.png"
                         hover "gui/smalltab_hover.png"
-                        insensitive "gui/smalltab_selected.png"
-                        action [SensitiveIf(perkTab != 2), SetVariable ("perkTab", 2)]
+                        selected_idle "gui/smalltab_selected.png"
+                        selected_hover "gui/smalltab_selected.png"
+                        action [SetScreenVariable("perksTab", 2)]
                         alt "Other Perks"
                     text "Other" xalign 0.5 yalign 0.5 size 22
 
@@ -825,17 +829,17 @@ screen perks_tab():
                     xsize 1080 - gui.scrollbar_size
                     ysize 320
                     if len(player.perks) == 0:
-                        use ON_PerkDisplay(perkTab, 1)
+                        use ON_PerkDisplay(perksTab, 1)
                     else:
-                        use ON_PerkDisplay(perkTab, 2)
+                        use ON_PerkDisplay(perksTab, 2)
             else:
                 fixed:
                     xsize 1080 - gui.scrollbar_size
                     ysize 320
                     if len(player.perks) == 0:
-                        use ON_PerkDisplay(perkTab, 1)
+                        use ON_PerkDisplay(perksTab, 1)
                     else:
-                        use ON_PerkDisplay(perkTab, 2)
+                        use ON_PerkDisplay(perksTab, 2)
 
         add Solid("#ef75c3") xsize 3 ysize 360
 
@@ -845,9 +849,9 @@ screen perks_tab():
             textbutton "---" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
             textbutton "Alphabetical" text_size on_listTextSize action [SortList(player.perks, lambda x: x.name)] xalign 0.5
             textbutton "Reverse Alphabetical" text_size on_listTextSize action [SortList(player.perks, lambda x: x.name, reverse=True)] xalign 0.5
-            if perkTab == 1:
+            if perksTab == 1:
                 textbutton "Highest Level Req" text_size on_listTextSize action [SortList(player.perks, lambda x: (x.StatReqAmount, x.LevelReq), reverse=True)] xalign 0.5
-            if perkTab == 1:
+            if perksTab == 1:
                 textbutton "Lowest Level Req" text_size on_listTextSize action [SortList(player.perks, lambda x: (x.StatReqAmount, x.LevelReq))] xalign 0.5
 
 screen skills_tab():
@@ -877,8 +881,7 @@ screen skills_tab():
                     $ showText = player.skillList[swappingSkill].name
                     textbutton "[showText]" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
 
-screen inventory_tab():
-    default theInventoryTab = "Consumables"
+screen inventory_tab(InventoryMenuTab, RuneOrAccessoryTab):
     hbox:
         vbox:
             hbox:
@@ -886,25 +889,26 @@ screen inventory_tab():
                     xsize 0 ysize 36
                 textbutton _("Consumables"):
                     style "tab" text_style "text_tab" text_size 23 xminimum 192
-                    action [SelectedIf(SetScreenVariable("theInventoryTab", "Consumables")), SetVariable("inventoryTab", "Consumables")]
+                    action [SelectedIf(SetScreenVariable("InventoryMenuTab", "Consumables"))]
                 textbutton _("Equipment"):
                     style "tab" text_style "text_tab" text_size 23 xminimum 192
-                    action [SelectedIf(SetScreenVariable("theInventoryTab", "Equipment")), SetVariable("inventoryTab", "RuneOrAccessory"), SetVariable("RuneOrAccessory", "Rune")]
+                    action [SelectedIf(SetScreenVariable("InventoryMenuTab", "RuneOrAccessory")), SetScreenVariable("RuneOrAccessoryTab", "Rune")]
                 textbutton _("Key Items"):
                     style "tab" text_style "text_tab" text_size 23 xminimum 192
-                    action [SelectedIf(SetScreenVariable("theInventoryTab", "Key Items")), SetVariable("inventoryTab", "KeyItems")]
+                    action [SelectedIf(SetScreenVariable("InventoryMenuTab", "KeyItems"))]
                 textbutton _("Loot"):
                     style "tab" text_style "text_tab" text_size 23
-                    action [SelectedIf(SetScreenVariable("theInventoryTab", "Loot")), SetVariable("inventoryTab", "Loot")]
-                if inventoryTab == "RuneOrAccessory":
+                    action [SelectedIf(SetScreenVariable("InventoryMenuTab", "Loot"))]
+                if InventoryMenuTab == "RuneOrAccessory":
                     fixed:
                         xsize 162 ysize 36
                         xoffset 30
                         imagebutton:
                             idle "gui/smallertab_idle_outline.png"
                             hover "gui/smallertab_hover_outline.png"
-                            insensitive "gui/smallertab_selected.png"
-                            action [SensitiveIf(RuneOrAccessory != "Rune"), SetVariable ("RuneOrAccessory", "Rune")]
+                            selected_idle "gui/smallertab_selected.png"
+                            selected_hover "gui/smallertab_selected.png"
+                            action [SelectedIf(SetScreenVariable("RuneOrAccessoryTab", "Rune"))]
                             alt "Runes"
                         text "Runes" xalign 0.5 yalign 0.5 size 22
                     fixed:
@@ -913,8 +917,9 @@ screen inventory_tab():
                         imagebutton:
                             idle "gui/smallertab_idle_outline.png"
                             hover "gui/smallertab_hover_outline.png"
-                            insensitive "gui/smallertab_selected.png"
-                            action [SensitiveIf(RuneOrAccessory != "Accessory"), SetVariable ("RuneOrAccessory", "Accessory")]
+                            selected_idle "gui/smallertab_selected.png"
+                            selected_hover "gui/smallertab_selected.png"
+                            action [SelectedIf(SetScreenVariable("RuneOrAccessoryTab", "Accessory"))]
                             alt "Accessories"
                         text "Accessories" xalign 0.5 yalign 0.5 size 22
 
@@ -924,23 +929,23 @@ screen inventory_tab():
                 fixed:
                     xsize 1080 - gui.scrollbar_size
                     ysize 320
-                    use ON_InventoryDisplay(inventoryTab, 2)
+                    use ON_InventoryDisplay(InventoryMenuTab, RuneOrAccessoryTab, columns=2)
             else:
                 fixed:
                     xsize 1080 - gui.scrollbar_size
                     ysize 320
-                    use ON_InventoryDisplay(inventoryTab, 2)
+                    use ON_InventoryDisplay(InventoryMenuTab, RuneOrAccessoryTab, columns=2)
 
         add Solid("#ef75c3") xsize 3 ysize 360
         vbox:
             xoffset 34
             text "Sort Options" xalign 0.5
             textbutton "---" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
-            textbutton "Alphabetical" text_size on_listTextSize action [SortList(player.inventory.items, lambda x: x.name, sortingItems=inventoryTab, runeOrAccessory=RuneOrAccessory)] xalign 0.5
-            textbutton "Reverse Alphabetical" text_size on_listTextSize action [SortList(player.inventory.items, lambda x: x.name, reverse=True, sortingItems=inventoryTab, runeOrAccessory=RuneOrAccessory)] xalign 0.5
-            if inventoryTab != "KeyItems":
-                textbutton "Highest Value" text_size on_listTextSize action [SortList(player.inventory.items, lambda x: x.cost, reverse=True, sortingItems=inventoryTab, runeOrAccessory=RuneOrAccessory)] xalign 0.5
-                textbutton "Lowest Value" text_size on_listTextSize action [SortList(player.inventory.items, lambda x: x.cost, sortingItems=inventoryTab, runeOrAccessory=RuneOrAccessory)] xalign 0.5
+            textbutton "Alphabetical" text_size on_listTextSize action [SortList(player.inventory.items, lambda x: x.name, sortingItems=InventoryMenuTab, runeOrAccessory=RuneOrAccessoryTab)] xalign 0.5
+            textbutton "Reverse Alphabetical" text_size on_listTextSize action [SortList(player.inventory.items, lambda x: x.name, reverse=True, sortingItems=InventoryMenuTab, runeOrAccessory=RuneOrAccessoryTab)] xalign 0.5
+            if InventoryMenuTab != "KeyItems":
+                textbutton "Highest Value" text_size on_listTextSize action [SortList(player.inventory.items, lambda x: x.cost, reverse=True, sortingItems=InventoryMenuTab, runeOrAccessory=RuneOrAccessoryTab)] xalign 0.5
+                textbutton "Lowest Value" text_size on_listTextSize action [SortList(player.inventory.items, lambda x: x.cost, sortingItems=InventoryMenuTab, runeOrAccessory=RuneOrAccessoryTab)] xalign 0.5
             if manualSort != "Items":
                 textbutton "Manual Sorting" text_size on_listTextSize action [Function(ActivateManualSorting, "Items")] xalign 0.5
             else:

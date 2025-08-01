@@ -22,6 +22,10 @@ init python:
 
     textboxCGXAdjust = 0
 
+    historyDisplay = ""
+
+    perkLenCheck = 0
+
     lastMonDamage = 0
     lastMonDamageCrit = ""
     lastMonDamageWeak = ""
@@ -412,8 +416,8 @@ init python:
 init:
     define config.history_current_dialogue = False
     $ config.save_dump = False
-    #$ config.console = True
-    #$ config.developer = True
+    # $ config.console = True
+    # $ config.developer = True
     default _game_menu_screen = None
 
 
@@ -451,54 +455,38 @@ init:
     call loadDatabase from _call_loadDatabase_2
 
 
-    $ PlayerDisplay = "Body"
-    $ PlayerBodyPicker = True
-    default body_value = ColorPicker(340, 340, "#FFFFFF")
+    $ player_display = "Body"
+    $ PlayerPicker = True
 
-    default PlayerSaturation = 1.0
-    default PlayerOpacity = 1.0
+    $ body_tint = ColorPicker(340, 340, "#FFFFFF")
+    $ hair_color_l = ColorPicker(340, 340, "#f5d6c9")
+    $ hair_color_d = ColorPicker(340, 340, "#150600")
+
+    $ player_satur = 1.0
+    $ player_opac = 1.0
+    $ player_hue_bar = 1.0
 
     transform CharacterPicker:
-        matrixcolor TintMatrix(body_value.color)
+        matrixcolor TintMatrix(body_tint.color)
     transform CharacterOpacity:
-        matrixcolor OpacityMatrix(PlayerOpacity)
+        matrixcolor OpacityMatrix(player_opac)
     transform CharacterSaturation:
-        matrixcolor SaturationMatrix(PlayerSaturation, (0.2126, 0.7152, 0.0722))
-
-    default PlayerHue = 1.0
-    default PlayerHueSaturation = 1.0
-    default PlayerHueOpacity = 1.0
-
+        matrixcolor SaturationMatrix(player_satur, (0.2126, 0.7152, 0.0722))
+    transform CharacterHairPicker:
+        matrixcolor ColorizeMatrix(hair_color_d.color, hair_color_l.color)
     transform CharacterHue:
-        matrixcolor HueMatrix(PlayerHue)
-    transform CharacterHueOpacity:
-        matrixcolor OpacityMatrix(PlayerHueOpacity)
-    transform CharacterHueSaturation:
-        matrixcolor SaturationMatrix(PlayerHueSaturation, (0.2126, 0.7152, 0.0722))
+        matrixcolor TintMatrix(body_tint.color)
 
-    default PlayerSilhouettePicker = True
-    default silhouette_value = ColorPicker(340, 340, "#993577")
-
-    default PlayerSilSaturation = 1.0
-    default PlayerSilOpacity = 0.9
+    $ silhouette_color = ColorPicker(340, 340, "#993577")
+    $ player_sil_satur = 1.0
+    $ player_sil_opac = 0.9
 
     transform CharacterSilPicker:
-        matrixcolor ColorizeMatrix(silhouette_value.color, silhouette_value.color)
+        matrixcolor ColorizeMatrix(silhouette_color.color, silhouette_color.color)
     transform CharacterSilOpacity:
-        matrixcolor OpacityMatrix(PlayerSilOpacity)
+        matrixcolor OpacityMatrix(player_sil_opac)
     transform CharacterSilSaturation:
-        matrixcolor SaturationMatrix(PlayerSilSaturation, (0.2126, 0.7152, 0.0722))
-
-    default PlayerSilHue = 1.0
-    default PlayerSilHueSaturation = 1.0
-    default PlayerSilHueOpacity = 0.9
-
-    transform CharacterSilHue:
-        matrixcolor HueMatrix(PlayerSilHue)
-    transform CharacterSilHueOpacity:
-        matrixcolor OpacityMatrix(PlayerSilHueOpacity)
-    transform CharacterSilHueSaturation:
-        matrixcolor SaturationMatrix(PlayerSilHueSaturation, (0.2126, 0.7152, 0.0722))
+        matrixcolor SaturationMatrix(player_sil_satur, (0.2126, 0.7152, 0.0722))
 
 
     $ Quake = Shake((0, 0, 0, 0), 6000.0, dist=5)

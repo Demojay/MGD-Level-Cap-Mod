@@ -242,8 +242,11 @@ label JsonFuncAdvanceTime:
     return
 label JsonFuncRestPlayer:
     $ lineOfScene += 1
-    if displayingScene.theScene[lineOfScene] == "DelayNotifications":
-        $ timeNotify = 1
+    if lineOfScene < len(displayingScene.theScene):
+        if displayingScene.theScene[lineOfScene] == "DelayNotifications":
+            $ timeNotify = 1
+        else:
+            $ lineOfScene -= 1
     else:
         $ lineOfScene -= 1
     call advanceTime(TimeIncrease=1) from _call_advanceTime_1 

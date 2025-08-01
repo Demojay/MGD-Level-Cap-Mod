@@ -35,6 +35,17 @@ label after_load:
         hide screen ON_MapMenu onlayer master
         $ _version = "Alpha-v26.5"
 
+    if (_version in ["Alpha-v26.5b", "Alpha-v26.5a", "Alpha-v26.5"]) or _version.startswith("Alpha-v26.6") or _version.startswith("Alpha-v26.7") or _version.startswith("Alpha-v26.8") or _version.startswith("Alpha-v26.9"):
+        $ i = 0
+        python:
+            for each in player.perks: 
+                if each.name == "Mara's Boytoy":
+                    player.giveOrTakePerk(each.name, -1)
+                    player.giveOrTakePerk("Mara's Boy Toy", 1)
+                player.perks[i].Update()
+                i +=1
+        $ _version = "Alpha-v27"
+
     if onGridMap == 0:
         hide screen gridMoveKeys
 

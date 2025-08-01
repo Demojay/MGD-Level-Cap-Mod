@@ -82,7 +82,7 @@ label loadDatabase:
         # ...at the end of the loop/process you're benchmarking... (Python 3)
         # benchtime = time.perf_counter()
         # print("Section Name Here:", benchtime - benchstart)
-        ###############################FETISH LIST###############################
+    ############################### LOAD FETISHES #############################
         if loadingDatabaseType == 0:
             for each in dynamic_loader(".*/Fetishes/.*"):
                 #print(each)
@@ -1782,8 +1782,8 @@ label loadDatabase:
 
             for eachNew in player.perks:
                 if eachNew.name == "Caressing Dynamo":
-                    player.giveOrTakePerk(each.name, -1)
-                    player.giveOrTakePerk("Seductive Dynamo", 1)
+                    player.giveOrTakePerk(eachNew.name, -1)
+                    player.giveOrTakePerk("Seductive Dynamo", 1) 
                 player.perks[i].Update()
                 i +=1
 
@@ -1859,6 +1859,7 @@ label loadDatabase:
                         if each.name == eachNew.name:
                             player.FetishList[i].Level = eachNew.Level
                 i+=1
+    ############################ CLEANUP, MISC ################################
         if renpy.windows or renpy.linux:
             if validateJsons and not loadingDatabaseType:
                 persistent.validatorAtReload = False
