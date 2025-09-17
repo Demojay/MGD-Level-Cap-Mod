@@ -101,9 +101,8 @@ label JsonFuncGiveSkill:
     $ lineOfScene += 1
     $ check = 1
     python:
-        for each in player.skillList:
-            if each.name == displayingScene.theScene[lineOfScene]:
-                check = 0
+        skill_name = displayingScene.theScene[lineOfScene]
+        check = int(not any(skill.name == skill_name for skill in player.skillList))
     if check == 1:
         $ fetchSkill = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
         $ player.learnSkill(SkillsDatabase[fetchSkill])
@@ -114,9 +113,8 @@ label JsonFuncGiveSkillQuietly:
     $ lineOfScene += 1
     $ check = 1
     python:
-        for each in player.skillList:
-            if each.name == displayingScene.theScene[lineOfScene]:
-                check = 0
+        skill_name = displayingScene.theScene[lineOfScene]
+        check = int(not any(skill.name == skill_name for skill in player.skillList))
     if check == 1:
         $ fetchSkill = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
         $ player.learnSkill(SkillsDatabase[fetchSkill])
@@ -130,9 +128,8 @@ label JsonFuncGivePerk:
     $ lineOfScene += 1
     $ check = 1
     python:
-        for each in player.perks:
-            if each.name == displayingScene.theScene[lineOfScene]:
-                check = 0
+        perk_name = displayingScene.theScene[lineOfScene]
+        check = int(not any(perk.name == perk_name for perk in player.perks))
     if check == 1:
         $ player.giveOrTakePerk(displayingScene.theScene[lineOfScene], 1)
         $ display = "Got the " + displayingScene.theScene[lineOfScene] + " perk!"
@@ -142,9 +139,8 @@ label JsonFuncGivePerkQuietly:
     $ lineOfScene += 1
     $ check = 1
     python:
-        for each in player.perks:
-            if each.name == displayingScene.theScene[lineOfScene]:
-                check = 0
+        perk_name = displayingScene.theScene[lineOfScene]
+        check = int(not any(perk.name == perk_name for perk in player.perks))
     if check == 1:
         $ player.giveOrTakePerk(displayingScene.theScene[lineOfScene], 1)
     return
@@ -161,9 +157,8 @@ label JsonFuncGiveSkillThatWasTemporarilyRemoved:
     $ lineOfScene += 1
     $ check = 1
     python:
-        for each in player.skillList:
-            if each.name == displayingScene.theScene[lineOfScene]:
-                check = 0
+        skill_name = displayingScene.theScene[lineOfScene]
+        check = int(not any(skill.name == skill_name for skill in player.skillList))
     if check == 1:
         python:
             foundS = 0
@@ -188,9 +183,8 @@ label JsonFuncRemovePerk:
     $ lineOfScene += 1
     $ check = 0
     python:
-        for each in player.perks:
-            if each.name == displayingScene.theScene[lineOfScene]:
-                check = 1
+        perk_name = displayingScene.theScene[lineOfScene]
+        check = int(any(perk.name == perk_name for perk in player.perks))
     if check == 1:
         $ player.giveOrTakePerk(displayingScene.theScene[lineOfScene], -1)
         $ display = "Lost the " + displayingScene.theScene[lineOfScene] + " perk!"
@@ -200,9 +194,8 @@ label JsonFuncRemovePerkQuietly:
     $ lineOfScene += 1
     $ check = 0
     python:
-        for each in player.perks:
-            if each.name == displayingScene.theScene[lineOfScene]:
-                check = 1
+        perk_name = displayingScene.theScene[lineOfScene]
+        check = int(any(perk.name == perk_name for perk in player.perks))
     if check == 1:
         $ player.giveOrTakePerk(displayingScene.theScene[lineOfScene], -1)
     return
@@ -278,7 +271,7 @@ label JsonFuncRemoveMonster:
                 player.removeStanceByName(monStance.Stance)
 
     if monsterEncounter[CombatFunctionEnemytarget].restraintOnLoss[0] != "":
-        $ restrainholdyLine = copy.deepcopy(lineOfScene)
+        $ restrainholdyLine = copy.copy(lineOfScene)
         $ restrainholdyScene = copy.deepcopy(displayingScene)
         $ restrainholdyData = copy.deepcopy(DataLocation)
         $ display = monsterEncounter[CombatFunctionEnemytarget].restraintOnLoss[renpy.random.randint(-1, len(monsterEncounter[CombatFunctionEnemytarget].restraintOnLoss)-1)]

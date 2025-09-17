@@ -18,7 +18,7 @@ label playerClass:
                 Virility = math.floor(Virility)
                 Virility = int(Virility)
             else:
-                Virility = copy.deepcopy(heldVirility)
+                Virility = copy.copy(heldVirility)
 
             return Virility
 
@@ -29,10 +29,10 @@ label playerClass:
 
         class Player:
             def __init__(self, name="", gender="male", skillList=[], perks=[], stats=Stats(), inventory=Inventory(), statPoints = 5,
-                         BodySensitivity=BodySensitivity(), statusEffects=StatusEffects(), species="Player",
-                         FetishList = [Fetish("Sex", 0), Fetish("Oral", 0), Fetish("Breasts", 0), Fetish("Ass", 0)],
-                         combatStance=[CombatStance()], lvlUps=[], resistancesStatusEffects=ResistancesStatusEffects(),
-                         restraintStruggle=[""], restraintStruggleCharmed=[""], restraintEscaped=[""], restraintEscapedFail=[""], restrainer=Stats(), perkPoints=0):
+                        BodySensitivity=BodySensitivity(), statusEffects=StatusEffects(), species="Player",
+                        FetishList = [Fetish("Sex", 0), Fetish("Oral", 0), Fetish("Breasts", 0), Fetish("Ass", 0)],
+                        combatStance=[CombatStance()], lvlUps=[], resistancesStatusEffects=ResistancesStatusEffects(),
+                        restraintStruggle=[""], restraintStruggleCharmed=[""], restraintEscaped=[""], restraintEscapedFail=[""], restrainer=Stats(), perkPoints=0):
                 self.name=name
                 self.gender=gender
                 self.skillList = skillList
@@ -462,11 +462,11 @@ label playerClass:
 
                 global hpDeficit
                 if hpDeficit < 0:
-                        self.stats.max_true_hp = copy.deepcopy(hpDeficit)
+                        self.stats.max_true_hp = copy.copy(hpDeficit)
                         hpDeficit = 0
                 global epDeficit
                 if epDeficit < 0:
-                        self.stats.max_true_ep = copy.deepcopy(epDeficit)
+                        self.stats.max_true_ep = copy.copy(epDeficit)
                         epDeficit = 0
 
 
@@ -475,7 +475,7 @@ label playerClass:
                 trueWillpower = self.stats.Willpower - self.getStatBonusReduction("Willpower")
                 trueInt = self.stats.Int  - self.getStatBonusReduction("Intelligence")
 
-                excessEnergy = copy.deepcopy(self.stats.bonus_ep)
+                excessEnergy = copy.copy(self.stats.bonus_ep)
 
                 self.stats.bonus_hp = 0
                 self.stats.bonus_ep = 0
@@ -495,10 +495,10 @@ label playerClass:
 
 
                 if self.stats.max_true_hp < 1:
-                        hpDeficit = copy.deepcopy(self.stats.max_true_hp)
+                        hpDeficit = copy.copy(self.stats.max_true_hp)
                         self.stats.max_true_hp = 1
                 if self.stats.max_true_ep < 1:
-                        epDeficit = copy.deepcopy(self.stats.max_true_ep)
+                        epDeficit = copy.copy(self.stats.max_true_ep)
                         self.stats.max_true_ep = 1
 
 
@@ -540,24 +540,24 @@ label playerClass:
                     if aquiredPerk.PerkType[p] == "GainEnergy" or aquiredPerk.PerkType[p] == "Gain Energy":
                         global epDeficit
                         if epDeficit < 0:
-                                self.stats.max_true_ep = copy.deepcopy(epDeficit)
+                                self.stats.max_true_ep = copy.copy(epDeficit)
                                 hpDeficit = 0
                         self.stats.max_ep += aquiredPerk.EffectPower[p] * GiveOrTake
                         player.CalculateStatBoost()
                         if GiveOrTake > 0:
                             self.stats.ep += aquiredPerk.EffectPower[p] * GiveOrTake
                         if self.stats.max_true_ep < 1:
-                                hpDeficit = copy.deepcopy(self.stats.max_true_ep)
+                                hpDeficit = copy.copy(self.stats.max_true_ep)
                                 self.stats.max_true_ep = 1
                     if aquiredPerk.PerkType[p] == "GainArousal" or aquiredPerk.PerkType[p] == "Gain Arousal":
                         global hpDeficit
                         if hpDeficit < 0:
-                                self.stats.max_true_hp = copy.deepcopy(hpDeficit)
+                                self.stats.max_true_hp = copy.copy(hpDeficit)
                                 hpDeficit = 0
                         self.stats.max_hp += aquiredPerk.EffectPower[p] * GiveOrTake
                         player.CalculateStatBoost()
                         if self.stats.max_true_hp < 1:
-                                hpDeficit = copy.deepcopy(self.stats.max_true_hp)
+                                hpDeficit = copy.copy(self.stats.max_true_hp)
                                 self.stats.max_true_hp = 1
 
                     if aquiredPerk.PerkType[p] == "GiveSensitivityPoints" or aquiredPerk.PerkType[p] == "Give Sensitivity Points":

@@ -306,6 +306,7 @@ label combat:
     $ skipTargetOrgasm = 0
     $ skipAttackOrgasm = 0
     $ triggeredDict = {}
+    $ recoilHitCheck = 0 # ran into a crash in combat functions where this wasn't definied for some reason so I put this here.
     $ m = 0
     $ monInititive = []
     $ itemChoice = Item("Blank", "Null", 0)
@@ -1214,8 +1215,8 @@ label combatDisplay:
 
     $ holdStance = copy.deepcopy(player.combatStance)
     $ holdPlayerStatus = copy.deepcopy(player.statusEffects)
-    $ holdRestrain = copy.deepcopy(player.statusEffects.restrained.duration)
-    $ holdStunned = copy.deepcopy(player.statusEffects.stunned.duration)
+    $ holdRestrain = copy.copy(player.statusEffects.restrained.duration)
+    $ holdStunned = copy.copy(player.statusEffects.stunned.duration)
 
     $ monSkillChoice = []
     while m < len(monsterEncounter):#who acts first
@@ -1842,7 +1843,7 @@ label combatWin:
                 if displayingScene != []:
                     if lineOfScene + 1 < len(displayingScene.theScene):
                         $ HoldingScene = copy.deepcopy(displayingScene)
-                        $ HoldingLine = copy.deepcopy(lineOfScene) + 1
+                        $ HoldingLine = copy.copy(lineOfScene) + 1
                         $ HoldingDataLoc = copy.deepcopy(DataLocation) #may also be soruce of crash?
 
                 #$ test = len(DefeatedEncounterMonsters[-1].victoryScenes[5].includes)
@@ -1895,7 +1896,7 @@ label PostCombatWin:
             BGMlist = []
             BGMlist.append(SetSongAfterCombat)
         if musicLastPlayed != BGMlist:
-            $ musicLastPlayed = copy.deepcopy(SetSongAfterCombat)
+            $ musicLastPlayed = copy.copy(SetSongAfterCombat)
             $ renpy.random.shuffle(BGMlist)
             if renpy.music.get_playing(channel='music') != BGMlist[0]:
                 play music BGMlist fadeout 1.0 fadein 1.0
@@ -2179,7 +2180,7 @@ label StanceStruggleGo:
     python:
         for each in monsterEncounter[target].combatDialogue:
             if each.lineTrigger == "StanceStruggle" :
-                stanceChecking = copy.deepcopy(tryRemoveThisStance)
+                stanceChecking = copy.copy(tryRemoveThisStance)
                 for stance in monsterEncounter[target].combatStance:
                     if foundLine == 0 and stanceChecking < len(monsterEncounter[target].combatStance):
                         for possibleStances in each.move:
@@ -2226,7 +2227,7 @@ label StanceStruggleGo:
         python:
             for each in monsterEncounter[target].combatDialogue:
                 if each.lineTrigger == "StanceStruggleFree":
-                    stanceChecking = copy.deepcopy(tryRemoveThisStance)
+                    stanceChecking = copy.copy(tryRemoveThisStance)
                     for stance in monsterEncounter[target].combatStance:
                         if foundLine == 0 and stanceChecking < len(monsterEncounter[target].combatStance):
                             for possibleStances in each.move:
@@ -2239,12 +2240,12 @@ label StanceStruggleGo:
         python:
             RemovedStance = []
             if howManyStances == "One":
-                RemovedStance.append(copy.deepcopy(monsterEncounter[target].combatStance[tryRemoveThisStance].Stance))
+                RemovedStance.append(copy.copy(monsterEncounter[target].combatStance[tryRemoveThisStance].Stance))
                 player.removeStanceByName(monsterEncounter[target].combatStance[tryRemoveThisStance].Stance)
                 monsterEncounter[target].removeStanceByName(monsterEncounter[target].combatStance[tryRemoveThisStance].Stance)
             elif howManyStances == "All":
                 for each in monsterEncounter[target].combatStance:
-                    RemovedStance.append(copy.deepcopy(each.Stance))
+                    RemovedStance.append(copy.copy(each.Stance))
                     player.removeStanceByName(each.Stance)
                 monsterEncounter[target].clearStance()
 
@@ -2263,7 +2264,7 @@ label StanceStruggleGo:
             if monsterEncounter[target].statusEffects.sleep.potency != -99:
                 for each in monsterEncounter[target].combatDialogue:
                     if each.lineTrigger == "StanceStruggleFreeComment":
-                        stanceChecking = copy.deepcopy(tryRemoveThisStance)
+                        stanceChecking = copy.copy(tryRemoveThisStance)
                         for possibleStances in each.move:
                             if foundLine == 0:
                                 for stance in RemovedStance:
@@ -2287,7 +2288,7 @@ label StanceStruggleGo:
         python:
             for each in monsterEncounter[target].combatDialogue:
                 if each.lineTrigger == "StanceStruggleFail":
-                    stanceChecking = copy.deepcopy(tryRemoveThisStance)
+                    stanceChecking = copy.copy(tryRemoveThisStance)
                     for stance in monsterEncounter[target].combatStance:
                         if foundLine == 0 and stanceChecking < len(monsterEncounter[target].combatStance):
                             for possibleStances in each.move:
@@ -2310,7 +2311,7 @@ label StanceStruggleGo:
             if monsterEncounter[target].statusEffects.sleep.potency != -99:
                 for each in monsterEncounter[target].combatDialogue:
                     if each.lineTrigger == "StanceStruggleComment":
-                        stanceChecking = copy.deepcopy(tryRemoveThisStance)
+                        stanceChecking = copy.copy(tryRemoveThisStance)
                         for stance in monsterEncounter[target].combatStance:
                             if foundLine == 0 and stanceChecking < len(monsterEncounter[target].combatStance):
                                 for possibleStances in each.move:
@@ -2587,14 +2588,14 @@ label onSurrenderTalk:
 
 label combatMoveChoice:
     #$ SkillNumber -= 1 #because weird reasons
-    $ combatChoice = copy.deepcopy(player.skillList[SkillNumber])
+    $ combatChoice = copy.copy(player.skillList[SkillNumber])
     jump targeting
 
 label combatItemChoice:
     $ ItemNumber -= 1 #because weird reasons
     $ fetchSkill = getFromName(player.inventory.items[ItemNumber].skills[0], SkillsDatabase)
-    $ combatChoice = copy.deepcopy(SkillsDatabase[fetchSkill])
-    $ itemChoice = copy.deepcopy(player.inventory.items[ItemNumber])
+    $ combatChoice = copy.copy(SkillsDatabase[fetchSkill])
+    $ itemChoice = copy.copy(player.inventory.items[ItemNumber])
     $ combatChoice.isSkill = itemChoice.itemType
 
     jump targeting

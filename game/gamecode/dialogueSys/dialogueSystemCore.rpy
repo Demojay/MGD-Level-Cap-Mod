@@ -1,7 +1,7 @@
 init python:
     def getSpeaker(speakerNumber, EventDatabase, MonsterDatabase):
-        while len(actorNames) <= speakerNumber:
-            actorNames.append("")
+        if len(actorNames) <= speakerNumber:
+            actorNames.extend([""] * (speakerNumber - len(actorNames) + 1))
 
         characterDataLocation = getFromName(EventDatabase[DataLocation].Speakers[speakerNumber].name, MonsterDatabase)
         actorNames[speakerNumber] = MonsterDatabase[characterDataLocation].name + EventDatabase[DataLocation].Speakers[speakerNumber].postName
@@ -83,25 +83,25 @@ init python:
             elif displayingScene.theScene[lineOfScene] == "FinalOption":
                 #REMEMBER U NEED TO CALL THIS LAST OUT OF THE FUNCTIONS
                 lineOfScene += 1
-                finalOption = copy.deepcopy(displayingScene.theScene[lineOfScene])
+                finalOption = copy.copy(displayingScene.theScene[lineOfScene])
                 #lineOfScene += 1
 
                 isFinalOption = 1
-                finalOptionEvent = copy.deepcopy(eventMenuJumps[-1])
-                finalOptionEventScene = copy.deepcopy(eventMenuSceneJumps[-1])
+                finalOptionEvent = copy.copy(eventMenuJumps[-1])
+                finalOptionEventScene = copy.copy(eventMenuSceneJumps[-1])
             elif displayingScene.theScene[lineOfScene] == "EventJump":
                 lineOfScene += 1
-                eventMenuJumps[-1] = copy.deepcopy(displayingScene.theScene[lineOfScene])
+                eventMenuJumps[-1] = copy.copy(displayingScene.theScene[lineOfScene])
                 lineOfScene += 1
                 if isFinalOption == 1:
-                    finalOptionEvent = copy.deepcopy(eventMenuJumps[-1])
+                    finalOptionEvent = copy.copy(eventMenuJumps[-1])
 
                 if displayingScene.theScene[lineOfScene] ==  "ThenJumpToScene":
                     lineOfScene += 1
-                    eventMenuSceneJumps[-1] = copy.deepcopy(displayingScene.theScene[lineOfScene])
+                    eventMenuSceneJumps[-1] = copy.copy(displayingScene.theScene[lineOfScene])
                     lineOfScene += 1
                     if isFinalOption == 1:
-                        finalOptionEventScene = copy.deepcopy(eventMenuSceneJumps[-1])
+                        finalOptionEventScene = copy.copy(eventMenuSceneJumps[-1])
 
 
             elif displayingScene.theScene[lineOfScene] == "RequiresMinimumProgress":
@@ -213,70 +213,78 @@ init python:
             elif displayingScene.theScene[lineOfScene] == "RequiresItem":
                 passItemCheck += 1
                 lineOfScene += 1
+                itemName = displayingScene.theScene[lineOfScene]
 
-                if player.inventory.RuneSlotOne.name == displayingScene.theScene[lineOfScene]:
-                    passItemChecks += 1
-                elif player.inventory.RuneSlotTwo.name == displayingScene.theScene[lineOfScene]:
-                    passItemChecks += 1
-                elif player.inventory.RuneSlotThree.name == displayingScene.theScene[lineOfScene]:
-                    passItemChecks += 1
-                elif player.inventory.AccessorySlot.name == displayingScene.theScene[lineOfScene]:
+                equippedItems = {
+                    player.inventory.RuneSlotOne.name,
+                    player.inventory.RuneSlotTwo.name,
+                    player.inventory.RuneSlotThree.name,
+                    player.inventory.AccessorySlot.name
+                }
+
+                if itemName in equippedItems:
                     passItemChecks += 1
                 else:
-                    for each in player.inventory.items:
-                        if each.name == displayingScene.theScene[lineOfScene]:
-                            passItemChecks += 1
+                    # Use set for faster inventory lookup
+                    if itemName in {item.name for item in player.inventory.items}:
+                        passItemChecks += 1
+
                 if passItemCheck != passItemChecks and failedItemChecked == 0:
                     failedItemChecked = 1
-                    whatItemIsIt = displayingScene.theScene[lineOfScene]
+                    whatItemIsIt = itemName
                 elif inverseRequirement == 1:
-                    whatItemIsIt = displayingScene.theScene[lineOfScene]
+                    whatItemIsIt = itemName
                 lineOfScene += 1
             elif displayingScene.theScene[lineOfScene] == "RequiresItemEquipped":
                 passEquipmentCheck += 1
                 lineOfScene += 1
+                itemName = displayingScene.theScene[lineOfScene]
 
-                if player.inventory.RuneSlotOne.name == displayingScene.theScene[lineOfScene]:
+                equippedItems = {
+                    player.inventory.RuneSlotOne.name,
+                    player.inventory.RuneSlotTwo.name,
+                    player.inventory.RuneSlotThree.name,
+                    player.inventory.AccessorySlot.name
+                }
+
+                if itemName in equippedItems:
                     passEquipmentChecks += 1
-                elif player.inventory.RuneSlotTwo.name == displayingScene.theScene[lineOfScene]:
-                    passEquipmentChecks += 1
-                elif player.inventory.RuneSlotThree.name == displayingScene.theScene[lineOfScene]:
-                    passEquipmentChecks += 1
-                elif player.inventory.AccessorySlot.name == displayingScene.theScene[lineOfScene]:
-                    passEquipmentChecks += 1
+
                 if passEquipmentCheck != passEquipmentChecks and failedEquipmentChecked == 0:
                     failedEquipmentChecked = 1
-                    whatEquipmentIsIt = displayingScene.theScene[lineOfScene]
+                    whatEquipmentIsIt = itemName
                 elif inverseRequirement == 1:
-                    whatEquipmentIsIt = displayingScene.theScene[lineOfScene]
+                    whatEquipmentIsIt = itemName
                 lineOfScene += 1
 
             elif displayingScene.theScene[lineOfScene] == "RequiresSkill":
                 passSkillCheck += 1
                 lineOfScene += 1
+                skillName = displayingScene.theScene[lineOfScene]
 
-                for each in player.skillList:
-                    if each.name == displayingScene.theScene[lineOfScene]:
-                        passSkillChecks += 1
+                if skillName in {skill.name for skill in player.skillList}:
+                    passSkillChecks += 1
+
                 if passSkillCheck != passSkillChecks and failedSkillChecked == 0:
                     failedSkillChecked = 1
-                    whatSkillIsIt = displayingScene.theScene[lineOfScene]
+                    whatSkillIsIt = skillName
                 elif inverseRequirement == 1:
-                    whatSkillIsIt = displayingScene.theScene[lineOfScene]
+                    whatSkillIsIt = skillName
 
                 lineOfScene += 1
             elif displayingScene.theScene[lineOfScene] == "RequiresPerk":
                 passPerkCheck += 1
                 lineOfScene += 1
+                perk_name = displayingScene.theScene[lineOfScene]
 
-                for each in player.perks:
-                    if each.name == displayingScene.theScene[lineOfScene]:
-                        passPerkChecks += 1
+                if perk_name in {perk.name for perk in player.perks}:
+                    passPerkChecks += 1
+
                 if passPerkCheck != passPerkChecks and failedPerkChecked == 0:
                     failedPerkChecked = 1
-                    whatPerkIsIt = displayingScene.theScene[lineOfScene]
+                    whatPerkIsIt = perk_name
                 elif inverseRequirement == 1:
-                    whatPerkIsIt = displayingScene.theScene[lineOfScene]
+                    whatPerkIsIt = perk_name
                 lineOfScene += 1
             elif displayingScene.theScene[lineOfScene] == "RequiresEnergy":
                 passEnergyCheck = 0
@@ -745,7 +753,7 @@ label displayScene:
     if SceneBookMarkRead == 1:
 
         $ displayingScene = copy.deepcopy(HoldingScene)
-        $ lineOfScene = copy.deepcopy(HoldingLine)
+        $ lineOfScene = copy.copy(HoldingLine)
         $ DataLocation = copy.deepcopy(HoldingDataLoc)
         $ HoldingDataLoc = -1
         $ HoldingLine =-1
@@ -1066,9 +1074,8 @@ label resumeSceneAfterCombat:
                         if displayingScene.theScene[lineOfScene] != "EndLoop":
                             $ hasThing = 0
                             python:
-                                for each in player.perks:
-                                    if each.name == displayingScene.theScene[lineOfScene]:
-                                        hasThing = 1
+                                perk_name = displayingScene.theScene[lineOfScene]
+                                hasThing = int(any(perk.name == perk_name for perk in player.perks))
 
                             if hasThing == 1 and linefound == 0:
                                 $ linefound = 1
@@ -1125,7 +1132,7 @@ label resumeSceneAfterCombat:
                 $ display = displayingScene.theScene[lineOfScene]
 
             $ LastSpeaker = Speaker
-            $ LastLine = copy.deepcopy(display)
+            $ LastLine = copy.copy(display)
             if displayingScene.theScene[lineOfScene] != "StartCombat" and display != "EndLoop":
                 call read from _call_read_11
                 $ finalDamage = 0

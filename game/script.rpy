@@ -442,7 +442,6 @@ init:
 
     call UpdateGameVersionVariables from _call_UpdateGameVersionVariables
     call InitInventory from _call_InitInventory
-    call Functions from _call_Functions
     #CODEMOD
     call LevelCapCheck from _call_LevelCapCheck
     call specialEffects from _call_specialEffects
@@ -804,7 +803,7 @@ label start:
     label namingNoIntro:
         $ player.name = renpy.input(_("What's your name?"), exclude='{}[]', length=13) or _("Hero")
         $ player.name.strip()
-        $ save_name = copy.deepcopy(player.name)
+        $ save_name = copy.copy(player.name)
         $ tentativeStats = copy.deepcopy(player)
         $ skippedIntro = 1
         "(Any unspent points will be lost after character creation.)"
@@ -848,7 +847,7 @@ label start:
             jump namingIntro
 
 
-        $ save_name = copy.deepcopy(player.name)
+        $ save_name = copy.copy(player.name)
         God "[player.name!t]... a fitting name for a hero..."
         God "Now... let's see your heroic qualifications..."
         "(Any unspent points will be lost after character creation.)"

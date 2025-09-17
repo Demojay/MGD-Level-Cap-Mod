@@ -134,7 +134,7 @@ label JsonFuncHideHealth:
     $ displayHealthInEvent = 0
     return
 label JsonFuncHoldCurrentVirility:
-    $ heldVirility = copy.deepcopy(getVirility(player))
+    $ heldVirility = copy.copy(getVirility(player))
     return
 label JsonFuncHoldCurrentVirilityEnd:
     $ heldVirility = 0
@@ -343,14 +343,14 @@ label JsonFuncRoledCGEnd:
 label JsonFuncMenu:
     $ index = 0
     $ lineOfScene += 1
-    $ MenuLineSceneCheckMark = copy.deepcopy(lineOfScene)
+    $ MenuLineSceneCheckMark = copy.copy(lineOfScene)
 
     #$ check = ProgressEvent[DataLocation].choices[1]
     #"[check]"
 
     label recheckMenu:
         $ ind = index
-        $ lineOfScene = copy.deepcopy(MenuLineSceneCheckMark)
+        $ lineOfScene = copy.copy(MenuLineSceneCheckMark)
         $ menuArray = []
         $ passedArray = []
 
@@ -419,7 +419,7 @@ label JsonFuncMenu:
                 if display != "":
                     $ passedArray.append(0)
         if display != "":
-            $ menuArray.append(copy.deepcopy(display))
+            $ menuArray.append(copy.copy(display))
         else:
             $ del eventMenuJumps[-1]
             $ del eventMenuSceneJumps[-1]
@@ -536,10 +536,10 @@ label JsonFuncMenu:
     #    $ damageToEnemy = ""
 
     $ DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-    $ progressDisplay = copy.deepcopy(ProgressEvent[DataLocation].eventProgress)
+    $ progressDisplay = copy.copy(ProgressEvent[DataLocation].eventProgress)
 
     if savedLine != "" and savedLineInMenu == 1:
-        $ LastLine = copy.deepcopy(savedLine)
+        $ LastLine = copy.copy(savedLine)
         $ savedLine = ""
         $ savedLineInMenu = 0
     elif LastLine != "StartCombat" and LastLine != "EndLoop" and LastLine != "end":
@@ -558,7 +558,7 @@ label JsonFuncMenu:
     if mgdAutosaveCount <= 0:
         $ renpy.force_autosave()
         #$ renpy.pause(1, True)
-        $ mgdAutosaveCount = copy.deepcopy(mgdAutosaveFrequency)
+        $ mgdAutosaveCount = copy.copy(mgdAutosaveFrequency)
     else:
         if len(monsterEncounter) == 0:
             $ mgdAutosaveCount -= 2
@@ -735,10 +735,10 @@ label JsonFuncApplyStatusEffect:
         $ player = holder[0]
 
     if statusSkill.statusEffect == "Restrain":
-        $ player.restraintStruggle = copy.deepcopy(statusSkill.restraintStruggle)
-        $ player.restraintStruggleCharmed = copy.deepcopy(statusSkill.restraintStruggleCharmed)
-        $ player.restraintEscaped = copy.deepcopy(statusSkill.restraintEscaped)
-        $ player.restraintEscapedFail = copy.deepcopy(statusSkill.restraintEscapedFail)
+        $ player.restraintStruggle = copy.copy(statusSkill.restraintStruggle)
+        $ player.restraintStruggleCharmed = copy.copy(statusSkill.restraintStruggleCharmed)
+        $ player.restraintEscaped = copy.copy(statusSkill.restraintEscaped)
+        $ player.restraintEscapedFail = copy.copy(statusSkill.restraintEscapedFail)
         if len(monsterEncounter) >= 1:
             $ player.restrainer = monsterEncounter[CombatFunctionEnemytarget]
     return
@@ -810,12 +810,12 @@ label JsonFuncCombatEncounter:
     $ SceneCharacters = []
     if len(monsterEncounter) > 0:
         $ HoldingSceneForCombat = copy.deepcopy(displayingScene)
-        $ HoldingLineForCombat = copy.deepcopy(lineOfScene)
+        $ HoldingLineForCombat = copy.copy(lineOfScene)
         $ HoldingDataLocForCombat = copy.deepcopy(DataLocation)
         call combat from _call_combat_1
         if HoldingSceneForCombat != Dialogue():
             $ displayingScene = copy.deepcopy(HoldingSceneForCombat)
-            $ lineOfScene = copy.deepcopy(HoldingLineForCombat)
+            $ lineOfScene = copy.copy(HoldingLineForCombat)
             $ DataLocation = copy.deepcopy(HoldingDataLocForCombat)
             $ HoldingSceneForCombat = Dialogue()
             $ HoldingLineForCombat = 0
@@ -1023,8 +1023,8 @@ label JsonFuncAddMonsterToEncounter:
         $ lineOfScene += 1
         $ replacingMonster = 1
         $ insertToLocation = copy.deepcopy(CombatFunctionEnemytarget)
-        $ KeepingHP = copy.deepcopy(monsterEncounter[CombatFunctionEnemytarget].stats.hp)
-        $ KeepingSP = copy.deepcopy(monsterEncounter[CombatFunctionEnemytarget].stats.sp)
+        $ KeepingHP = copy.copy(monsterEncounter[CombatFunctionEnemytarget].stats.hp)
+        $ KeepingSP = copy.copy(monsterEncounter[CombatFunctionEnemytarget].stats.sp)
         $ KeepingStatusEffects = copy.deepcopy(monsterEncounter[CombatFunctionEnemytarget].statusEffects)
         $ KeepingStances = copy.deepcopy(monsterEncounter[CombatFunctionEnemytarget].combatStance)
 
@@ -1042,8 +1042,8 @@ label JsonFuncAddMonsterToEncounter:
         $ monSkillChoice.append( getSkill(" ", SkillsDatabase))
 
     else:
-        $ monsterEncounter[insertToLocation].stats.hp = copy.deepcopy(KeepingHP)
-        $ monsterEncounter[insertToLocation].stats.sp = copy.deepcopy(KeepingSP)
+        $ monsterEncounter[insertToLocation].stats.hp = copy.copy(KeepingHP)
+        $ monsterEncounter[insertToLocation].stats.sp = copy.copy(KeepingSP)
         $ monsterEncounter[insertToLocation].statusEffects = copy.deepcopy(KeepingStatusEffects)
         $ monsterEncounter[insertToLocation].combatStance = copy.deepcopy(KeepingStances)
 
@@ -1076,7 +1076,7 @@ label JsonFuncAddMonsterToEncounter:
 
         c = 0
         for each in monsterEncounter:
-            monsterEncounter[c].name = copy.deepcopy(trueMonsterEncounter[c].name)
+            monsterEncounter[c].name = copy.copy(trueMonsterEncounter[c].name)
 
             c += 1
     $ monsterEncounter = NumberMonsters(monsterEncounter)
@@ -1180,7 +1180,7 @@ label JsonFuncCallLossLevelUp:
 label JsonFuncUseHeldBG:
     if heldBG != "":
         $ heldBG =  bgToNightDay(heldBG, "Night.png", ".png")
-        $ bg  = changeBG(copy.deepcopy(heldBG))
+        $ bg  = changeBG(copy.copy(heldBG))
     $ heldBG = ""
     return
 label JsonFuncHideTreasureChest:
@@ -1471,10 +1471,10 @@ label JsonFuncApplyStatusEffectToMonster:
         $ holder = statusBuff(monsterEncounter[CombatFunctionEnemytarget], monsterEncounter[CombatFunctionEnemytarget], statusSkill, 1)
         $ monsterEncounter[CombatFunctionEnemytarget] = holder[0]
     if statusSkill.statusEffect == "Restrain":
-        $ monsterEncounter[CombatFunctionEnemytarget].restraintStruggle = copy.deepcopy(statusSkill.restraintStruggle)
-        $ monsterEncounter[CombatFunctionEnemytarget].restraintStruggleCharmed = copy.deepcopy(statusSkill.restraintStruggleCharmed)
-        $ monsterEncounter[CombatFunctionEnemytarget].restraintEscaped = copy.deepcopy(statusSkill.restraintEscaped)
-        $ monsterEncounter[CombatFunctionEnemytarget].restraintEscapedFail = copy.deepcopy(statusSkill.restraintEscapedFail)
+        $ monsterEncounter[CombatFunctionEnemytarget].restraintStruggle = copy.copy(statusSkill.restraintStruggle)
+        $ monsterEncounter[CombatFunctionEnemytarget].restraintStruggleCharmed = copy.copy(statusSkill.restraintStruggleCharmed)
+        $ monsterEncounter[CombatFunctionEnemytarget].restraintEscaped = copy.copy(statusSkill.restraintEscaped)
+        $ monsterEncounter[CombatFunctionEnemytarget].restraintEscapedFail = copy.copy(statusSkill.restraintEscapedFail)
         $ monsterEncounter[CombatFunctionEnemytarget].restrainer = player
     return
 label JsonFuncRefocusOnInitialMonster:
@@ -1526,7 +1526,7 @@ label JsonFuncCallMonsterAttack:
                 lineOfScene -= 1
 
         $ HoldingSceneCA = copy.deepcopy(displayingScene)
-        $ HoldingLineCA = copy.deepcopy(lineOfScene+1)
+        $ HoldingLineCA = copy.copy(lineOfScene+1)
         $ HoldingDataLocCA = copy.deepcopy(DataLocation)
 
         if(monsterEncounter[CombatFunctionEnemytarget].statusEffects.stunned.duration > 0):
@@ -1552,7 +1552,7 @@ label JsonFuncCallMonsterAttack:
         $ LastDisplayOrder = []
         if HoldingSceneCA != Dialogue():
             $ displayingScene = copy.deepcopy(HoldingSceneCA)
-            $ lineOfScene = copy.deepcopy(HoldingLineCA)
+            $ lineOfScene = copy.copy(HoldingLineCA)
             $ DataLocation = copy.deepcopy(HoldingDataLocCA)
         $ HoldingSceneCA = Dialogue()
         $ HoldingLineCA = 0
@@ -1633,14 +1633,14 @@ label JsonFuncHideMonsterEncounter:
     return
 label JsonFuncDefeatMonster:
     if monsterEncounter[CombatFunctionEnemytarget].restraintOnLoss[0] != "":
-        $ restrainholdyLine = copy.deepcopy(lineOfScene)
+        $ restrainholdyLine = copy.copy(lineOfScene)
         $ restrainholdyScene= copy.deepcopy(displayingScene)
         $ restrainholdyData = copy.deepcopy(DataLocation)
 
         $ display = monsterEncounter[CombatFunctionEnemytarget].restraintOnLoss[renpy.random.randint(-1, len(monsterEncounter[CombatFunctionEnemytarget].restraintOnLoss)-1)]
         call read from _call_read_41
 
-        $ lineOfScene = copy.deepcopy(restrainholdyLine)
+        $ lineOfScene = copy.copy(restrainholdyLine)
         $ displayingScene = copy.deepcopy(restrainholdyScene)
         $ DataLocation = copy.deepcopy(restrainholdyData)
 

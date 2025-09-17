@@ -394,8 +394,8 @@ screen ON_MoreStatsListDisplay():
         use ON_SingleStatDisplay("Crit Damage: ", "[critDamage]x", tooltipDisplay="Your arousal modifier when you land a critical!\nIt is equal to your (Power*0.525-2.5) +  (Allure*0.525-2.5) + 200% + possible bonuses from perks.")
         textbutton "" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
         #use ON_SingleStatDisplay("Crit Reduction: ", "[critReduction]%", tooltipDisplay="How much you reduce your opponent's chance to critted you! If it's negative, it's increasing your chance to be crit.\nIt is equal to your Luck*0.2 + perks - 1. When you would be crit and your crit chance reduction saves you 'Passion Endured' will be displayed.")
-        use ON_SingleStatDisplay("Evade: ", "[OutOfStanceEvade]%/"+ "[InStanceEvade]%", tooltipDisplay="Chance to Evade attacks out of stance/Chance to evade in stance. Out of stance evade is based on tech-5(0.3% per point) + luck-5(0.15% per point), while In stance evade is based on power-5(0.3% per point) + tech-5(0.15% per point). Both are effected by any respective perks. Defending increases your total evade chance by 50%.\nFetishes, status effects, and attacker accuracy make it harder to evade.")
-        use ON_SingleStatDisplay("Acc: ", "[AccuracyBonus]%/"+ "[InStanceAccuracyBonus]%", tooltipDisplay="Attack accuracy bonus out of stances/Accuracy bonus in stance. Out of stance accuracy is based on tech-5(0.3% per point) + luck-5(0.15% per point), while In stance accuracy is based on power-5(0.3% per point) + tech-5(0.15% per point) + 10. Both are effected by any respective perks and get a random roll(d100) added, that are added together to decide if the skill hits vs the targets evade.")
+        use ON_SingleStatDisplay("Evade: ", "[OutOfStanceEvade]%/"+ "[InStanceEvade]%", tooltipDisplay="Chance to Evade attacks out of stance/Chance to Evade in stance. Out of stance evade is based on tech-5(0.3% per point) + luck-5(0.15% per point), while In stance evade is based on power-5(0.3% per point) + tech-5(0.15% per point). Both are affected by any respective perks. Defending increases your total evade chance by 50%.\nFetishes, status effects, and attacker accuracy make it harder to evade.")
+        use ON_SingleStatDisplay("Acc: ", "[AccuracyBonus]%/"+ "[InStanceAccuracyBonus]%", tooltipDisplay="Attack accuracy bonus out of stances/Accuracy bonus in stance. Out of stance accuracy is based on tech-5(0.3% per point) + luck-5(0.15% per point), while In stance accuracy is based on power-5(0.3% per point) + tech-5(0.15% per point) + 10. Both can be affected by Perks, and the Skill's hit chance gets a random roll of d100 added to it to determine whether it surpasses the target's Evade.")
         use ON_SingleStatDisplay("Reduction: ", "[damageReduction]%", tooltipDisplay="Your % damage reduction to arousal, calculated from your willpower and relevant perks.")
         textbutton "" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
         use ON_SingleStatDisplay("Effect Duration: ", "[statusDuration]%", tooltipDisplay="The bonus duration of your own status effects, base duration of a skill is increased by this percentage. Which is calculated by (int*0.5)% + perks. So at 100 int, skills would last 50% longer. Keep in mind skills that last 1 turn will be increased to 2, as all effects also last the turn they are cast. The turn count is always rounded down.")
@@ -491,7 +491,7 @@ screen ON_ResistanceListDisplay():
         use ON_SingleStatDisplay("Charm:", "[player.resistancesStatusEffects.Charm]%", tooltipDisplay="Your resistance chance to being charmed.")
         use ON_SingleStatDisplay("Aphrodisiac:", "[player.resistancesStatusEffects.Aphrodisiac]%", tooltipDisplay="Your resistance chance to being afflicted by aphrodisiacs and further increases to its potency.")
         use ON_SingleStatDisplay("Restraints:", "[player.resistancesStatusEffects.Restraints]%", tooltipDisplay="Your resistance chance to being restrained.")
-        use ON_SingleStatDisplay("Sleep:", "[player.resistancesStatusEffects.Sleep]%", tooltipDisplay="Your resistance chance to being afflicted by drowzy.")
+        use ON_SingleStatDisplay("Sleep:", "[player.resistancesStatusEffects.Sleep]%", tooltipDisplay="Your resistance chance to being afflicted by drowsy.")
         use ON_SingleStatDisplay("Trance:", "[player.resistancesStatusEffects.Trance]%", tooltipDisplay="Your resistance chance to entering and falling deeper into a trance state.")
         use ON_SingleStatDisplay("Paralysis:", "[player.resistancesStatusEffects.Paralysis]%", tooltipDisplay="Your resistance chance to being afflicted by paralysis and further increases to its potency.")
         use ON_SingleStatDisplay("Debuff:", "[player.resistancesStatusEffects.Debuff]%", tooltipDisplay="Your resistance chance to being afflicted by general debuffs. Not including the other resistance types!")
@@ -621,9 +621,9 @@ screen ON_CharacterDisplayScreen(UseTab="Stats", UseInventoryMenuTab="Consumable
                         action NullAction()
                 textbutton _("Strain: {color=#fff}[favorStrain]%{/color}") text_size 24 yalign 0.5:
                     if difficulty == "Hard":
-                        tooltip "Increases Energy costs for surpassing stat checks. Decreases on by 25 rest (Increaseable by perks), and resets to 0 when sleeping or fully restored by some other means."
+                        tooltip "Increases Energy costs for surpassing stat checks. Decreases by 25 on rest (Increasable by perks), and resets to 0 when sleeping or fully restored by some other means."
                     else:
-                        tooltip "Increases Energy costs for surpassing stat checks. Decreases on by 50 rest (Increaseable by perks), and resets to 0 when sleeping or fully restored by some other means."
+                        tooltip "Increases Energy costs for surpassing stat checks. Decreases by 50 on rest (Increasable by perks), and resets to 0 when sleeping or fully restored by some other means."
                     action NullAction()
 
             vbox:

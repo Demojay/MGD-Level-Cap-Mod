@@ -12,6 +12,16 @@ label setDatabase:
     $ PerkDatabase = []
     $ SkillsDatabase = []
 
+    # Bandaid lookup dictionaries for performance.
+    $ EventDatabaseDict = {}
+    $ MonsterDatabaseDict = {}
+    $ SkillsDatabaseDict = {}
+    $ ItemDatabaseDict = {}
+    $ PerkDatabaseDict = {}
+    $ LocationDatabaseDict = {}
+    $ AdventureDatabaseDict = {}
+    $ FetishDatabaseDict = {}
+
     $ LocationList = []
 
     #CODEMOD
@@ -35,4 +45,3 @@ label setDatabase:
     $ BarBrothel = []
     $ GloryHoleBrothel = []
     $ DayBrothel = []
-

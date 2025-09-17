@@ -2,10 +2,10 @@ init python:
     def PrintException(fileName):
         exc_type, exc_obj, tb = sys.exc_info()
         raise renpy.error('EXCEPTION IN ({}): \n{}'.format(fileName, exc_obj))
-    def AdditionCheck(databaseType, nameValue):
+    def AdditionCheck(databaseType, nameValue, currentData):
         try:
             if currentData["Addition"] == "Yes":
-                additionLocation = getFromName(currentData[nameValue], databaseType)
+                additionLocation = getFromName(nameValue, databaseType)
                 return additionLocation
             else:
                 additionError = str(currentData["Addition"])
@@ -104,9 +104,11 @@ label loadDatabase:
                     newFetish.toolTip = (FL.get("ToolTip", ""))
                     newFetish.levelText = [[int(fet[0]), fet[1]] for fet in FL.get("LevelText", [])]
                     FetishList.append(newFetish)
+                    FetishDatabaseDict[newFetish.name] = len(FetishList)-1 # Lookup dictionary for Fetishes
 
-                    if validateJsons and not loadingDatabaseType:
+                    if validateJsons:
                         validator.addIDToDatabase(newFetish.name, "Fetishes")
+
 
     ############################### LOAD SKILLS ###############################
         if loadingDatabaseType == 0:
@@ -119,7 +121,7 @@ label loadDatabase:
                 except:
                     PrintException(fileName)
 
-                additionLocation = AdditionCheck(SkillsDatabase, "name")
+                additionLocation = AdditionCheck(SkillsDatabase, currentData["name"], currentData)
 
                 statusScale = int(currentData.get("statusEffectScaling", 100))
                 withStatusScale = currentData.get("scalesWithStatusEffect", "")
@@ -269,7 +271,7 @@ label loadDatabase:
                     currentData.get("stanceConditions", []),
                     statusStacks)
 
-                    if validateJsons and not loadingDatabaseType:
+                    if validateJsons:
                         validate_skill_arrays = [
                             blankSkill.outcome,
                             blankSkill.miss,
@@ -291,9 +293,9 @@ label loadDatabase:
                             else:
                                 validator.checkCombatLine(skill_value, fileName)
 
+                    SkillsDatabase.append(blankSkill)    #add to list
+                    SkillsDatabaseDict[blankSkill.name] = len(SkillsDatabase)-1 # Lookup dictionary for Skills
 
-                    if loadingDatabaseType == 0:
-                        SkillsDatabase.append(blankSkill)    #add to list
 
             StanceConditionCheck()
 
@@ -342,9 +344,10 @@ label loadDatabase:
 
                 for p in range(len(blankPerk.PerkType)):
                     if blankPerk.PerkType[p] == "TimeDuration" or blankPerk.PerkType[p] == "TurnDuration":
-                        blankPerk.duration = copy.deepcopy(blankPerk.EffectPower[p])
+                        blankPerk.duration = copy.copy(blankPerk.EffectPower[p])
 
                 PerkDatabase.append(copy.deepcopy(blankPerk))    #add to list
+                PerkDatabaseDict[blankPerk.name] = len(PerkDatabase)-1 # Lookup dictionary for Perks
 
                 if validateJsons and not loadingDatabaseType:
                     validator.addIDToDatabase(blankPerk.name, "Perks")
@@ -417,8 +420,7 @@ label loadDatabase:
                 except:
                     requirementList = [Requirements()]
 
-                if loadingDatabaseType == 0:
-                    blankItem = Item(
+                blankItem = Item(
                     currentData["name"],
                     currentData["itemType"],
                     int(currentData["cost"]),
@@ -444,24 +446,27 @@ label loadDatabase:
                     NewItemBodySensitivity,
                     NewItemStatusEffectsRes,
                     currentData["perks"],
-                    itemSkills )
+                    itemSkills
+                )
 
-                    ItemDatabase.append(blankItem)    #add to list
+                ItemDatabase.append(blankItem)    #add to list
+                ItemDatabaseDict[blankItem.name] = len(ItemDatabase)-1 # Lookup dictionary for Items
 
-                    if validateJsons and not loadingDatabaseType:
-                        validate_item_arrays = [
-                            blankItem.useOutcome,
-                            blankItem.useMiss,
-                        ]
+                if validateJsons:
+                    validate_item_arrays = [
+                        blankItem.useOutcome,
+                        blankItem.useMiss,
+                    ]
 
-                        validator.addIDToDatabase(blankItem.name, "Items")
+                    validator.addIDToDatabase(blankItem.name, "Items")
 
-                        for item_value in validate_item_arrays:
-                            if isinstance(item_value, list):
-                                for string in item_value:
-                                    validator.checkCombatLine(string, fileName)
-                            else:
-                                validator.checkCombatLine(item_value, fileName)
+                    for item_value in validate_item_arrays:
+                        if isinstance(item_value, list):
+                            for string in item_value:
+                                validator.checkCombatLine(string, fileName)
+                        else:
+                            validator.checkCombatLine(item_value, fileName)
+
 
 
 
@@ -485,7 +490,7 @@ label loadDatabase:
             NewMonsStatusEffectsRes = ResistancesStatusEffects()
             startupLoading = 0
 
-            additionLocation = AdditionCheck(MonsterDatabase, "IDname")
+            additionLocation = AdditionCheck(MonsterDatabase, currentData["IDname"], currentData)
 
             requirementList = []
             try:
@@ -659,7 +664,7 @@ label loadDatabase:
                         countT = 0
                         for checkIt in MonsterDatabase[additionLocation].combatDialogue:
                             if checkIt.lineTrigger == blankDia.lineTrigger and checkIt.move == blankDia.move:
-                                existCheck = copy.deepcopy(countT)
+                                existCheck = copy.copy(countT)
                             countT += 1
 
                         if existCheck != -1:
@@ -838,9 +843,11 @@ label loadDatabase:
 
 
                     MonsterDatabase.append(copy.copy(blankMonster))    #add to list
+                    MonsterDatabaseDict[blankMonster.IDname] = len(MonsterDatabase)-1 # Lookup dictionary for Monsters
 
-                    if validateJsons and not loadingDatabaseType:
+                    if validateJsons:
                         validator.addIDToDatabase(blankMonster.IDname, "Monsters")
+
 
     ############################### LOAD EVENTS ###############################
         for each in dynamic_loader(".*/Events/.*"):
@@ -858,7 +865,7 @@ label loadDatabase:
             except:
                 PrintException(fileName)
 
-            additionLocation = AdditionCheck(EventDatabase, "name")
+            additionLocation = AdditionCheck(EventDatabase, currentData["name"], currentData)
 
             requirementList = []
             try:
@@ -905,7 +912,7 @@ label loadDatabase:
 
 
                 if additionLocation != None:
-                    if loadingDatabaseType == 0:
+                    if loadingDatabaseType == 0 and additionLocation != -1:
                         if blankDia.theScene[0] not in ["MenuAddition", "ShopAddition", "SkillShopAddition", "PrependScene", "AppendScene"]:
                             replaced = False
                             for replace, checking in enumerate(EventDatabase[additionLocation].theEvents):
@@ -991,8 +998,9 @@ label loadDatabase:
                     requirementList,
                     BaseComplete)
                     EventDatabase.append(copy.copy(blankEvent))    #add to list
+                    EventDatabaseDict[blankEvent.name] = len(EventDatabase)-1 # Lookup dictionary for Events
 
-                    if validateJsons and not loadingDatabaseType:
+                    if validateJsons:
                         validator.addIDToDatabase(blankEvent.name, "Events")
 
                 if loadingDatabaseType == 1:
@@ -1022,6 +1030,8 @@ label loadDatabase:
                         validator.ignoredChoices[currentData["name"]][choiceNumber] = choiceValues
                     except:
                         validator.ignoredChoices[currentData["name"]][str(choice)] = []
+
+
         if loadingDatabaseType == 1:
             for each in eventProgHolder:
                 if getFromName(each.name, ProgressEvent) == -1:
@@ -1060,7 +1070,7 @@ label loadDatabase:
             smolTreasureList = []
             erosDropList = []
 
-            additionLocation = AdditionCheck(LocationDatabase, "name")
+            additionLocation = AdditionCheck(LocationDatabase, currentData["name"], currentData)
 
             MusicList = currentData.get("MusicList", [""])
 
@@ -1210,6 +1220,7 @@ label loadDatabase:
                         expNightmare )
 
                         LocationDatabase.append(blankLocation)    #add to list
+                        LocationDatabaseDict[blankLocation.name] = len(LocationDatabase)-1 # Lookup dictionary for Locations
 
                     # Messy as fuck but it works - handle JSON data that doesn't include map icons
                     except KeyError:
@@ -1245,8 +1256,10 @@ label loadDatabase:
 
                         LocationDatabase.append(blankLocation)    #add to list
 
-                    if validateJsons and not loadingDatabaseType:
+                    if validateJsons:
                         validator.addIDToDatabase(blankLocation.name, "Locations")
+
+
 
 
     ############################## LOAD ADVENTURES ############################
@@ -1264,7 +1277,7 @@ label loadDatabase:
             smolTreasureList = []
             erosDropList = []
 
-            additionLocation = AdditionCheck(AdventureDatabase, "name")
+            additionLocation = AdditionCheck(AdventureDatabase, currentData["name"], currentData)
 
             requirementList = []
             try:
@@ -1353,9 +1366,11 @@ label loadDatabase:
                     erosDropList,
                     BaseComplete)
                     AdventureDatabase.append(blankAdventure)    #add to list
+                    AdventureDatabaseDict[blankAdventure.name] = len(AdventureDatabase)-1 # Lookup dictionary for Adventures
 
-                    if validateJsons and not loadingDatabaseType:
+                    if validateJsons:
                         validator.addIDToDatabase(blankAdventure.name, "Adventures")
+
 
                 if loadingDatabaseType == 1:
                     progAdventure = AdventuringDeck(
