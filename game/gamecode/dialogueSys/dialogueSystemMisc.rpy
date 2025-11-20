@@ -20,22 +20,24 @@ label JsonFuncDisplayCharacters:
 
     if hidingCombatEncounter == 0:
         $ monsterEncounter = []
-        $ monsterEncounterCG = []
-        $ DefeatedEncounterMonsters = []
-        $ trueMonsterEncounter = []
+        $ monsterEncounterCG = []  
+        
     while displayingScene.theScene[lineOfScene] != "EndLoop":
-
+        $ strCheck = 0
         python:
             try:
                 targetChar = int(displayingScene.theScene[lineOfScene]) - 1
             except:
-                targetChar = getFromName(displayingScene.theScene[lineOfScene], SceneCharacters)
+                characterDataLocation = getFromName(displayingScene.theScene[lineOfScene], MonsterDatabase)
+                strCheck = 1
 
-        $ characterDataLocation = getFromName(EventDatabase[DataLocation].Speakers[targetChar].name, MonsterDatabase)
+        if strCheck == 0:
+            $ characterDataLocation = getFromName(EventDatabase[DataLocation].Speakers[targetChar].name, MonsterDatabase)
         if characterDataLocation != -1:
             $ SceneCharacters.append(copy.deepcopy(MonsterDatabase[characterDataLocation]))
-        if EventDatabase[DataLocation].Speakers[targetChar].SpeakerType == "?":
-            $ SceneCharacters.append(copy.deepcopy(Monster(Stats(),0,  "?", "?")))
+        if strCheck == 0:
+            if EventDatabase[DataLocation].Speakers[targetChar].SpeakerType == "?":
+                $ SceneCharacters.append(copy.deepcopy(Monster(Stats(),0,  "?", "?")))
 
         $ lineOfScene += 1
     python:
@@ -149,7 +151,7 @@ label JsonFuncEventsProgressEqualsOtherEventsProgress:
         $ lineOfScene += 1
         $ display = displayingScene.theScene[lineOfScene]
         call sortMenuD from _call_sortMenuD_66
-        if len(monsterEncounter) > 0:
+        if monsterEncounter:
             return
     else:
         $ lineOfScene += 1
@@ -164,7 +166,7 @@ label JsonFuncEventsProgressEqualsOrGreaterThanOtherEventsProgress:
         $ lineOfScene += 1
         $ display = displayingScene.theScene[lineOfScene]
         call sortMenuD from _call_sortMenuD_67
-        if len(monsterEncounter) > 0:
+        if monsterEncounter:
             return
     else:
         $ lineOfScene += 1
@@ -175,7 +177,7 @@ label JsonFuncVirilityEqualsOrGreater:
         $ lineOfScene += 1
         $ display = displayingScene.theScene[lineOfScene]
         call sortMenuD from _call_sortMenuD_71
-        if len(monsterEncounter) > 0:
+        if monsterEncounter:
             return
     else:
         $ lineOfScene += 1
@@ -363,12 +365,12 @@ label JsonFuncMenu:
 
     $ eventMenuJumps = []
     $ eventMenuSceneJumps = []
-    $clear1 = 0
-    $clear2 = 0
-    $clear3 = 0
-    $clear4 = 0
-    $clear5 = 0
-    $clear6 = 0
+    $ clear1 = 0
+    $ clear2 = 0
+    $ clear3 = 0
+    $ clear4 = 0
+    $ clear5 = 0
+    $ clear6 = 0
 
     $ display1 = ""
     $ display2 = ""
@@ -391,8 +393,7 @@ label JsonFuncMenu:
         $ display = ""
         $ eventMenuJumps.append("")
         $ eventMenuSceneJumps.append("")
-
-        $ passcheck = SceneRequiresCheck()
+        call SceneRequiresCheck from _call_SceneRequiresCheck
 
         #"[override]"
 
@@ -575,7 +576,7 @@ label JsonFuncMenu:
                     $ choiceName = display1
                     $ MenuLineSceneCheckMark = -1
                     call sortMenuD from _call_sortMenuD_9
-                    if len(monsterEncounter) > 0:
+                    if monsterEncounter:
                         return
                 else:
                     $ isEventNow = 1
@@ -586,7 +587,7 @@ label JsonFuncMenu:
                     jump sortMenuD
             else:
                 call recheckMenu from _call_recheckMenu
-                if len(monsterEncounter) > 0:
+                if monsterEncounter:
                     return
         "[display2!i]" if exist2 == 1 :
             if clear2 == 1:
@@ -597,7 +598,7 @@ label JsonFuncMenu:
                     $ choiceName = display2
                     $ MenuLineSceneCheckMark = -1
                     call sortMenuD from _call_sortMenuD_10
-                    if len(monsterEncounter) > 0:
+                    if monsterEncounter:
                         return
                 else:
                     $ isEventNow = 1
@@ -608,7 +609,7 @@ label JsonFuncMenu:
                     jump sortMenuD
             else:
                 call recheckMenu from _call_recheckMenu_1
-                if len(monsterEncounter) > 0:
+                if monsterEncounter:
                     return
         "[display3!i]" if exist3 == 1:
             if clear3 == 1:
@@ -619,7 +620,7 @@ label JsonFuncMenu:
                     $ choiceName = display3
                     $ MenuLineSceneCheckMark = -1
                     call sortMenuD from _call_sortMenuD_14
-                    if len(monsterEncounter) > 0:
+                    if monsterEncounter:
                         return
                 else:
                     $ isEventNow = 1
@@ -630,7 +631,7 @@ label JsonFuncMenu:
                     jump sortMenuD
             else:
                 call recheckMenu from _call_recheckMenu_2
-                if len(monsterEncounter) > 0:
+                if monsterEncounter:
                     return
         "[display4!i]" if exist4 == 1:
             if clear4 == 1:
@@ -641,7 +642,7 @@ label JsonFuncMenu:
                     $ choiceName = display4
                     $ MenuLineSceneCheckMark = -1
                     call sortMenuD from _call_sortMenuD_16
-                    if len(monsterEncounter) > 0:
+                    if monsterEncounter:
                         return
                 else:
                     $ isEventNow = 1
@@ -652,7 +653,7 @@ label JsonFuncMenu:
                     jump sortMenuD
             else:
                 call recheckMenu from _call_recheckMenu_3
-                if len(monsterEncounter) > 0:
+                if monsterEncounter:
                     return
         "[display5!i]" if exist5 == 1:
             if clear5 == 1:
@@ -663,7 +664,7 @@ label JsonFuncMenu:
                     $ choiceName = display5
                     $ MenuLineSceneCheckMark = -1
                     call sortMenuD from _call_sortMenuD_18
-                    if len(monsterEncounter) > 0:
+                    if monsterEncounter:
                         return
                 else:
                     $ isEventNow = 1
@@ -674,7 +675,7 @@ label JsonFuncMenu:
                     jump sortMenuD
             else:
                 call recheckMenu from _call_recheckMenu_4
-                if len(monsterEncounter) > 0:
+                if monsterEncounter:
                     return
         "[display6!i]" if exist6 == 1 :
             if clear6 == 1:
@@ -685,7 +686,7 @@ label JsonFuncMenu:
                     $ choiceName = display6
                     $ MenuLineSceneCheckMark = -1
                     call sortMenuD from _call_sortMenuD_19
-                    if len(monsterEncounter) > 0:
+                    if monsterEncounter:
                         return
                 else:
                     $ isEventNow = 1
@@ -696,7 +697,7 @@ label JsonFuncMenu:
                     jump sortMenuD
             else:
                 call recheckMenu from _call_recheckMenu_5
-                if len(monsterEncounter) > 0:
+                if monsterEncounter:
                     return
         "[finalOption!i]" if hasattr(store, "finalSet") and finalSet == 1:
             hide screen MenuPageButtons
@@ -706,7 +707,7 @@ label JsonFuncMenu:
                 $ choiceName = finalOption
                 $ MenuLineSceneCheckMark = -1
                 call sortMenuD from _call_sortMenuD_82
-                if len(monsterEncounter) > 0:
+                if monsterEncounter:
                     return
             else:
                 $ isEventNow = 1
@@ -722,12 +723,12 @@ label JsonFuncApplyStatusEffect:
     $ statusSkill = SkillsDatabase[skillAt]
 
     if statusSkill.statusEffect != "Damage" and statusSkill.statusEffect != "Defence" and statusSkill.statusEffect != "Power" and statusSkill.statusEffect != "Technique" and statusSkill.statusEffect != "Willpower" and statusSkill.statusEffect != "Intelligence" and statusSkill.statusEffect != "Allure" and statusSkill.statusEffect != "Luck" and skillChoice.statusEffect != "%Power" and skillChoice.statusEffect != "%Technique" and skillChoice.statusEffect != "%Intelligence" and skillChoice.statusEffect != "%Willpower" and skillChoice.statusEffect != "%Allure" and skillChoice.statusEffect != "%Luck" and statusSkill.statusEffect != "Escape" and statusSkill.statusEffect != "Crit" and skillChoice.statusEffect != "TargetStances":
-        if len(monsterEncounter) > 0:
+        if monsterEncounter:
             $ player = statusAfflict(player, statusSkill, monsterEncounter[CombatFunctionEnemytarget])
         else:
             $ player = statusAfflict(player, statusSkill)
     else:
-        if len(monsterEncounter) > 0:
+        if monsterEncounter:
             $ holder = statusBuff(player, monsterEncounter[CombatFunctionEnemytarget], statusSkill, 1)
         else:
             $ holder = statusBuff(player, player, statusSkill, 1)
@@ -808,7 +809,7 @@ label JsonFuncCombatEncounter:
         $ monNum += 1
     $ monsterEncounter = NumberMonsters(monsterEncounter)
     $ SceneCharacters = []
-    if len(monsterEncounter) > 0:
+    if monsterEncounter:
         $ HoldingSceneForCombat = copy.deepcopy(displayingScene)
         $ HoldingLineForCombat = copy.copy(lineOfScene)
         $ HoldingDataLocForCombat = copy.deepcopy(DataLocation)
@@ -879,7 +880,7 @@ label JsonFuncJumpToRandomScene:
     while displayingScene.theScene[lineOfScene] != "EndLoop":
         $ passcheck = 0
         $ display = ""
-        $ passcheck = SceneRequiresCheck()
+        call SceneRequiresCheck from _call_SceneRequiresCheck_1
 
         if passcheck == 1:
             $ randomSelection.append(displayingScene.theScene[lineOfScene])
@@ -1192,7 +1193,7 @@ label JsonFuncHasErosLessThan:
         $ lineOfScene += 1
         $ display = displayingScene.theScene[lineOfScene]
         call sortMenuD from _call_sortMenuD_15
-        if len(monsterEncounter) > 0:
+        if monsterEncounter:
             return
     else:
         $ lineOfScene += 1
@@ -1228,7 +1229,7 @@ label JsonFuncHasErosLessThanInput:
         $ lineOfScene += 1
         $ display = displayingScene.theScene[lineOfScene]
         call sortMenuD from _call_sortMenuD_3
-        if len(monsterEncounter) > 0:
+        if monsterEncounter:
             return
     else:
         $ lineOfScene += 1
@@ -1329,7 +1330,7 @@ label JsonFuncEnergyDrain:
     $ finalDamage = Drain
     return
 label JsonFuncApplyStance:
-    if len(monsterEncounter) > 0:
+    if monsterEncounter:
         $ lineOfScene += 1
         $ givingStance = displayingScene.theScene[lineOfScene]
 
@@ -1348,7 +1349,7 @@ label JsonFuncApplyStance:
         $ player.giveStance(givingStance, monsterEncounter[CombatFunctionEnemytarget], lastAttack, holdoverDura=stanceDurabilityHoldOverTarget)
     return
 label JsonFuncApplyStanceToOtherMonster:
-    if len(monsterEncounter) > 0:
+    if monsterEncounter:
         $ lineOfScene += 1
         $ monName = displayingScene.theScene[lineOfScene]
         $ lineOfScene += 1
@@ -1386,7 +1387,7 @@ label JsonFuncApplyStanceToOtherMonster:
             $ CombatFunctionEnemytarget = copy.deepcopy(found)
     return
 label JsonFuncEncounterSizeGreaterOrEqualTo:
-    if len(monsterEncounter) > 0:
+    if monsterEncounter:
         $ lineOfScene += 1
         if len(monsterEncounter) >= int(displayingScene.theScene[lineOfScene]):
             $ lineOfScene += 1
@@ -1397,7 +1398,7 @@ label JsonFuncEncounterSizeGreaterOrEqualTo:
             $ lineOfScene += 1
     return
 label JsonFuncEncounterSizeLessOrEqualTo:
-    if len(monsterEncounter) > 0:
+    if monsterEncounter:
         $ lineOfScene += 1
         if len(monsterEncounter) <= int(displayingScene.theScene[lineOfScene]):
             $ lineOfScene += 1
@@ -1510,7 +1511,7 @@ label JsonFuncFocusedSpeaksSkill:
         $ readLine = 1
     return
 label JsonFuncCallMonsterAttack:
-    if len(monsterEncounter) > 0:
+    if monsterEncounter:
         $ specified = 0
         $ lineOfScene += 1
         $ m = CombatFunctionEnemytarget
@@ -1574,6 +1575,7 @@ label JsonFuncHitPlayerWith:
     $ recoil = holder[4]
     $ recoil =  int(math.floor(recoil))
     $ monsterEncounter[CombatFunctionEnemytarget].stats.hp += recoil
+    $ recoilHit = recoil
     $ player.stats.hp += holder[0]
     return
 label JsonFuncHitMonsterWith:
@@ -1586,6 +1588,7 @@ label JsonFuncHitMonsterWith:
     $ recoil = holder[4]
     $ recoil =  int(math.floor(recoil))
     $ player.stats.hp += recoil
+    $ recoilHit = recoil
     $ monsterEncounter[CombatFunctionEnemytarget].stats.hp += holder[0]
     return
 label JsonFuncDamageMonsterFromMonster:

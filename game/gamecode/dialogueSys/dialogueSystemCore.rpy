@@ -1,7 +1,8 @@
 init python:
     def getSpeaker(speakerNumber, EventDatabase, MonsterDatabase):
-        if len(actorNames) <= speakerNumber:
-            actorNames.extend([""] * (speakerNumber - len(actorNames) + 1))
+        actorNameLen = len(actorNames)
+        if actorNameLen <= speakerNumber:
+            actorNames.extend([""] * (speakerNumber - actorNameLen + 1))
 
         characterDataLocation = getFromName(EventDatabase[DataLocation].Speakers[speakerNumber].name, MonsterDatabase)
         actorNames[speakerNumber] = MonsterDatabase[characterDataLocation].name + EventDatabase[DataLocation].Speakers[speakerNumber].postName
@@ -10,364 +11,6 @@ init python:
             actorNames[speakerNumber] = EventDatabase[DataLocation].Speakers[speakerNumber].name
 
         return Character(_(actorNames[speakerNumber] +attackTitle), what_prefix='"', what_suffix='"')
-
-    def SceneRequiresCheck():
-        global displayingScene, lineOfScene, ProgressEvent, display, DataLocation, finalOption, eventMenuJumps, finalOptionEvent, finalOptionEventScene, ShuffleMenuOptions
-
-        whatStatisIt = ""
-        whatItemIsIt = ""
-        whatSkillIsIt = ""
-        whatPerkIsIt = ""
-        statToCheck = 0
-        needsStat = 0
-        eAmount = ""
-        vAmount = ""
-        hasVirilityCheck = 0
-        hasEnergyCheck = 0
-        hasStatCheck = 0
-        #CODEMOD
-        hasCapCheck = 0
-
-        passcheck = 0
-
-        passStatcheck = 1
-
-        passItemCheck = 0
-        passItemChecks = 0
-        passEquipmentCheck = 0
-        passEquipmentChecks = 0
-        passSkillCheck = 0
-        passSkillChecks = 0
-        passPerkCheck = 0
-        passPerkChecks = 0
-        passEnergyCheck = 1
-        passVirilityCheck = 1
-        #CODEMOD
-        passCapCheck = 1
-        passLocalProgressCheck = 0
-        passLocalProgressChecks = 0
-        passFetCheck = 0
-        passFetChecks = 0
-        passProgressCheck = 0
-        passProgressChecks = 0
-        passLocalChoiceCheck = 0
-        passLocalChoiceChecks = 0
-        passTimeCheck = 0
-        passTimeChecks = 0
-        passChoiceCheck = 0
-        passChoiceChecks = 0
-        hideFailedMenuChoice = 0
-        isFinalOption = 0
-        inverseRequirement = 0
-        failedItemChecked = 0
-        failedEquipmentChecked = 0
-        failedSkillChecked = 0
-        failedPerkChecked = 0
-        Overriding = 0
-        global override
-
-        checkPreFuncs = 0
-        while checkPreFuncs == 0:
-            if displayingScene.theScene[lineOfScene] == "HideOptionOnRequirementFail" and hideFailedMenuChoice == 0:
-                hideFailedMenuChoice = 1
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "InverseRequirement":
-                inverseRequirement = 1
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "ShuffleMenu":
-                ShuffleMenuOptions = 1
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "OverrideOption":
-                Overriding = 1
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "FinalOption":
-                #REMEMBER U NEED TO CALL THIS LAST OUT OF THE FUNCTIONS
-                lineOfScene += 1
-                finalOption = copy.copy(displayingScene.theScene[lineOfScene])
-                #lineOfScene += 1
-
-                isFinalOption = 1
-                finalOptionEvent = copy.copy(eventMenuJumps[-1])
-                finalOptionEventScene = copy.copy(eventMenuSceneJumps[-1])
-            elif displayingScene.theScene[lineOfScene] == "EventJump":
-                lineOfScene += 1
-                eventMenuJumps[-1] = copy.copy(displayingScene.theScene[lineOfScene])
-                lineOfScene += 1
-                if isFinalOption == 1:
-                    finalOptionEvent = copy.copy(eventMenuJumps[-1])
-
-                if displayingScene.theScene[lineOfScene] ==  "ThenJumpToScene":
-                    lineOfScene += 1
-                    eventMenuSceneJumps[-1] = copy.copy(displayingScene.theScene[lineOfScene])
-                    lineOfScene += 1
-                    if isFinalOption == 1:
-                        finalOptionEventScene = copy.copy(eventMenuSceneJumps[-1])
-
-
-            elif displayingScene.theScene[lineOfScene] == "RequiresMinimumProgress":
-                passLocalProgressChecks += 1
-                lineOfScene += 1
-                DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-                if int(displayingScene.theScene[lineOfScene]) <= ProgressEvent[DataLocation].eventProgress:
-                    passLocalProgressCheck += 1
-
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "RequiresMinimumProgressFromEvent":
-                passProgressChecks += 1
-                lineOfScene += 1
-                CheckEvent = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-                lineOfScene += 1
-                if int(displayingScene.theScene[lineOfScene]) <= ProgressEvent[CheckEvent].eventProgress:
-                    passProgressCheck += 1
-
-                lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "RequiresLessProgress":
-                passLocalProgressChecks += 1
-                lineOfScene += 1
-                DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-                if int(displayingScene.theScene[lineOfScene]) > ProgressEvent[DataLocation].eventProgress:
-                    passLocalProgressCheck += 1
-
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "RequiresLessProgressFromEvent":
-                passProgressChecks += 1
-                lineOfScene += 1
-                CheckEvent = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-                lineOfScene += 1
-                if int(displayingScene.theScene[lineOfScene]) > ProgressEvent[CheckEvent].eventProgress:
-                    passProgressCheck += 1
-
-                lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "RequiresChoice":
-                passLocalChoiceChecks += 1
-                lineOfScene += 1
-                choiceToCheck = int(displayingScene.theScene[lineOfScene])
-                lineOfScene += 1
-                DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-
-                while choiceToCheck-1 >= len(ProgressEvent[DataLocation].choices):
-                    ProgressEvent[DataLocation].choices.append("")
-
-                if displayingScene.theScene[lineOfScene] == ProgressEvent[DataLocation].choices[choiceToCheck-1]:
-                    passLocalChoiceCheck += 1
-                lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "RequiresChoiceFromEvent":
-                passChoiceChecks += 1
-                lineOfScene += 1
-                CheckEvent = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-                lineOfScene += 1
-                choiceToCheck = int(displayingScene.theScene[lineOfScene])
-
-                while choiceToCheck-1 >= len(ProgressEvent[CheckEvent].choices):
-                    ProgressEvent[CheckEvent].choices.append("")
-
-                lineOfScene += 1
-                if displayingScene.theScene[lineOfScene] == ProgressEvent[CheckEvent].choices[choiceToCheck-1]:
-                    passChoiceCheck += 1
-                lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "RequiresTime":
-                passTimeChecks += 1
-                lineOfScene += 1
-                if IfTime(displayingScene.theScene[lineOfScene]) == 1:
-                    passTimeCheck += 1
-                lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "RequiresStat":
-                passStatcheck = 0
-                lineOfScene += 1
-                whatStatisIt = displayingScene.theScene[lineOfScene]
-                statToCheck = player.stats.getStat(displayingScene.theScene[lineOfScene])
-                lineOfScene += 1
-                needsStat = int(displayingScene.theScene[lineOfScene])
-                if needsStat <= statToCheck:
-                    passStatcheck = 1
-                lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "RequiresFetishLevelEqualOrGreater":
-                passFetCheck += 1
-                lineOfScene += 1
-                fetchFetish = displayingScene.theScene[lineOfScene]
-                lineOfScene += 1
-                fetishLvl = int(displayingScene.theScene[lineOfScene])
-
-                if player.getFetish(fetchFetish) >= fetishLvl:
-                    passFetChecks += 1
-
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "RequiresFetishLevelEqualOrLess":
-                passFetCheck += 1
-                lineOfScene += 1
-                fetchFetish = displayingScene.theScene[lineOfScene]
-                lineOfScene += 1
-                fetishLvl = int(displayingScene.theScene[lineOfScene])
-
-                if player.getFetish(fetchFetish) <= fetishLvl:
-                    passFetChecks += 1
-
-                lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "RequiresItem":
-                passItemCheck += 1
-                lineOfScene += 1
-                itemName = displayingScene.theScene[lineOfScene]
-
-                equippedItems = {
-                    player.inventory.RuneSlotOne.name,
-                    player.inventory.RuneSlotTwo.name,
-                    player.inventory.RuneSlotThree.name,
-                    player.inventory.AccessorySlot.name
-                }
-
-                if itemName in equippedItems:
-                    passItemChecks += 1
-                else:
-                    # Use set for faster inventory lookup
-                    if itemName in {item.name for item in player.inventory.items}:
-                        passItemChecks += 1
-
-                if passItemCheck != passItemChecks and failedItemChecked == 0:
-                    failedItemChecked = 1
-                    whatItemIsIt = itemName
-                elif inverseRequirement == 1:
-                    whatItemIsIt = itemName
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "RequiresItemEquipped":
-                passEquipmentCheck += 1
-                lineOfScene += 1
-                itemName = displayingScene.theScene[lineOfScene]
-
-                equippedItems = {
-                    player.inventory.RuneSlotOne.name,
-                    player.inventory.RuneSlotTwo.name,
-                    player.inventory.RuneSlotThree.name,
-                    player.inventory.AccessorySlot.name
-                }
-
-                if itemName in equippedItems:
-                    passEquipmentChecks += 1
-
-                if passEquipmentCheck != passEquipmentChecks and failedEquipmentChecked == 0:
-                    failedEquipmentChecked = 1
-                    whatEquipmentIsIt = itemName
-                elif inverseRequirement == 1:
-                    whatEquipmentIsIt = itemName
-                lineOfScene += 1
-
-            elif displayingScene.theScene[lineOfScene] == "RequiresSkill":
-                passSkillCheck += 1
-                lineOfScene += 1
-                skillName = displayingScene.theScene[lineOfScene]
-
-                if skillName in {skill.name for skill in player.skillList}:
-                    passSkillChecks += 1
-
-                if passSkillCheck != passSkillChecks and failedSkillChecked == 0:
-                    failedSkillChecked = 1
-                    whatSkillIsIt = skillName
-                elif inverseRequirement == 1:
-                    whatSkillIsIt = skillName
-
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "RequiresPerk":
-                passPerkCheck += 1
-                lineOfScene += 1
-                perk_name = displayingScene.theScene[lineOfScene]
-
-                if perk_name in {perk.name for perk in player.perks}:
-                    passPerkChecks += 1
-
-                if passPerkCheck != passPerkChecks and failedPerkChecked == 0:
-                    failedPerkChecked = 1
-                    whatPerkIsIt = perk_name
-                elif inverseRequirement == 1:
-                    whatPerkIsIt = perk_name
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "RequiresEnergy":
-                passEnergyCheck = 0
-                hasEnergyCheck = 1
-                lineOfScene += 1
-                eAmount = displayingScene.theScene[lineOfScene]
-
-                if player.stats.ep >= int(eAmount):
-                    passEnergyCheck = 1
-
-                lineOfScene += 1
-            elif displayingScene.theScene[lineOfScene] == "RequiresVirility":
-                passVirilityCheck = 0
-                hasVirilityCheck = 1
-                lineOfScene += 1
-                vAmount = displayingScene.theScene[lineOfScene]
-
-                if getVirility(player) >= int(vAmount):
-                    passVirilityCheck = 1
-
-                lineOfScene += 1
-            #CODEMOD
-            elif displayingScene.theScene[lineOfScene] == "RequiresLevelCapPassed":
-                passCapCheck = 0
-                hasCapCheck = 1 
-
-                if levelCapEnabled() and player.stats.lvl > getMaxLevelCap():
-                    passCapCheck = 1
-
-                lineOfScene += 1
-            else:
-                if Overriding == 1:
-                    override = copy.deepcopy(displayingScene.theScene[lineOfScene])
-                checkPreFuncs += 1
-
-        if inverseRequirement == 0:
-            if passStatcheck == 1 and passFetCheck == passFetChecks and passItemCheck == passItemChecks and passEquipmentCheck == passEquipmentChecks and passSkillCheck == passSkillChecks and passPerkCheck == passPerkChecks and passEnergyCheck == 1 and passVirilityCheck == 1 and passProgressCheck == passProgressChecks and passLocalProgressCheck == passLocalProgressChecks and passLocalChoiceCheck == passLocalChoiceChecks and passChoiceCheck == passChoiceChecks and passTimeCheck == passTimeChecks and passCapCheck == 1:
-                passcheck = 1
-            else:
-                if hideFailedMenuChoice == 0:
-                    if passLocalChoiceCheck == passLocalChoiceChecks and passProgressCheck == passProgressChecks and passLocalProgressCheck == passLocalProgressChecks and passChoiceCheck == passChoiceChecks:
-                        if passStatcheck == 0:
-                            display = "Requires " + str(needsStat) + " " + whatStatisIt + "."
-                        elif passItemCheck != passItemChecks:
-                            display = "Requires a " + whatItemIsIt + " in your inventory."
-                        elif passEquipmentCheck != passEquipmentChecks:
-                            display = "Must not have " + whatEquipmentIsIt + " equipped."
-                        elif passSkillCheck != passSkillChecks and failedSkillChecked == 1:
-                            display = "Requires you to know the " + whatSkillIsIt + " skill."
-                        elif passPerkCheck != passPerkChecks:
-                            display = "Requires you to have the " + whatPerkIsIt + " perk."
-                        elif passEnergyCheck == 0:
-                            display = "Requires " + eAmount + " energy."
-                        elif passVirilityCheck == 0:
-                            display = "Requires " + vAmount + " virility."
-                        #CODEMOD
-                        elif passCapCheck == 0:
-                            display = "Requires you to have passed the level cap."
-        elif inverseRequirement == 1:
-            if passStatcheck == 1 and passFetCheck == passFetChecks and passItemCheck == passItemChecks and passEquipmentCheck == passEquipmentChecks and passSkillCheck == passSkillChecks and passPerkCheck == passPerkChecks and passEnergyCheck == 1 and passVirilityCheck == 1 and passProgressCheck == passProgressChecks and passLocalProgressCheck == passLocalProgressChecks and passLocalChoiceCheck == passLocalChoiceChecks and passChoiceCheck == passChoiceChecks and passTimeCheck == passTimeChecks:
-                if hideFailedMenuChoice == 0:
-                    if passLocalChoiceCheck == passLocalChoiceChecks and passProgressCheck == passProgressChecks and passLocalProgressCheck == passLocalProgressChecks and passChoiceCheck == passChoiceChecks:
-                        if passVirilityCheck == 1 and hasVirilityCheck == 1:
-                            display = "Must have less than " + vAmount + " virility."
-                        if passEnergyCheck == 1 and hasEnergyCheck == 1:
-                            display = "Must have less than " + eAmount + " energy."
-                        if passPerkCheck == passPerkChecks and passPerkCheck == 1:
-                            display = "Must not have the " + whatPerkIsIt + " perk."
-                        if passSkillCheck == passSkillChecks and passSkillCheck == 1:
-                            display = "Must not know the " + whatSkillIsIt + " skill."
-                        if passItemCheck == passItemChecks and passItemCheck == 1:
-                            display = "Must not have " + whatItemIsIt + " in your inventory."
-                        if passEquipmentCheck == passEquipmentChecks and passEquipmentCheck == 1:
-                            display = "Must not have " + whatEquipmentIsIt + " equipped."
-                        if passStatcheck == 1 and hasStatCheck == 1:
-                            display = "Must have less than " + str(needsStat) + " " + whatStatisIt + "."
-                        #CODEMOD
-                        if passCapCheck == 1 and hasCapCheck == 1:
-                            display = "Must not have passed the level cap."
-
-            else:
-                passcheck = 1
-        return passcheck
 
     JsonFuncRegistry = {
     # If funcs
@@ -549,6 +192,7 @@ init python:
     "GoToMap": ["JsonFuncGoToMap"],
     # 'S' funcs
     "Speak": ["JsonFuncSpeak"],
+    "SpeakSkill": ["JsonFuncSpeakSkill"],
     "Speaks": ["JsonFuncSpeaks"],
         "Speaks2": ["JsonFuncSpeaks2", 2],"Speaks3": ["JsonFuncSpeaks2", 3],
         "Speaks4": ["JsonFuncSpeaks2", 4],"Speaks5": ["JsonFuncSpeaks2", 5],
@@ -754,7 +398,7 @@ label displayScene:
 
         $ displayingScene = copy.deepcopy(HoldingScene)
         $ lineOfScene = copy.copy(HoldingLine)
-        $ DataLocation = copy.deepcopy(HoldingDataLoc)
+        $ DataLocation = copy.copy(HoldingDataLoc)
         $ HoldingDataLoc = -1
         $ HoldingLine =-1
         $ HoldingScene = LossScene()
@@ -773,17 +417,9 @@ label resumeSceneAfterCombat:
     $ display5 = ""
     $ display6 = ""
 
-    if len(actorNames) < 12:
-        $ actorNames.append("")
-        $ actorNames.append("")
-        $ actorNames.append("")
-        $ actorNames.append("")
-        $ actorNames.append("")
-        $ actorNames.append("")
-        $ actorNames.append("")
-        $ actorNames.append("")
-        $ actorNames.append("")
-        $ actorNames.append("")
+    $ actorNameLen = len(actorNames)
+    if actorNameLen < 12:
+        $ actorNames.extend([""] * (12 - actorNameLen))
 
     python:
         try:
@@ -806,7 +442,7 @@ label resumeSceneAfterCombat:
         #"[showTheLine]"
         if showSpeakers == 1:
             show screen ON_CharacterDialogueScreen onlayer master
-            if len(monsterEncounter) > 0:
+            if monsterEncounter:
                 show screen ON_EnemyCardScreen onlayer master
         else:
             hide screen ON_CharacterDialogueScreen
@@ -825,12 +461,6 @@ label resumeSceneAfterCombat:
             $ Speaker = Character(_(''))
             $ readLine = 1
 
-        python:
-            try:
-                displayingScene.theScene
-            except:
-                displayingScene = Dialogue()
-
         #if onGridMap == 1:
         #    jump displayTileMap
         #$ benchtime = time.perf_counter()
@@ -842,260 +472,9 @@ label resumeSceneAfterCombat:
                 $ checking = displayingScene.theScene[lineOfScene]
                 #Virility, Progress, Choice, OtherEventsProgress, OtherEventsChoice
                 $ linefound = 0
-                if checking == "Stat":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            $ statToCheck = player.stats.getStat(displayingScene.theScene[lineOfScene])
-                            $ lineOfScene += 1
-
-                            if statToCheck >= int(displayingScene.theScene[lineOfScene]) and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "Level":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if player.stats.lvl >= int(displayingScene.theScene[lineOfScene]) and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "Arousal":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if player.stats.hp >= int(displayingScene.theScene[lineOfScene]) and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "ArousalByPercent":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if player.stats.hp >= player.stats.max_true_hp*float(displayingScene.theScene[lineOfScene])*0.01 and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1                                
-                elif checking == "MaxArousal":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if player.stats.max_true_hp >= int(displayingScene.theScene[lineOfScene]) and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "Energy":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if player.stats.ep >= int(displayingScene.theScene[lineOfScene]) and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "EnergyByPercent":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if player.stats.ep >= player.stats.max_true_ep*float(displayingScene.theScene[lineOfScene])*0.01 and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1   
-                elif checking == "MaxEnergy":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if player.stats.max_true_ep >= int(displayingScene.theScene[lineOfScene]) and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "Virility":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if getVirility(player) >= int(displayingScene.theScene[lineOfScene]) and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "HasFetish":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if player.getFetish(displayingScene.theScene[lineOfScene]) >= 25 and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "HasFetishLevelEqualOrGreater":
-                    $ lineOfScene += 1
-                    $ fetchFetish = displayingScene.theScene[lineOfScene]
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop" and linefound == 0:
-                            $ fetishLvl = int(displayingScene.theScene[lineOfScene])
-
-                            if player.getFetish(fetchFetish) >= fetishLvl:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "EncounterSize":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop" and linefound == 0:
-                            if len(monsterEncounter) >= int(displayingScene.theScene[lineOfScene]):
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-
-                elif checking == "Progress":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if int(displayingScene.theScene[lineOfScene]) <= ProgressEvent[DataLocation].eventProgress and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "Choice":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            $ choiceToCheck = int(displayingScene.theScene[lineOfScene])
-                            $ lineOfScene += 1
-                            $ DataLocation = getFromName(ProgressEvent[DataLocation].name, ProgressEvent)
-
-                            while choiceToCheck-1 >= len(ProgressEvent[DataLocation].choices):
-                                $ ProgressEvent[DataLocation].choices.append("")
-
-                            if displayingScene.theScene[lineOfScene] == ProgressEvent[DataLocation].choices[choiceToCheck-1] and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "OtherEventsProgress":
-                    $ lineOfScene += 1
-                    $ CheckEvent = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if int(displayingScene.theScene[lineOfScene]) <= ProgressEvent[CheckEvent].eventProgress and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "OtherEventsChoice":
-                    $ lineOfScene += 1
-                    $ CheckEvent = getFromName(displayingScene.theScene[lineOfScene], ProgressEvent)
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            $ choiceToCheck = int(displayingScene.theScene[lineOfScene])
-                            $ lineOfScene += 1
-                            $ CheckEvent = getFromName(ProgressEvent[CheckEvent].name, ProgressEvent)
-
-                            while choiceToCheck-1 >= len(ProgressEvent[CheckEvent].choices):
-                                $ ProgressEvent[CheckEvent].choices.append("")
-
-                            if displayingScene.theScene[lineOfScene] == ProgressEvent[CheckEvent].choices[choiceToCheck-1] and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "IfTimeIs":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if 1 == IfTime(displayingScene.theScene[lineOfScene]) and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-
-
-                elif checking == "Eros":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            if player.inventory.money >= int(displayingScene.theScene[lineOfScene]) and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-
-                elif checking == "Item":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            $ hasThing = 0
-                            python:
-                                for item in player.inventory.items:
-                                    if item.name == displayingScene.theScene[lineOfScene]:
-                                        hasThing = 1
-
-                            if hasThing == 1 and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-                elif checking == "Perk":
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ lineOfScene += 1
-                        if displayingScene.theScene[lineOfScene] != "EndLoop":
-                            $ hasThing = 0
-                            python:
-                                perk_name = displayingScene.theScene[lineOfScene]
-                                hasThing = int(any(perk.name == perk_name for perk in player.perks))
-
-                            if hasThing == 1 and linefound == 0:
-                                $ linefound = 1
-                                $ lineOfScene += 1
-                                $ display = displayingScene.theScene[lineOfScene]
-                            else:
-                                $ lineOfScene += 1
-
-                            $ hasThing = 0
-                elif checking == "Random":
-                    $ lineOfScene += 1
-                    $ linefound = 1
-                    $ randomSelection = []
-
-                    while displayingScene.theScene[lineOfScene] != "EndLoop":
-                        $ randomSelection.append(displayingScene.theScene[lineOfScene])
-                        $ lineOfScene += 1
-
-                    $ renpy.random.shuffle(randomSelection)
-                    $ display = randomSelection[0]
+                if checking in SwapLineIfRegistry:
+                    $ theLabelFunc = SwapLineIfRegistry[checking]
+                    $ renpy.call(*theLabelFunc)
 
                 if linefound == 1:
                     $ readLine = 3
@@ -1141,7 +520,7 @@ label resumeSceneAfterCombat:
 
         $ lineOfScene += 1
 
-    if len(monsterEncounter) > 0:
+    if monsterEncounter:
         return
 
     if itemEvent == 1:
@@ -1152,7 +531,7 @@ label resumeSceneAfterCombat:
     if onGridMap == 3 and dontJumpOutOfGridEvents == 0:
         jump postGridEvent
 
-    if HoldingLine != -1 and len(DialogueTypeHolderArray) == 0:
+    if HoldingLine != -1 and not DialogueTypeHolderArray:
         $ SceneBookMarkRead = 1
         jump displayScene
 
@@ -1163,7 +542,7 @@ label resumeSceneAfterCombat:
 
     $ displayingScene = Dialogue()
 
-    if len(explorationDeck) >= deckProgress and len(monsterEncounter) == 0  and runAndStayInEvent == 1 and TimeAdvancedCheckArray[-1] == 0:
+    if len(explorationDeck) >= deckProgress and not monsterEncounter  and runAndStayInEvent == 1 and TimeAdvancedCheckArray[-1] == 0:
         $ runAndStayInEvent = 0
         $ DialogueIsFrom = "Event"
         jump PostCombatWin
@@ -1176,7 +555,7 @@ label sortMenuD:
         #$ isEventNow = 0
     if callNextJump == 1:
         call playSceneJump from _call_playSceneJump
-        if len(monsterEncounter) > 0:
+        if monsterEncounter:
             $ lineOfScene += 1
             jump resumeSceneAfterCombat
         return
@@ -1185,8 +564,8 @@ label sortMenuD:
     if EventDatabase[EventConsisterTarget].name != EventConsister and EventConsister != "": # This is intended to fix incorrect event adresses
         $ DataLocation = getFromName(EventConsister, EventDatabase)
 
-    $ EventConsister = copy.deepcopy(EventDatabase[DataLocation].name)
-    $ EventConsisterTarget = copy.deepcopy(DataLocation)
+    $ EventConsister = copy.copy(EventDatabase[DataLocation].name)
+    $ EventConsisterTarget = copy.copy(DataLocation)
 
 
 
@@ -1265,14 +644,14 @@ label sortMenuD:
     if itemEvent == 1:
         return
 
-    if len(TimeAdvancedCheckArray) > 0 and len(monsterEncounter) == 0 and dontJumpOutOfGridEvents == 0:
+    if TimeAdvancedCheckArray and not monsterEncounter and dontJumpOutOfGridEvents == 0:
         if TimeAdvancedCheckArray[-1] == 1:
             jump postTimeAdvancedEvent
 
-    if EnteringLocationCheck == 1 and len(monsterEncounter) == 0 :
+    if EnteringLocationCheck == 1 and not monsterEncounter:
         jump postEntryEvent
 
-    if len(monsterEncounter) > 0 or LostGameOver == -1:
+    if monsterEncounter or LostGameOver == -1:
         $ LostGameOver = 0
         return
 
@@ -1318,9 +697,9 @@ label TownLocation:
                 if hasReq >= len(each.requires) + len(each.requiresEvent):
                     LocationCurrentList.append(copy.deepcopy(each))
                     npcCount += 1
-
-        while i < len(LocationCurrentList):
-            if i < len(LocationCurrentList):
+        LocationCurrentListLen = len(LocationCurrentList)
+        while i < LocationCurrentListLen:
+            if i < LocationCurrentListLen:
                 display = LocationCurrentList[i].name
 
                 if displayTown1 == "":
@@ -1434,7 +813,6 @@ label lastNPCPage:
         $ index = npcCount/5
         $ index = math.floor(index)
         $ index = index*5
-        $ index = math.floor(index)
         #$ b =  fetCount - index
         #$ index = index + b
         $ index = int(index)
@@ -1453,16 +831,16 @@ label lastMenuPage:
 
     $ indent = MaxMenuSlots
     $ index -= indent
+    $ menuArrayLen = len(menuArray)
     if index < 0:
         $ index = 0
 
-        while index < len(menuArray):
+        while index < menuArrayLen:
             $ index += indent
         $ index -= indent
-    #    $ index = len(menuArray)/indent
+        #$ index = len(menuArray)/indent
         $ index = math.floor(index)
         #$ index = index*indent
-        $ index = math.floor(index)
         #$ b =  fetCount - index
         #$ index = index + b
         $ index = int(index)

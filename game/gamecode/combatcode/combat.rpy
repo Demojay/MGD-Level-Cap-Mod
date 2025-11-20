@@ -195,7 +195,7 @@ init python:
 
                             stanceRequired = 1
 
-            if stanceRequired == 1 and moveRequired == 1 and charsRequired == 1 and each.NameOfScene != "":
+            if stanceRequired == 1 and moveRequired == 1 and charsRequired == 1 and each.NameOfScene != "" and len(scenesPool) < 1:
                 scenesPool.append(copy.deepcopy(each))
                 sceneNumbers.append(copy.deepcopy(getFromNameOfScene(each.NameOfScene, Scenes)))
 
@@ -473,10 +473,12 @@ label combatPlayer:
 
     $ orgasmTarget = player
 
-    if len(monsterEncounter) > 0: #may not fix the problem people are having with a rare crash, but may lead to figuring out whats actually happpening
+    if monsterEncounter: 
         $ theLastAttacker = monsterEncounter[0]
     call PlayerLossCheck from _call_PlayerLossCheck_2
-
+ 
+    if len(monsterEncounter) == 0: #combat is over, though this should never trigger in theory, but people keep running into a weird issue in the labyrinth
+        jump combatWin
 
     python:
         Rut = False
@@ -1324,7 +1326,7 @@ label combatDisplay:
                     if m < len(monsterEncounter) > 0:
                         $ monInititive[m] = 0
                     $ m = len(monsterEncounter) + 1
-                    if len(monsterEncounter) > 0:
+                    if monsterEncounter:
                         if max(monInititive) == 0:
                             $ lastMonToGo = 1
                 $ m += 1

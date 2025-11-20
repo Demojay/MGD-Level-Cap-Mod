@@ -1,6 +1,6 @@
 # Monster Girl Dreams - Level Cap Mod
 
-A mod for [Monster Girl Dreams](https://threshold.itch.io/monster-girl-dreams) that enforces strict level caps into the game, ensuring that the players cannot gain levels past certain points depending on game progression. This mod is designed to work on v27.1a.
+A mod for [Monster Girl Dreams](https://threshold.itch.io/monster-girl-dreams) that enforces strict level caps into the game, ensuring that the players cannot gain levels past certain points depending on game progression. This mod is designed to work on v27.2.
 
 This mod only focuses on blocking levelling up, meaning saves from unmodded games can be freely used with this mod and vice-versa.
 
