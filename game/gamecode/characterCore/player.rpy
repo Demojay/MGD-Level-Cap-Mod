@@ -306,10 +306,10 @@ label playerClass:
                 durability = 0
                 stanceRemoved = 0
                 for x in self.combatStance:
-                     if (x.Stance == theName and stanceRemoved == 0) or theName == "All":
+                    if (x.Stance == theName and stanceRemoved == 0) or theName == "All":
                         durability = self.combatStance[i].potency
                         stanceRemoved = 1
-                     i += 1
+                    i += 1
                 return durability
 
             def clearStance(self):
@@ -325,10 +325,10 @@ label playerClass:
                 i = 0
                 stanceRemoved = 0
                 for x in self.combatStance:
-                     if (x.Stance == theName and stanceRemoved == 0) or theName == "All":
+                    if (x.Stance == theName and stanceRemoved == 0) or theName == "All":
                         del self.combatStance[i]
                         stanceRemoved = 1
-                     i += 1
+                    i += 1
                 if len(self.combatStance) <= 0:
                     self.combatStance.append(CombatStance("None"))
 
@@ -517,7 +517,7 @@ label playerClass:
                 L = 0
                 for each in self.FetishList:
                     if each.name == name:
-                          self.FetishList[L].Level = number
+                        self.FetishList[L].Level = number
                     L += 1
 
                 return

@@ -146,13 +146,14 @@ init python:
         scenesPool = []
         sceneNumbers  = []
         howFar = 0
+        FirstStanceFound = ""
 
         for each in Scenes:
             charsRequired = 0
             moveRequired = 0
             stanceRequired = 0
             foundMatch = 0
-            inUse = []
+            inUse = [] 
 
             if len(each.includes) > 1:
                 if len(trueMonsterEncounter) > 1:
@@ -187,15 +188,18 @@ init python:
                 moveRequired = 1
 
             if each.stance == "" or each.stance == "None":
-                stanceRequired = 1
+                if  FirstStanceFound == "":
+                    stanceRequired = 1
             else:
                 for pStance in Monster.combatStance:
                     if pStance.Stance != "None":
                         if pStance.Stance == each.stance:
+                            if FirstStanceFound == "" or FirstStanceFound == each.stance:
+                                stanceRequired = 1
+                            if FirstStanceFound == "":
+                                FirstStanceFound = each.stance
 
-                            stanceRequired = 1
-
-            if stanceRequired == 1 and moveRequired == 1 and charsRequired == 1 and each.NameOfScene != "" and len(scenesPool) < 1:
+            if stanceRequired == 1 and moveRequired == 1 and charsRequired == 1 and each.NameOfScene != "":
                 scenesPool.append(copy.deepcopy(each))
                 sceneNumbers.append(copy.deepcopy(getFromNameOfScene(each.NameOfScene, Scenes)))
 
