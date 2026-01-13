@@ -64,6 +64,135 @@ label JsonFuncGiveExp:
     call levelUpSpot from _call_levelUpSpot_1
     $ expGiven = 0
     return
+label JsonFuncDrainLevel: # warning, might function
+    $ lineOfScene += 1
+    $ ExpTotal += player.stats.Exp
+    $ player.stats.Exp = 0
+    $ lvlLoop = int(displayingScene.theScene[lineOfScene])
+
+    while lvlLoop > 0 and player.stats.lvl > 1:
+        $ perksToRemove = 0    
+        $ statsToRemove = 3       
+        $ ChangeThisStat = -1
+
+        if player.statPoints >= 3:
+            $ statsToRemove = 0
+            $ player.statPoints -= 3
+
+        while statsToRemove > 0:
+            if player.statPoints > 0:
+                $ player.statPoints -= 1
+            else:                    
+                if len(player.pastLevelUps) == 0: # just in case the player doesn't have the recorded stat ups from an older save
+                    if player.stats.Willpower > 1:
+                        $ player.pastLevelUps.append("Willpower") 
+                    elif player.stats.Power > 1:
+                        $ player.pastLevelUps.append("Power")
+                    elif player.stats.Int > 1:
+                        $ player.pastLevelUps.append("Intelligence")     
+                    elif player.stats.Tech > 1:
+                        $ player.pastLevelUps.append("Technique")      
+                    elif player.stats.Luck > 1:
+                        $ player.pastLevelUps.append("Luck")    
+                    elif player.stats.max_true_hp > 50:
+                        $ player.pastLevelUps.append("Arousal")
+                    elif player.stats.max_true_ep > 20:
+                        $ player.pastLevelUps.append("Energy") 
+                    elif player.stats.Allure > 1:
+                        $ player.pastLevelUps.append("Allure")              
+                
+                if len(player.pastLevelUps) != 0: # just in case
+                    $ TemporaryStatCheck = player.getStatBonusReduction(player.pastLevelUps[-1])
+                    $ infoDict = {}
+                    $ currentStat = player.pastLevelUps[-1]
+
+                    if currentStat in attrs_arrDR:
+                        $ changingStat = -10
+                        $ infoDict = attrs_arrDR
+
+                        if currentStat == "Arousal":
+                            $ theStatToChange = player.stats.max_hp
+                        elif currentStat == "Energy":
+                            $ theStatToChange = player.stats.max_ep
+
+                    elif currentStat in stats_arrDR:
+                        $ changingStat = -1
+                        $ infoDict = stats_arrDR
+
+                        $ theStatToChange = player.stats.getStat(currentStat)
+                    
+                    $ theStatFloor = infoDict[currentStat][0]
+                    $ theStatCap = infoDict[currentStat][1]
+
+                    $ player.creatorLvlStat(theStatToChange, changingStat, theStatFloor, theStatCap, 0, currentStat, TemporaryStatCheck)
+                    $ player.CalculateStatBoost()
+                    $ del player.pastLevelUps[-1]
+
+            $ statsToRemove -= 1
+            
+        if player.stats.lvl % 3 == 0:
+            $ perksToRemove += 1 
+        if player.stats.lvl == 5:
+            $ perksToRemove += 1 
+        if player.stats.lvl == 10:
+            $ perksToRemove += 2 
+        if player.stats.lvl == 20:
+            $ perksToRemove += 2 
+
+        if player.perkPoints >= perksToRemove:
+            $ player.perkPoints -= perksToRemove
+            $ perksToRemove = 0
+        
+        while perksToRemove > 0:
+            if perksToRemove > 0: #while loop silliness potential stop
+                if player.perkPoints > 0:
+                    $ player.perkPoints -= 1
+                else:
+                    python:
+                        perkRemoved = 0
+                        for perk in reversed(player.perks): 
+                            if perk.PlayerCanPurchase == "Yes" and perkRemoved == 0:
+                                player.giveOrTakePerk(perk.name, -1) 
+                                perkRemoved = 1
+                                # if the player reorganized their list it will grab the perk at a bit more random rate, not sure that REALLY matters
+                                # also pretty sure setting up a way to check an 'unsorted/default' list would be big pain?
+                                # note: as it stands if a res point perk gets removed it eats the point, which can put the player at negative res points that they can level up to remove, and either equals out from the player leveling back up, or by taking the perk again? I dont think this should cause weird issues?
+            $ perksToRemove -= 1
+
+        if player.stats.lvl % 5 == 0:
+            if player.SensitivityPoints > 0:
+                $ player.SensitivityPoints -= 1 # if the player has a stray perk point, eat it, easy peasy
+            elif len(player.pastLevelUpSens) == 0: # just in case the player doesn't have the recorded stat ups from an older save
+                $ player.SensitivityPoints -= 1
+            else: 
+                $ TemporarySensCheck = player.BodySensitivity.getSensBonusReduction(player, player.pastLevelUpSens[-1])
+                $ resInfo = sens_arrDR.get(player.pastLevelUpSens[-1])
+
+                $ changingStat = resInfo[0]
+                $ theStatFloor = resInfo[1]
+                $ theStatCap = resInfo[2]
+
+                $ player.BodySensitivity.creatorSetRes(player.BodySensitivity.getRes(player.pastLevelUpSens[-1]), -changingStat, theStatFloor, theStatCap, 0, TemporarySensCheck, player.pastLevelUpSens[-1])
+
+                if player.pastLevelUpSens[-1] == "Sex":
+                    $ player.SensitivityPoints += 1
+
+                $ del player.pastLevelUpSens[-1]
+                # pretty sure this works properly?                    
+
+        $ player.stats.lvl -= 1
+        $ ExpTotal += int((0.4*(player.stats.lvl*player.stats.lvl)) + (2*player.stats.lvl) + (15*math.sqrt(player.stats.lvl)-8))
+        $ lvlLoop -= 1
+
+    $ _tempFavorPool = CalcGoddessFavor(player)
+
+    if favorPool > _tempFavorPool:
+        $ favorPool = _tempFavorPool
+    $ player.stats.ExpNeeded = int((0.4*(player.stats.lvl*player.stats.lvl)) + (2*player.stats.lvl) + (15*math.sqrt(player.stats.lvl)-8))
+    
+    #$ display = str(displayingScene.theScene[lineOfScene]) + " levels drained!" #prolly better to have the text in game explain lossed level in the moment for better flow
+
+    return
 label JsonFuncGiveItem:
     $ lineOfScene += 1
     $ amount = int(displayingScene.theScene[lineOfScene])

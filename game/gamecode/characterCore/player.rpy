@@ -45,7 +45,7 @@ label playerClass:
                 self.SensitivityPoints = 3
                 self.FetishList = FetishList
                 self.combatStance = combatStance
-                self.pastLevelUps = [[]]
+                self.pastLevelUps = []
                 self.pastLevelUpSens = []
                 self.lvlUps = lvlUps
                 self.resistancesStatusEffects = resistancesStatusEffects
@@ -100,7 +100,7 @@ label playerClass:
                 #    HpBase = hardHp
                 #    EpBase = hardEp
                 #    SpBase = hardSp
-                self.pastLevelUps = [[]]
+                self.pastLevelUps = []
                 self.pastLevelUpSens = []
 
                 self.stats.bonus_hp = 0
@@ -215,7 +215,7 @@ label playerClass:
                 self.stats.Allure = 5
                 self.stats.Willpower = 5
                 self.stats.Luck = 5
-                self.pastLevelUps = [[]]
+                self.pastLevelUps = []
                 self.pastLevelUpSens = []
 
                 self.perks = []
@@ -389,18 +389,24 @@ label playerClass:
             def creatorLvlStat(self, stat, amount, mini, maxi, cost=1, statToChange="", tempStat=0):
                 go = 0
 
-                if stat+amount-tempStat <= maxi and amount > 0:
-                    if self.statPoints >= cost:
-                        self.statPoints -= cost
+                if cost == 0:
+                    stat += amount
+                    go = 1
+                else:
+                    if stat+amount-tempStat <= maxi and amount > 0:
+                        if self.statPoints >= cost:
+                            self.statPoints -= cost
+                            stat += amount
+                            go = 1
+
+                    if respeccing == 0:
+                        tempStat = 0
+                    if stat+amount >= mini+tempStat and amount < 0:
+                        self.statPoints += cost
                         stat += amount
                         go = 1
 
-                if respeccing == 0:
-                    tempStat = 0
-                if stat+amount >= mini+tempStat and amount < 0:
-                    self.statPoints += cost
-                    stat += amount
-                    go = 1
+                    
 
                 if statToChange == "Arousal":
                     self.stats.max_hp = stat
@@ -426,35 +432,48 @@ label playerClass:
 
                 if go == 1:
                     if amount > 0:
-                        if len(self.pastLevelUps[-1]) >= 2:
-                            self.pastLevelUps.append([])
-                        self.pastLevelUps[-1].append(copy.deepcopy(statToChange))
-                    else:
-                        lvledStack = []
-                        foundRemoved = 0
-                        tracker = len(self.pastLevelUps) -1
-                        tempList = copy.deepcopy(self.pastLevelUps)
-                        for each in tempList[::-1]:
-                            if foundRemoved == 1:
-                                break
-                            for lvl in each:
-                                if lvl == statToChange:
-                                    del self.pastLevelUps[tracker][0]
-                                    foundRemoved = 1
-                                    break
-                                else:
-                                    lvledStack.append(self.pastLevelUps[tracker][0])
-                                    del self.pastLevelUps[tracker][0]
+                        self.pastLevelUps.append(copy.deepcopy(statToChange))  
+                    elif cost != 0 and amount < 0:
+                        pointRemoved = 0
+                        inverseCounter = len(self.pastLevelUps)-1
+                        for removedLevelPoint in reversed(self.pastLevelUps): 
+                            if removedLevelPoint == statToChange and pointRemoved == 0:
+                                del self.pastLevelUps[inverseCounter] 
+                                pointRemoved = 1
+                            inverseCounter -= 1
 
-                            if len(self.pastLevelUps[tracker]) == 0:
-                                del self.pastLevelUps[tracker]
-                                if len(self.pastLevelUps) == 0:
-                                    self.pastLevelUps.append([])
-                            tracker -= 1
-                        for each in lvledStack:
-                            if len(self.pastLevelUps[-1]) >= 2:
-                                self.pastLevelUps.append([])
-                            self.pastLevelUps[-1].append(each)
+                    # fuck whatever this nonsense was that past thresh was trying to do
+                    
+                    #if amount > 0:
+                    #    if len(self.pastLevelUps[-1]) >= 2:
+                    #        self.pastLevelUps.append([])
+                    #    self.pastLevelUps[-1].append(copy.deepcopy(statToChange))
+                    #else:
+                    #    lvledStack = []
+                    #    foundRemoved = 0
+                    #    tracker = len(self.pastLevelUps) -1
+                    #    tempList = copy.deepcopy(self.pastLevelUps)
+                    #    for each in tempList[::-1]:
+                    #        if foundRemoved == 1:
+                    #            break
+                    #        for lvl in each:
+                    #            if lvl == statToChange:
+                    #               del self.pastLevelUps[tracker][0]
+                    #                foundRemoved = 1
+                    #                break
+                    #            else:
+                    #                lvledStack.append(self.pastLevelUps[tracker][0])
+                    #                del self.pastLevelUps[tracker][0]
+
+                    #        if len(self.pastLevelUps[tracker]) == 0:
+                    #            del self.pastLevelUps[tracker]
+                    #            if len(self.pastLevelUps) == 0:
+                    #                self.pastLevelUps.append([])
+                    #        tracker -= 1
+                    #    for each in lvledStack:
+                    #        if len(self.pastLevelUps[-1]) >= 2:
+                    #            self.pastLevelUps.append([])
+                    #        self.pastLevelUps[-1].append(each)
 
                 return
 
@@ -500,8 +519,6 @@ label playerClass:
                 if self.stats.max_true_ep < 1:
                         epDeficit = copy.copy(self.stats.max_true_ep)
                         self.stats.max_true_ep = 1
-
-
 
                 return
 
@@ -661,7 +678,7 @@ label playerClass:
                 try:
                     len(self.pastLevelUps[0])
                 except:
-                    setattr(self, 'pastLevelUps', [[]])
+                    setattr(self, 'pastLevelUps', [])
                     setattr(self, 'pastLevelUpSens', [])
                     self.pastLevelUpSens = []
 

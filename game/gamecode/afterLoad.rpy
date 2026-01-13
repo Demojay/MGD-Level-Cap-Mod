@@ -1,5 +1,5 @@
 label after_load:
-
+    
     if _version.startswith("Renpy-8") or _version.startswith("Alpha-v20") or _version.startswith("Alpha-v19") or _version.startswith("Alpha-v25") or _version.startswith("Alpha-v24") or _version.startswith("Alpha-v23") or _version.startswith("Alpha-v22") or _version.startswith("Alpha-v21"):
         $ save_name = copy.copy(player.name)
         $ _version = "Alpha-v26"
@@ -45,6 +45,41 @@ label after_load:
                 player.perks[i].Update()
                 i +=1
         $ _version = "Alpha-v27"
+
+    if  _version in ["27b-Alpha", "27a-Alpha", "Alpha-v27b", "Alpha-v27a", "Alpha-v27"] or _version.startswith("Alpha-v27.1") or _version.startswith("Alpha-v27.2"):        
+        $ transfering = copy.deepcopy(player.pastLevelUps)
+        $ player.pastLevelUps = []
+        $ ExpTotal = 0
+        python:
+            for each in transfering:
+                if isinstance(each, str):
+                    player.pastLevelUps.append(each)
+                    continue
+
+                for extra in each:
+                    player.pastLevelUps.append(extra)
+        $ _version = "Alpha-v27.3"
+
+    if  _version in ["Alpha-v27.3"]: 
+        python: #the anti silliness update wall to make sure the change gets through in the situation where it didnt update before but their save got marked as v27.3
+            try:
+                ExpTotal
+            except NameError:
+                transfering = copy.deepcopy(player.pastLevelUps)
+                player.pastLevelUps = []
+                ExpTotal = 0 
+                for each in transfering:
+                    if isinstance(each, str):
+                        player.pastLevelUps.append(each)
+                        continue
+
+                    for extra in each:
+                        player.pastLevelUps.append(extra)
+            else:
+                ExpTotal = ExpTotal
+        $ _version = "Alpha-v27.3a"
+
+
 
     if onGridMap == 0:
         hide screen gridMoveKeys

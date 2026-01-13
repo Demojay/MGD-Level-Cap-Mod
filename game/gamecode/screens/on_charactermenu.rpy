@@ -375,19 +375,19 @@ screen ON_StatsListDisplay(showMainStats=False):
         textbutton "---" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
 
 
-        use ON_SingleStatDisplayNoVar("Power:", "[player.stats.Power]", tooltipDisplay="Escape restraints, 'punish' your foes, maintain or get out of sexual positions, and deal increased critical arousal! Every 5 points naturally gained increases your max arousal by 10. Boosts how much damage you do with core skills!\nYou have [powerDisplay] base power out of 100. Power skills deal [powerBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [powerPerBoost]% to their base power!")
-        use ON_SingleStatDisplayNoVar("Technique:", "[player.stats.Tech]", tooltipDisplay="Used for evading, acting faster, running away, and sexual finesse! It also helps you get out of stances and restraints, but it is not as effective as power. Boosts how much damage you do with core skills!\nYou have [techDisplay] base technique out of 100. Tech skills deal [techBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [techPerBoost]% to their base power!")
-        use ON_SingleStatDisplayNoVar("Intelligence:", "[player.stats.Int]", tooltipDisplay="Cast magic, resist some temptations, increase your chance to apply status effects, and increase the duration of your status effect! Every 5 points gained naturally increases your max energy by 10. Boosts how much damage you do with core skills!\nYou have [intDisplay] base intelligence out of 100. Intelligence skills deal [intBoost] extra arousal based on the (square root of the stat*4)-5. Said skills also get an increase of [intPerBoost]% to their base power!")
-        use ON_SingleStatDisplayNoVar("Allure:", "[player.stats.Allure]", tooltipDisplay="Seduce and charm your foes! It increases how much arousal you deal with all skills, including increased critical arousal, and boosts how much damage you do with core skills! Also increases the recoil damage your opponent takes, from sex skills for example!\nYou have [allureDisplay] base allure out of 100. Allure skills deal [allureBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [allurePerBoost]% to their base power!")
-        use ON_SingleStatDisplayNoVar("Willpower:", "[player.stats.Willpower]", tooltipDisplay="Greatly resist temptation, status effects, and reduces how much arousal you take! Every 5 points increases your max arousal and max energy by 5.\nYou have [willDisplay] base willpower out of 100. Willpower skills deal [willBoost] extra arousal based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [willPerBoost]% to their base power!")
-        use ON_SingleStatDisplayNoVar("Luck:", "[player.stats.Luck]", tooltipDisplay="Helps a little bit across the board. Such as acting before others, getting out of restraints, running away, hitting or dodging attacks, and improves your critical chance! It even gives you the stat check auto passing Goddess Favor at a rate of base Luck/20! But best of all it helps you find more treasure!\nYou have [luckDisplay] base luck out of 100. Luck skills(?) deal [luckBoost] more arousal, based on the (square root of the stat*4)-5.\nSaid skills also get an increase of [luckPerBoost]% to their base power!")
+        use ON_SingleStatDisplayNoVar("Power:", "[player.stats.Power]", tooltipDisplay="Escape restraints, 'punish' your foes, maintain or get out of sexual positions, and deal increased critical arousal! Every 5 points naturally gained increases your max arousal by 10. Boosts how much damage you do with core skills!\nYou have [powerDisplay] base power out of 100. Power skills deal [powerBoost] more arousal, based on the square root of the (stat*4)-5.\nSaid skills also get an increase of [powerPerBoost]% to their base power!")
+        use ON_SingleStatDisplayNoVar("Technique:", "[player.stats.Tech]", tooltipDisplay="Used for evading, acting faster, running away, and sexual finesse! It also helps you get out of stances and restraints, but it is not as effective as power. Boosts how much damage you do with core skills!\nYou have [techDisplay] base technique out of 100. Tech skills deal [techBoost] more arousal, based on the square root of the (stat*4)-5.\nSaid skills also get an increase of [techPerBoost]% to their base power!")
+        use ON_SingleStatDisplayNoVar("Intelligence:", "[player.stats.Int]", tooltipDisplay="Cast magic, resist some temptations, increase your chance to apply status effects, and increase the duration of your status effect! Every 5 points gained naturally increases your max energy by 10. Boosts how much damage you do with core skills!\nYou have [intDisplay] base intelligence out of 100. Intelligence skills deal [intBoost] extra arousal based on the square root of the (stat*4)-5. Said skills also get an increase of [intPerBoost]% to their base power!")
+        use ON_SingleStatDisplayNoVar("Allure:", "[player.stats.Allure]", tooltipDisplay="Seduce and charm your foes! It increases how much arousal you deal with all skills, including increased critical arousal, and boosts how much damage you do with core skills! Also increases the recoil damage your opponent takes, from sex skills for example!\nYou have [allureDisplay] base allure out of 100. Allure skills deal [allureBoost] more arousal, based on the square root of the (stat*4)-5.\nSaid skills also get an increase of [allurePerBoost]% to their base power!")
+        use ON_SingleStatDisplayNoVar("Willpower:", "[player.stats.Willpower]", tooltipDisplay="Greatly resist temptation, status effects, and reduces how much arousal you take! Every 5 points increases your max arousal and max energy by 5.\nYou have [willDisplay] base willpower out of 100. Willpower skills deal [willBoost] extra arousal based on the square root of the (stat*4)-5.\nSaid skills also get an increase of [willPerBoost]% to their base power!")
+        use ON_SingleStatDisplayNoVar("Luck:", "[player.stats.Luck]", tooltipDisplay="Helps a little bit across the board. Such as acting before others, getting out of restraints, running away, hitting or dodging attacks, and improves your critical chance! It even gives you the stat check auto passing Goddess Favor at a rate of base Luck/20! But best of all it helps you find more treasure!\nYou have [luckDisplay] base luck out of 100. Luck skills(?) deal [luckBoost] more arousal, based on the square root of the (stat*4)-5.\nSaid skills also get an increase of [luckPerBoost]% to their base power!")
 
         use ON_MoreStatsListDisplay
 
 screen ON_MoreStatsListDisplay():
         textbutton "---More Stats---" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
 
-        use ON_SingleStatDisplay("Core Skills Bonus", "", tooltipDisplay="Your core skills deal [flatCore] bonus arousal and a bonus of [percentCore]% to the base power of core skills!\nCore skills are based on 50% of your highest stat out of Power, Tech, Int, and Allure, plus the average of the four stats added together. Then the (square root of that times 3)-5 is your flat bonus.")
+        use ON_SingleStatDisplay("Core Skills Bonus", "", tooltipDisplay="Your core skills deal [flatCore] bonus arousal and a bonus of [percentCore]% to the base power of core skills!\nCore skills are based on 50% of your highest stat out of Power, Tech, Int, and Allure, plus the average of the four stats added together. Then the square root of (that times 3)-5 is your flat bonus.")
         use ON_SingleStatDisplay("Initiative: ", "[InititiveBonus]", tooltipDisplay="Initiative determines combatant turn order, with the highest acting first. All combatants add a d100 roll to their base Initiative to determine their total Initiative that turn. Turn order then proceeds from highest total Initiative to lowest.\nYou gain a +75 bonus to Initiative when attempting to use a recovery item.\nInitiative is equal to your Tech + Int/2 + Luck/2 + possible bonuses from perks.")
         textbutton "" text_size on_listTextSize text_color "#fff" ysize on_listTextSize xalign 0.5
         use ON_SingleStatDisplay("Crit Chance: ", "[critChance]%", tooltipDisplay="Your percent chance to land a critical hit when attacking.\nIt is equal to your Tech*0.10 + Luck*0.25 + 3.25 + possible bonuses from perks.")
@@ -1143,6 +1143,11 @@ init python:
             menuItemChoice = copy.deepcopy(SkillsDatabase[fetchSkill])
             menuItemChoice.isSkill = itemChoice.itemType
 
+            if GetParalFlatEnergyChange(player) > 0:
+                player.stats.ep -= int(math.floor(GetParalFlatEnergyChange(player)))
+                if player.stats.ep < 0:
+                    player.stats.ep = 0
+
             holder = HealCalc(player, menuItemChoice)
             player = holder[0]
             display += holder[1]
@@ -1168,6 +1173,11 @@ init python:
             renpy.restart_interaction()
         else:
             #renpy.curry(renpy.end_interaction)(True) # thought this might be able to close the menu before instigating an event to make shit work better. But it either crashes, or does nothing, seems to only work with a button, even if it did, im pretty sure it'd end the event before it started.
+            if GetParalFlatEnergyChange(player) > 0:
+                player.stats.ep -= int(math.floor(GetParalFlatEnergyChange(player)))
+                if player.stats.ep < 0:
+                    player.stats.ep = 0
+            
             player.inventory.useItem(itemChoice.name)
             display = itemChoice.useOutcome
             config.keymap['game_menu'].remove('mouseup_3')
@@ -1196,9 +1206,10 @@ init python:
         global charSticky
 
         display += holder[1]
-
+        if GetParalFlatEnergyChange(player) > 0 and skillChoice.name != "Wait" and skillChoice.name != "Defend" and skillChoice.name != "Struggle":
+            player.stats.ep -= int(math.floor(GetParalFlatEnergyChange(player)))
         if skillChoice.costType == "ep":
-            player.stats.ep -= int(math.floor(skillChoice.cost*GetParalEnergyChange(player)+GetParalFlatEnergyChange(player)))
+            player.stats.ep -= int(math.floor(skillChoice.cost*GetParalEnergyChange(player)))
         elif skillChoice.costType == "hp":
             actualCost = skillChoice.cost + (player.stats.max_true_hp-100)*0.15
             actualCost = math.floor(actualCost)
@@ -1206,6 +1217,9 @@ init python:
             player.stats.hp += actualCost
         elif skillChoice.costType == "sp":
             player.stats.sp -= skillChoice.cost
+
+        if player.stats.ep < 0:
+            player.stats.ep = 0
 
         global characterMenuCanHover ; characterMenuCanHover = False
         charSticky = display

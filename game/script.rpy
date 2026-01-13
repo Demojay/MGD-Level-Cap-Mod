@@ -13,6 +13,7 @@ init python:
     NoSelling = 0
     finalDamage = 0
     finalSleepy = 0
+    recoverAmount = 0
 
     slimeSnakeHighScore = 0
     minigameQuickMenuHide = 0
@@ -69,6 +70,33 @@ init python:
     showTimeofDay = 1
 
     restraintMaxHP = 0
+
+
+    # NWB change 4: attrs_arrDR and stats_arrDR turned into dictionaries with only the required info
+    attrs_arrDR = {
+        "Arousal": (hpFloor, hpCap),
+        "Energy": (epFloor, epCap),
+        "Spirit": (spFloor, spCap)
+    }
+    stats_arrDR = {
+        "Power": (powFloor, powCap),
+        "Technique": (spdFloor, spdCap),
+        "Intelligence": (intFloor, intCap),
+        "Allure": (allFloor, allCap),
+        "Willpower": (wilFloor, wilCap),
+        "Luck": (lukFloor, lukCap)
+    }
+    # NWB change 4 continued: sens_arrDR also gets turned into a dictionary, makes searching a lot more efficient :EllyGlasses:
+    sens_arrDR = {
+        "Sex": [-5, sexResFloor, sexResCap],
+        "Ass": [-10, assResFloor, assResCap],
+        "Breasts": [-25, nipResFloor, nipResCap],
+        "Mouth": [-10, chuResFloor, chuResCap],
+        "Seduction": [-10, seducResFloor, seducResCap],
+        "Magic": [-10, magResFloor, magResCap],
+        "Pain": [-10, painResFloor, painResCap]
+    }
+
 
     #config.predict_screen_statements = False
     #config.predict_screens = False
@@ -662,6 +690,8 @@ label start:
     $ lossCount = 0
 
     $ difficulty = "Normal"
+
+    $ ExpTotal = 0
 
     $ bg = ""
 

@@ -335,7 +335,7 @@ label JsonFuncPermanentlyChangeFetish:
             "[display!i]"
     return
 label JsonFuncEmptySpiritCounter:
-    $ spiritLost0 = 0
+    $ spiritLost = 0
     return
 label JsonFuncRoledCGEnd:
     $ monsterEncounterCG = []
@@ -1327,7 +1327,7 @@ label JsonFuncEnergyDrain:
     $ Drain = math.floor(Drain)
     $ Drain = int(Drain)
     $ player.stats.ep -= Drain
-    $ finalDamage = Drain
+    $ recoverAmount = Drain
     return
 label JsonFuncApplyStance:
     if monsterEncounter:
@@ -1567,6 +1567,8 @@ label JsonFuncCallMonsterAttack:
 label JsonFuncHitPlayerWith:
     $ recoil = 0
     $ lineOfScene += 1
+    $ attacker = monsterEncounter[CombatFunctionEnemytarget]
+    $ defender = player
     $ skillAt = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
     $ holder = AttackCalc(monsterEncounter[CombatFunctionEnemytarget], player,  SkillsDatabase[skillAt], 1)
     $ finalDamage = holder[0]
@@ -1580,6 +1582,8 @@ label JsonFuncHitPlayerWith:
     return
 label JsonFuncHitMonsterWith:
     $ lineOfScene += 1
+    $ attacker = player
+    $ defender = monsterEncounter[CombatFunctionEnemytarget]
     $ skillAt = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
     $ holder = AttackCalc(player, monsterEncounter[CombatFunctionEnemytarget],  SkillsDatabase[skillAt], 1)
     $ finalDamage = holder[0]

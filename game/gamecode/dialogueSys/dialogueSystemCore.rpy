@@ -108,6 +108,7 @@ init python:
         "RemoveMonster": ["JsonFuncRemoveMonster"],
         "RemoveStatusEffectFromMonster": ["JsonFuncRemoveStatusEffectFromMonster"],
         "RemovePerkFromMonster": ["JsonFuncRemovePerkFromMonster"],
+    "DrainLevel": ["JsonFuncDrainLevel"],
     # Play funcs
     "PlayerSpeaks": ["JsonFuncPlayerSpeaks"],
         "PlayerSpeaksSkill": ["JsonFuncPlayerSpeaksSkill"],

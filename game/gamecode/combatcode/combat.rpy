@@ -693,11 +693,25 @@ label enemySkillChoice(mSC):
                     showSkill = 0
 
             reqMet = 0
+            foundPerks = []  
+            foundPerksTemp = []
+            skip = 0
             for eachReq in eachSkillOption.requiresPerk:
                 if eachReq != "" and eachReq != "None":
-                    for perk in player.perks:
-                        if perk.name == eachReq:
+                    foundPerksTemp = copy.copy(foundPerks)
+                    for perk in player.perks:    
+                        skip = 0
+                        ip = 0
+                        for doubleCheck in foundPerksTemp:    
+                            if perk.name == doubleCheck: 
+                                skip = 1
+                                del foundPerksTemp[ip]
+                                break
+                            ip += 1                  
+
+                        if perk.name == eachReq and skip == 0:            
                             reqMet += 1
+                            foundPerks.append(perk.name)
                             break
                 else:
                     reqMet += 1
@@ -725,11 +739,25 @@ label enemySkillChoice(mSC):
 
             #self vers
             reqMet = 0
+            foundPerks = []  
+            foundPerksTemp = []
+            skip = 0
             for eachReq in eachSkillOption.requiresPerkSelf:
                 if eachReq != "" and eachReq != "None":
-                    for perk in monsterEncounter[mSC].perks:
-                        if perk.name == eachReq:
+                    foundPerksTemp = copy.copy(foundPerks)
+                    for perk in monsterEncounter[mSC].perks:    
+                        skip = 0
+                        ip = 0
+                        for doubleCheck in foundPerksTemp:    
+                            if perk.name == doubleCheck: 
+                                skip = 1
+                                del foundPerksTemp[ip]
+                                break
+                            ip += 1                  
+
+                        if perk.name == eachReq and skip == 0: 
                             reqMet += 1
+                            foundPerks.append(perk.name)
                             break
                 else:
                     reqMet += 1
