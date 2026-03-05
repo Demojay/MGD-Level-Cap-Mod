@@ -2075,11 +2075,11 @@ label levelUpSpot:
 
             #  if player.stats.lvl % 2 == 0:
                 #if hpDeficit < 0:
-                #        $ player.stats.max_hp = copy.deepcopy(hpDeficit)
+                #        $ player.stats.max_hp = copy.copy(hpDeficit)
                 #        $ hpDeficit = 0
                 #$ player.stats.max_hp += 5
                 #if player.stats.max_hp < 1:
-                #        $ hpDeficit = copy.deepcopy(player.stats.max_hp)
+                #        $ hpDeficit = copy.copy(player.stats.max_hp)
                 #        $ player.stats.max_hp = 1
                 #$ hpIncreases += 5
                 #$ player.stats.refresh()

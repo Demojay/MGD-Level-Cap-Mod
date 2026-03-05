@@ -25,7 +25,7 @@ label after_load:
     #Thus, it is impossible to apply to an already up to date save by mistake for as long as your if condition
     #never contains the current game version you are intending to ship.
 
-    if (_version in ["Alpha-v26", "Alpha-v26a", "Alpha-v26b", "Alpha-v26.3"]) or _version.startswith("Alpha-v26.1") or _version.startswith("Alpha-v26.2"):
+    if (_version in ["Alpha-v26", "Alpha-v26a", "Alpha-v26b",  "Alpha-v26.a", "Alpha-v26.b", "Alpha-v26.3"]) or _version.startswith("Alpha-v26.1") or _version.startswith("Alpha-v26.2"):
         $ recoilHit = 0
         "The wind blows in a sudden gust and a small silver ticket flies into your face. It seems like you happened across a Guild-Approved respec ticket!"
         $ player.inventory.give("Respec Ticket", 1)

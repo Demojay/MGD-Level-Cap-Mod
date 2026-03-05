@@ -89,7 +89,7 @@ label loadDatabase:
                 with renpy.file(each) as file:
                     fileName = file.read().decode("utf-8")
                 try:
-                    currentData = json.loads(fileName)
+                    currentData = json_loads(fileName)
                 except:
                     PrintException(fileName)
 
@@ -117,7 +117,7 @@ label loadDatabase:
                 with renpy.file(each) as file:
                     fileName = file.read().decode("utf-8")
                 try:
-                    currentData = json.loads(fileName)
+                    currentData = json_loads(fileName)
                 except:
                     PrintException(fileName)
 
@@ -315,7 +315,7 @@ label loadDatabase:
                 with renpy.file(perks) as file:
                     fileName = file.read().decode("utf-8")
                 try:
-                    currentData = json.loads(fileName)
+                    currentData = json_loads(fileName)
                 except:
                     PrintException(fileName)
 
@@ -353,7 +353,7 @@ label loadDatabase:
                     validator.addIDToDatabase(blankPerk.name, "Perks")
 
             LocatePerkOrder = renpy.file("Json/Perks/_LevelUpPerkOrder.json").read().decode("utf-8")
-            PerkOrderFile = json.loads(LocatePerkOrder)
+            PerkOrderFile = json_loads(LocatePerkOrder)
             LevelingPerkDatabase = []
             for orderedPerk in PerkOrderFile["Order"]:
                 for perk in PerkDatabase:
@@ -376,7 +376,7 @@ label loadDatabase:
                 with renpy.file(each) as file:
                     fileName = file.read().decode("utf-8")
                 try:
-                    currentData = json.loads(fileName)
+                    currentData = json_loads(fileName)
                 except:
                     PrintException(fileName)
 
@@ -476,7 +476,7 @@ label loadDatabase:
             with renpy.file(each) as file:
                 fileName = file.read().decode("utf-8")
             try:
-                currentData = json.loads(fileName)
+                currentData = json_loads(fileName)
             except:
                 PrintException(fileName)
             NewMonSkillList = []
@@ -861,7 +861,7 @@ label loadDatabase:
                 else:
                     renpy.error(e)
             try:
-                currentData = json.loads(fileName)
+                currentData = json_loads(fileName)
             except:
                 PrintException(fileName)
 
@@ -1061,7 +1061,7 @@ label loadDatabase:
             with renpy.file(each) as file:
                 fileName = file.read().decode("utf-8")
             try:
-                currentData = json.loads(fileName)
+                currentData = json_loads(fileName)
             except:
                 PrintException(fileName)
             newGroup = []
@@ -1268,7 +1268,7 @@ label loadDatabase:
             with renpy.file(each) as file:
                 fileName = file.read().decode("utf-8")
             try:
-                currentData = json.loads(fileName)
+                currentData = json_loads(fileName)
             except:
                 PrintException(fileName)
             newGroup = []
@@ -1833,7 +1833,7 @@ label loadDatabase:
                 with renpy.file(each) as file:
                     fileName = file.read().decode("utf-8")
                 try:
-                    currentData = json.loads(fileName)
+                    currentData = json_loads(fileName)
                 except:
                     PrintException(fileName)
 

@@ -190,6 +190,11 @@ label JsonFuncDrainLevel: # warning, might function
         $ favorPool = _tempFavorPool
     $ player.stats.ExpNeeded = int((0.4*(player.stats.lvl*player.stats.lvl)) + (2*player.stats.lvl) + (15*math.sqrt(player.stats.lvl)-8))
     
+
+    if persistent.showVFX == True:
+        show lvlDown onlayer visualEffects at LevelDrainEffect 
+        #show lvlDownPulse onlayer visualEffects at LevelDrainEffectPulse 
+
     #$ display = str(displayingScene.theScene[lineOfScene]) + " levels drained!" #prolly better to have the text in game explain lossed level in the moment for better flow
 
     return
