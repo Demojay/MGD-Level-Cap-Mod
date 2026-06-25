@@ -1061,11 +1061,17 @@ label JsonFuncAddMonsterToEncounter:
             if goToLevel > monsterEncounter[insertToLocation].stats.lvl:
                 monsterEncounter[insertToLocation].levelUp(goToLevel)
 
-                eroMod = 0.5
+                if monsterEncounter[insertToLocation].generic == "True":
+                    eroMod = 0.20
+                else:
+                    eroMod = 0.40
                 lvlchek = monsterEncounter[insertToLocation].stats.lvl
-                monsterEncounter[insertToLocation].moneyDropped = int(((lvlchek)^2+(lvlchek*10)+48)*eroMod)
-
-                expMod = 0.35
+                monsterEncounter[insertToLocation].moneyDropped = int(((lvlchek)**2+(lvlchek*10)+48)*eroMod)
+ 
+                if monsterEncounter[insertToLocation].generic == "True":
+                    expMod = 0.15
+                else:
+                    expMod = 0.35
                 lvlchek = monsterEncounter[insertToLocation].stats.lvl
                 monsterEncounter[insertToLocation].stats.Exp = int(((0.4*(lvlchek*lvlchek))+(2*lvlchek)+(15*math.sqrt(lvlchek)-8))*expMod)
 
@@ -1098,9 +1104,11 @@ label JsonFuncDamagePlayerFromMonster:
     $ recoil = 0
     $ critText = ""
     $ effectiveText = ""
-    $ lineOfScene += 1
+    $ lineOfScene += 1    
+    $ defender = player
     $ MonAt = getFromName(displayingScene.theScene[lineOfScene], MonsterDatabase)
     $ holder = MonsterDatabase[MonAt]
+    $ attacker = MonsterDatabase[MonAt]
     $ lineOfScene += 1
     $ skillAt = getFromName(displayingScene.theScene[lineOfScene], SkillsDatabase)
     $ holder = AttackCalc(holder, player,  SkillsDatabase[skillAt], 1)
@@ -1420,7 +1428,7 @@ label JsonFuncRecalculateMonsterErosDrop:
     else:
         $ lineOfScene -= 1
     $ lvlchek = monsterEncounter[CombatFunctionEnemytarget].stats.lvl
-    $ monsterEncounter[CombatFunctionEnemytarget].moneyDropped = int(((lvlchek)^2+(lvlchek*10)+48)*eroMod)
+    $ monsterEncounter[CombatFunctionEnemytarget].moneyDropped = int(((lvlchek)**2+(lvlchek*10)+48)*eroMod)
     return
 label JsonFuncRecalculateMonsterExpDrop:
     $ lineOfScene += 1

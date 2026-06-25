@@ -224,7 +224,7 @@ init python:
     monsterOrgasmLine = ""
     PostOrgasmLine = ""
 
-    lineBank = ["Do your best!", "Can't we just hold hands?", "Or maybe, it's a nightmare?", "Free adventuring school!", "Why would you resist love?", "The goddess will protect you.", "Hot succubi are in your area.♥", "Don't stay up {i}too{/i} late.♥", "Ten out of ten mimics say you should open every treasure chest.", "Relax and enjoy.♥", "Awaken a new kink, today!", "Not guaranteed to give you lewd dreams.", "Cozy, sexy, and more!", "No imps were harmed in the making of this production.", "Surrendering is a fun option.♥", "A manticore is rapidly approaching your location.", "There is no secret slime society.", "Harpy Delivery is not responsible for any damage to your mail.", "Don't forget to stop and smell the sweet alraunes.♥", "Being a hero never felt so good.♥"]
+    lineBank = ["Do your best!", "Can't we just hold hands?", "Or maybe, it's a nightmare?", "Free adventuring school!", "Why would you resist love?", "The goddess will protect you.", "Hot succubi are in your area.♥", "Don't stay up {i}too{/i} late.♥", "Ten out of ten mimics say you should open every treasure chest.", "Relax and enjoy.♥", "Awaken a new kink, today!", "Not guaranteed to give you lewd dreams.", "Cozy, sexy, and more!", "No imps were harmed in the making of this production.", "Surrendering is a fun option.♥", "A manticore is rapidly approaching your location.", "There is no secret slime society.", "Harpy Delivery is not responsible for any damage to your mail.", "Don't forget to stop and smell the sweet alraunes.♥", "Being a hero never felt so good.♥", "Have you tried clicking the bubbles?"]
 
     sexBank = ["pussy", "pussy", "slit", "honeypot"]
     assBank = ["ass", "ass", "rear", "behind", "derriere"]

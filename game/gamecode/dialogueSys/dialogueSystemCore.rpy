@@ -264,6 +264,8 @@ init python:
     "ChangeGridNPCMovement": ["JsonFuncChangeGridNPCMovement"],
         "ChangeGridVision": ["JsonFuncChangeGridVision"],
         "ChangeMapTile": ["JsonFuncChangeMapTile"],
+        "SetMapXOffset": ["JsonFuncMapXOffset"],
+        "SetMapYOffset": ["JsonFuncMapYOffset"],
     "ChangeNextStatCheckDifficulty": ["JsonFuncChangeNextStatCheckDifficulty"],
     "ChangeBG": ["JsonFuncChangeBG"],
     "ChangeBGM": ["JsonFuncChangeBGM"],

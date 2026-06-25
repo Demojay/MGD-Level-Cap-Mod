@@ -350,13 +350,19 @@ label combat:
         python:
             for each in monsterEncounter:
                 if goToLevel > monsterEncounter[i].stats.lvl:
-                    monsterEncounter[i].levelUp(goToLevel)
+                    monsterEncounter[i].levelUp(goToLevel) 
 
-                    eroMod = 0.5
+                    if monsterEncounter[i].generic == "True":
+                        eroMod = 0.20
+                    else:
+                        eroMod = 0.40
                     lvlchek = monsterEncounter[i].stats.lvl
-                    monsterEncounter[i].moneyDropped = int(((lvlchek)^2+(lvlchek*10)+48)*eroMod)
+                    monsterEncounter[i].moneyDropped = int(((lvlchek)**2+(lvlchek*10)+48)*eroMod)
 
-                    expMod = 0.35
+                    if monsterEncounter[i].generic == "True":
+                        expMod = 0.15
+                    else:
+                        expMod = 0.35
                     lvlchek = monsterEncounter[i].stats.lvl
                     monsterEncounter[i].stats.Exp = int(((0.4*(lvlchek*lvlchek))+(2*lvlchek)+(15*math.sqrt(lvlchek)-8))*expMod)
                 i += 1
@@ -2073,16 +2079,16 @@ label levelUpSpot:
             $ player.stats.hp = 0
             $ player.stats.ep = player.stats.max_true_ep
 
-            #  if player.stats.lvl % 2 == 0:
-                #if hpDeficit < 0:
-                #        $ player.stats.max_hp = copy.copy(hpDeficit)
-                #        $ hpDeficit = 0
-                #$ player.stats.max_hp += 5
-                #if player.stats.max_hp < 1:
-                #        $ hpDeficit = copy.copy(player.stats.max_hp)
-                #        $ player.stats.max_hp = 1
-                #$ hpIncreases += 5
-                #$ player.stats.refresh()
+        #  if player.stats.lvl % 2 == 0:
+            #if hpDeficit < 0:
+            #        $ player.stats.max_hp = copy.copy(hpDeficit)
+            #        $ hpDeficit = 0
+            #$ player.stats.max_hp += 5
+            #if player.stats.max_hp < 1:
+            #        $ hpDeficit = copy.copy(player.stats.max_hp)
+            #        $ player.stats.max_hp = 1
+            #$ hpIncreases += 5
+            #$ player.stats.refresh()
 
             python:
                 try:

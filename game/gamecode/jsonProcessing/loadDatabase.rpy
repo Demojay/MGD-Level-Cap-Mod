@@ -205,6 +205,26 @@ label loadDatabase:
                             else:
                                 SkillsDatabase[additionLocation].removesStance.append(each)
 
+                    for each in requiresPerk:
+                        if each != "":
+                            SkillsDatabase[additionLocation].requiresPerk.append(each)
+                    for each in requiresOnePerk:
+                        if each != "":
+                            SkillsDatabase[additionLocation].requiresOnePerk.append(each)                    
+                    for each in unusableIfPerk:
+                        if each != "":
+                            SkillsDatabase[additionLocation].unusableIfPerk.append(each)
+                    for each in requiresPerkSelf:
+                        if each != "":
+                            SkillsDatabase[additionLocation].requiresPerkSelf.append(each)
+                    for each in requiresOnePerkSelf:
+                        if each != "":
+                            SkillsDatabase[additionLocation].requiresOnePerkSelf.append(each)
+                    for each in unusableIfPerkSelf:
+                        if each != "":
+                            SkillsDatabase[additionLocation].unusableIfPerkSelf.append(each)
+ 
+
 
                 if additionLocation == None:
                     blankSkill = Skill(

@@ -320,7 +320,7 @@ screen ON_SingleItemDisplay(item, spaceNextOne=0):
         #$ twolayered += 15
         $ spaceNext = 0
 
-    if len(display) > 28:
+    if len(display) > 29:
         $ twolayered += 24
         $ spaceNextOne = 1
 
