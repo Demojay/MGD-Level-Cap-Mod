@@ -255,8 +255,6 @@ label JsonFuncGiveSkillQuietly:
     return
 label JsonFuncGivePerkPoint:
     $ player.perkPoints += 1
-    #CODEMOD
-    $ player.additionalPerkPoints += 1
     return
 label JsonFuncGivePerk:
     $ lineOfScene += 1

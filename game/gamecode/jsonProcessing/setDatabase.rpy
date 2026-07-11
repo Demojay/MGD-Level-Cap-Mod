@@ -24,9 +24,6 @@ label setDatabase:
 
     $ LocationList = []
 
-    #CODEMOD
-    $ LevelCapObj = {}
-
     $ LevelingPerkDatabase = []
     $ PerkDatabaseLVLDisplay = []
     $ AdditionalLevelPerks = []

@@ -430,9 +430,6 @@ init python:
     hasResPoints = 0
     loadingDatabaseType = 0
     respeccing = 0
-    #CODEMOD
-    supressLevelMessage = 0
-    additionalPerkPointUpdate = 0
 
 
 
@@ -470,8 +467,6 @@ init:
 
     call UpdateGameVersionVariables from _call_UpdateGameVersionVariables
     call InitInventory from _call_InitInventory
-    #CODEMOD
-    call LevelCapCheck from _call_LevelCapCheck
     call specialEffects from _call_specialEffects
     call playerClass from _call_playerClass
     call monsterClass from _call_monsterClass

@@ -52,8 +52,6 @@ label playerClass:
 
                 self.perks = perks
                 self.perkPoints = perkPoints
-                #CODEMOD
-                self.additionalPerkPoints = 0
 
                 self.BodySensitivity.Sex=100
                 self.BodySensitivity.Ass=100

@@ -361,7 +361,6 @@ init python:
     "HasErosLessThanInput": ["JsonFuncHasErosLessThanInput"],
     "AddInputToProgress": ["JsonFuncAddInputToProgress"],
     "RespecPlayer": ["JsonFuncRespecPlayer"],
-    "AdjustPlayerLevel": ["JsonFuncAdjustPlayerLevel"],
     "DonateToGoddess": ["JsonFuncDonateToGoddess"],
     "PurgeFetishes": ["JsonFuncPurgeFetishes"],
     "AddTributeToProgress": ["JsonFuncAddTributeToProgress"],

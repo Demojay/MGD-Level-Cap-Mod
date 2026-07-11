@@ -584,9 +584,7 @@ screen ON_CharacterDisplayScreen(UseTab="Stats", UseInventoryMenuTab="Consumable
                 yalign 0.5
                 text "[player.name]" size fontsize xoffset -2
                 $ showLevelUp = InventoryAvailable and respeccing == 0 and (player.perkPoints >= 1 or player.SensitivityPoints >=1 or player.statPoints >= 1)
-                #CODEMOD
-                $ cap = ("/" + str(getMaxLevelCap())) if levelCapEnabled() else ""
-                textbutton "Level [player.stats.lvl][cap]" text_size 24 text_color "#fff" xoffset -3
+                textbutton "Level [player.stats.lvl]" text_size 24 text_color "#fff" xoffset -3
                 fixed:
                     xsize 225 ysize 28
                     bar:
