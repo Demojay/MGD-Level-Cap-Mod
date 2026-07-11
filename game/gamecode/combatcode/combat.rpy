@@ -2048,36 +2048,20 @@ label refreshLevelVar:
     $ perkIncreases = 0
     return
 
-#CODEMOD: Called from custom level setting pyton mod to call original level up process after maually setting level
-label forceRepecLevelUpCheck:
-    $ respeccing = 1
-    $ supressLevelMessage = 1
-    $ tentativeStats = copy.deepcopy(player)
-    call refreshLevelVar from _call_refreshLevelVar_lc_1
-    call levelUpSpot from _call_levelUpSpot_lc_1
-    show screen ON_HealthDisplayBacking #(_layer="hplayer")
-    show screen ON_HealthDisplay #(_layer="sayScreen")
-    $ respeccing = 0
-    $ supressLevelMessage = 0
-    return
-
-
 label levelUpSpot:
+    $ culmitiveLeveling += 1
     if player.stats.Exp >= player.stats.ExpNeeded:
-        if levelCapNotReached():
-            #CODEMOD
-            $ culmitiveLeveling += 1
-            $ player.stats.Exp -= player.stats.ExpNeeded
-            $ player.stats.lvl += 1
+        $ player.stats.Exp -= player.stats.ExpNeeded
+        $ player.stats.lvl += 1
 
-            python:
-                player.stats.ExpNeeded = int((0.4*(player.stats.lvl*player.stats.lvl)) + (2*player.stats.lvl) + (15*math.sqrt(player.stats.lvl)-8))
+        python:
+            player.stats.ExpNeeded = int((0.4*(player.stats.lvl*player.stats.lvl)) + (2*player.stats.lvl) + (15*math.sqrt(player.stats.lvl)-8))
 
-            $ player.statPoints += 3
-            $ statPointIncreases += 3
-            #$ player.stats.refresh()
-            $ player.stats.hp = 0
-            $ player.stats.ep = player.stats.max_true_ep
+        $ player.statPoints += 3
+        $ statPointIncreases += 3
+        #$ player.stats.refresh()
+        $ player.stats.hp = 0
+        $ player.stats.ep = player.stats.max_true_ep
 
         #  if player.stats.lvl % 2 == 0:
             #if hpDeficit < 0:
@@ -2090,77 +2074,71 @@ label levelUpSpot:
             #$ hpIncreases += 5
             #$ player.stats.refresh()
 
-            python:
-                try:
-                    if difficulty == "Easy":
-                        player.stats.refresh()
-                except:
-                    difficulty = "Normal"
+        python:
+            try:
+                if difficulty == "Easy":
+                    player.stats.refresh()
+            except:
+                difficulty = "Normal"
 
 
-            if player.stats.lvl % 5 == 0:
-                $ player.SensitivityPoints += 1
-                $ sensitivityIncreases += 1
+        if player.stats.lvl % 5 == 0:
+            $ player.SensitivityPoints += 1
+            $ sensitivityIncreases += 1
 
-            if player.stats.lvl % 3 == 0:
-                $ player.perkPoints += 1
-                $ perkIncreases += 1
+        if player.stats.lvl % 3 == 0:
+            $ player.perkPoints += 1
+            $ perkIncreases += 1
 
-            if player.stats.lvl == 5:
-                $ player.perkPoints += 1
-                $ perkIncreases += 1
+        if player.stats.lvl == 5:
+            $ player.perkPoints += 1
+            $ perkIncreases += 1
 
-            if player.stats.lvl == 10:
-                $ player.perkPoints += 2
-                $ perkIncreases += 2
+        if player.stats.lvl == 10:
+            $ player.perkPoints += 2
+            $ perkIncreases += 2
 
-            if player.stats.lvl == 20:
-                $ player.perkPoints += 2
-                $ perkIncreases += 2
+        if player.stats.lvl == 20:
+            $ player.perkPoints += 2
+            $ perkIncreases += 2
 
-            $ creating = 0
+        $ creating = 0
 
-            if player.SensitivityPoints > 0:
-                $ hasResPoints = 1
-            else:
-                $ hasResPoints = 0
+        if player.SensitivityPoints > 0:
+            $ hasResPoints = 1
         else:
-            if player.stats.Exp >= player.stats.ExpNeeded:
-                $ player.stats.Exp = player.stats.ExpNeeded - 1
+            $ hasResPoints = 0
 
         #call levelup function
         if player.stats.Exp >= player.stats.ExpNeeded:
             jump levelUpSpot
 
-        #CODEMOD
-        if culmitiveLeveling >= 1:
-            if supressLevelMessage == 0:
-                if culmitiveLeveling == 1:
-                    $ display = "Level up!\n"
-                else:
-                    $ display = "Level increased by "+str(culmitiveLeveling)+"!\n"
+        if culmitiveLeveling == 1:
+            $ display = "Level up!\n"
+        else:
+            $ display = "Level increased by "+str(culmitiveLeveling)+"!\n"
 
-                #if hpIncreases > 0:
-                    #$ display += "Max Arousal +"+str(hpIncreases)+"!\n"
+        #if hpIncreases > 0:
+            #$ display += "Max Arousal +"+str(hpIncreases)+"!\n"
 
-                if statPointIncreases == 2:
-                    $ display += "Gained two stat points!"
-                else:
-                    $ display += "Gained " + str(statPointIncreases) + " stat points!"
+        if statPointIncreases == 2:
+            $ display += "Gained two stat points!"
+        else:
+            $ display += "Gained " + str(statPointIncreases) + " stat points!"
 
-                if sensitivityIncreases == 1:
-                    $ display += "\nGained a point to alter sensitivity!"
-                elif sensitivityIncreases > 0:
-                    $ display += "\nGained " + str(sensitivityIncreases) + " points to alter sensitivity!"
+        if sensitivityIncreases == 1:
+            $ display += "\nGained a point to alter sensitivity!"
+        elif sensitivityIncreases > 0:
+            $ display += "\nGained " + str(sensitivityIncreases) + " points to alter sensitivity!"
 
-                if perkIncreases > 0:
-                    $ display += "\nGained " + str(perkIncreases) + " perk point!"
+        if perkIncreases > 0:
+            $ display += "\nGained " + str(perkIncreases) + " perk point!"
 
-                "[display!i]"
+        "[display!i]"
 
-            call setStatFloors from _call_setStatFloors
-            call spendLvlUpPoints from _call_spendLvlUpPoints
-            hide screen CreatorDisplay
+        call setStatFloors from _call_setStatFloors
+        call spendLvlUpPoints from _call_spendLvlUpPoints
+        hide screen CreatorDisplay
 
 
     $ InventoryAvailable = True
