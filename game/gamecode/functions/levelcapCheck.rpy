@@ -1,168 +1,207 @@
 #CODEMOD
-label LevelCapCheck:
-    python:
-        def levelCapEnabled():
-            return getDiffLevelCapObj().get("enableCap", False)
+init 1000 python:
+    def levelCapEnabled():
+        return getDiffLevelCapObj().get("enableCap", False)
 
-        def getDiffLevelCapObj():
-            global difficulty
+    def getDiffLevelCapObj():
+        global difficulty
 
-            return LevelCapObj.get(difficulty, {
-                "enableCap": False
-            })
+        return LevelCapObj.get(difficulty, {
+            "enableCap": False
+        })
 
-        def getMaxLevelCap():
-            if levelCapEnabled():
-                return calcLevelCap()
-            else:
-                return sys.maxsize
+    def getMaxLevelCap():
+        if levelCapEnabled():
+            return calcLevelCap()
+        else:
+            return sys.maxsize
 
-        def getLevelCapFilePath():
-            if renpy.android:
-                return "Mods/LevelCapCheck.json"
-            else:
-                return "../Mods/LevelCapCheck.json"
+    def getLevelCapFilePath():
+        if renpy.android:
+            return "Mods/LevelCapCheck.json"
+        else:
+            return "../Mods/LevelCapCheck.json"
 
-        def loadLevelCapJSON():
-            global LevelCapObj
-            try:
-                levelCapJSONStr = renpy.file(getLevelCapFilePath()).read().decode("utf-8")
-                loadedCapList = json.loads(levelCapJSONStr).items()
-                LevelCapObj = {}
-                
-                for diffSetting in loadedCapList:
-                    newDiffSettings = {}
-                    loadedSettings = diffSetting[1]
+    def loadLevelCapJSON():
+        global LevelCapObj
+        try:
+            levelCapJSONStr = renpy.file(getLevelCapFilePath()).read().decode("utf-8")
+            loadedCapList = json.loads(levelCapJSONStr).items()
+            LevelCapObj = {}
+            
+            for diffSetting in loadedCapList:
+                newDiffSettings = {}
+                loadedSettings = diffSetting[1]
 
-                    newDiffSettings["enableCap"] = loadedSettings.get("enableCap", False)
-                    newDiffSettings["lvls"] = []
+                newDiffSettings["enableCap"] = loadedSettings.get("enableCap", False)
+                newDiffSettings["lvls"] = []
 
-                    for newLevel in loadedSettings["lvls"]:
-                        newLevelObj = {
-                            "lvl": newLevel["lvl"],
-                            "item": newLevel.get("item", [])
-                        }
-
-                        if "events" in newLevel:
-                            newLevelObj["events"] = []
-                            for eventReq in newLevel["events"]:
-                                newRequirement = Requirements()
-                                newRequirement.NameOfEvent = eventReq["NameOfEvent"]
-                                newRequirement.Progress = int(eventReq["Progress"])
-                                newRequirement.ChoiceNumber = int(eventReq["ChoiceNumber"])
-                                newRequirement.Choice = eventReq["Choice"]
-
-                                newLevelObj["events"].append(newRequirement)
-                        
-                        newDiffSettings["lvls"].append(newLevelObj)
-                    
-                    LevelCapObj[diffSetting[0]] = newDiffSettings
-            except:
-                LevelCapObj = {
-                    "Normal": {
-                        "enableCap": False
+                for newLevel in loadedSettings["lvls"]:
+                    newLevelObj = {
+                        "lvl": newLevel["lvl"],
+                        "item": newLevel.get("item", [])
                     }
+
+                    if "events" in newLevel:
+                        newLevelObj["events"] = []
+                        for eventReq in newLevel["events"]:
+                            newRequirement = Requirements()
+                            newRequirement.NameOfEvent = eventReq["NameOfEvent"]
+                            newRequirement.Progress = int(eventReq["Progress"])
+                            newRequirement.ChoiceNumber = int(eventReq["ChoiceNumber"])
+                            newRequirement.Choice = eventReq["Choice"]
+
+                            newLevelObj["events"].append(newRequirement)
+                    
+                    newDiffSettings["lvls"].append(newLevelObj)
+                
+                LevelCapObj[diffSetting[0]] = newDiffSettings
+        except:
+            LevelCapObj = {
+                "Normal": {
+                    "enableCap": False
                 }
+            }
 
-            return LevelCapObj
+        return LevelCapObj
 
-        def levelCapNotReached():
-            return player.stats.lvl < getMaxLevelCap()
+    def levelCapReached():
+        return player.stats.lvl >= getMaxLevelCap()
 
-        def calcLevelCap():
-            currentCapObj = getDiffLevelCapObj()
-            currentCap = -1
-            maxLevelCap = currentCapObj.get("maxLevel", 100)
+    def calcLevelCap():
+        currentCapObj = getDiffLevelCapObj()
+        currentCap = -1
+        maxLevelCap = currentCapObj.get("maxLevel", 100)
 
-            levelArr = currentCapObj.get("lvls", [])
+        levelArr = currentCapObj.get("lvls", [])
 
-            for levelCheck in levelArr:
-                capPassed = False
-                if levelCheck["lvl"] <= maxLevelCap and levelCheck["lvl"] > currentCap:
-                    itemsToCheck = levelCheck.get("item", [])
-                    eventsToCheck = levelCheck.get("events", [])
-                    capPassed = requiresCheck(itemsToCheck, eventsToCheck, player, ProgressEvent)
+        for levelCheck in levelArr:
+            capPassed = False
+            if levelCheck["lvl"] <= maxLevelCap and levelCheck["lvl"] > currentCap:
+                itemsToCheck = levelCheck.get("item", [])
+                eventsToCheck = levelCheck.get("events", [])
+                capPassed = requiresCheck(itemsToCheck, eventsToCheck, player, ProgressEvent)
 
-                if capPassed:
-                    currentCap = levelCheck["lvl"]
+            if capPassed:
+                currentCap = levelCheck["lvl"]
 
-            if currentCap == -1:
-                currentCap = maxLevelCap
-            
-            return currentCap
+        if currentCap == -1:
+            currentCap = maxLevelCap
+        
+        return currentCap
 
-        def respecPlayerToLevel(levelToSet):
-            newLevel = levelToSet
-            if newLevel < 1:
-                newLevel = 1
+    def respecPlayerToLevel(levelToSet):
+        newLevel = levelToSet
+        if newLevel < 1:
+            newLevel = 1
 
-            if levelCapEnabled():
-                maxLevel = getMaxLevelCap()
-                if newLevel > maxLevel:
-                    newLevel = maxLevel
-            
-            #Code taken from "RespecPlayer" function code
-            global player, sexResCap, assResCap, nipResCap, chuResCap, seducResCap, magResCap, painResCap, hpFloor, epFloor, spFloor, powFloor, spdFloor
-            global intFloor, allFloor, wilFloor, lukFloor, respeccing, hasResPoints 
+        if levelCapEnabled():
+            maxLevel = getMaxLevelCap()
+            if newLevel > maxLevel:
+                newLevel = maxLevel
+        
+        #Code taken from "RespecPlayer" function code
+        global player, displayingScene, lineOfScene
 
-            player.respec()
-            sexResCap = 150
-            assResCap = 150
-            nipResCap = 200
-            chuResCap = 150
-            seducResCap = 150
-            magResCap = 150
-            painResCap = 150
-            hpFloor = 50
-            epFloor = 20
-            spFloor = 1
-            powFloor = 1
-            spdFloor = 1
-            intFloor = 1
-            allFloor = 1
-            wilFloor = 1
-            lukFloor = 1
-            hasResPoints = 1
+        if player.stats.lvl == newLevel:
+            return
+        elif player.stats.lvl < newLevel:
+            lvlDifference = newLevel - player.stats.lvl
 
-            #Reset stat, perk and sens points to level 1, without affecting points given by non-level up perks
-            tempPerksList = copy.deepcopy(player.perks)
-            for each in tempPerksList:
-                player.giveOrTakePerk(each.name, -1)
+            expGain = player.stats.ExpNeeded
 
-            #Reset Stat, Sens and Perk points dependent on difficulty
-            spiritStatPointChange = (player.stats.max_true_sp - 3) * -3
-            
-            if difficulty == "Hard":
-                player.statPoints = 20 + min(0, spiritStatPointChange)
-                player.perkPoints = 0
-                player.SensitivityPoints = 1
-            elif difficulty == "Easy":
-                player.statPoints = 10 + spiritStatPointChange
-                player.perkPoints = 0
-                player.SensitivityPoints = 5
-            else:
-                player.statPoints = 5 + min(0, spiritStatPointChange)
-                player.perkPoints = 0
-                player.SensitivityPoints = 3
-            
-            player.perkPoints += player.additionalPerkPoints
-
-
-            for each in tempPerksList:
-                player.giveOrTakePerk(each.name, 1)
-
-
-            expToGive = 0
-            currentLvl = 1
-            player.stats.lvl = 1
-            player.stats.ExpNeeded = 10
-            player.stats.Exp = 0
-
-            while currentLvl < newLevel:
-                expToGive += int((0.4*(currentLvl*currentLvl)) + (2*currentLvl) + (15*math.sqrt(currentLvl)-8))
+            lvlCount = lvlDifference - 1
+            currentLvl = player.stats.lvl + 1
+            while lvlCount > 0:
+                expGain +=  int((0.4*(currentLvl*currentLvl)) + (2*currentLvl) + (15*math.sqrt(currentLvl)-8))
                 currentLvl += 1
-            
-            player.stats.Exp = expToGive + 1
+                lvlCount -= 1
 
-            renpy.say("", f"Level set to {newLevel}!")
-            renpy.jump("forceRepecLevelUpCheck")
+            player.stats.Exp += expGain
+            renpy.jump("levelCapForceLvlCheck")
+        elif player.stats.lvl > newLevel:
+            lvlDifference = player.stats.lvl - newLevel
+
+            if displayingScene and displayingScene.theScene: 
+                displayingScene.theScene.insert(lineOfScene + 1, lvlDifference)
+            elif displayingScene and not displayingScene.theScene:
+                displayingScene.theScene = [lvlDifference]
+                lineOfScene = -1
+            else:
+                displayingScene = Dialogue()
+                displayingScene.theScene = [lvlDifference]
+                lineOfScene = -1
+            renpy.jump("JsonFuncDrainLevel")
+    
+    def setUpCharacterScreen():
+        targetScreen = GetScreen("ON_CharacterDisplayScreen")
+        targetNameText = SLSearch(targetScreen, "Positional", targetPositional = '"[player.name]"')[0]
+        targetLvlText = SLSearch(targetScreen, "Positional", targetPositional = '"Level [player.stats.lvl]"')[0]
+        ChangeSLNodePositional(targetLvlText, 0, "Level [player.stats.lvl][cap]")
+        InsertScreenCode(targetNameText, '$ cap = ("/" + str(getMaxLevelCap())) if levelCapEnabled() else ""')
+    
+    def setUpLevelCapCheckAddition():
+        levelUpSpotCheck = GetLabel("levelUpSpot")
+        scriptStatement = FindNode(levelUpSpotCheck, "Python", "culmitiveLeveling += 1")
+        if scriptStatement:
+            testBlock = CreateBlock('if levelCapReached():\n $ player.stats.Exp = player.stats.ExpNeeded - 1')[0]
+
+            prevNext = scriptStatement.next
+            scriptStatement.next = testBlock
+            testBlock.next = prevNext
+
+            scriptStatementIndex = levelUpSpotCheck.block.index(scriptStatement)
+            levelUpSpotCheck.block.insert(scriptStatementIndex + 1, testBlock)
+    
+    def setUpAdditionalFunctions():
+        global JsonFuncRegistry
+        JsonFuncRegistry["AdjustPlayerLevel"] = ["JsonFuncAdjustPlayerLevel"]
+
+    def setUpAfterLoadHook():
+        loadDatabaseLabel = GetLabel("loadDatabase")
+        validatorIf = FindNode(loadDatabaseLabel, "Python", "")
+        if validatorIf:
+            #testBlock = CreateBlock("if loadingDatabaseType == 0:\n $ loadLevelCapJSON()")[0]
+            testBlock = CreateBlock("$ loadLevelCapJSON()")[0]
+
+            prevNext = validatorIf.next
+            validatorIf.next = testBlock
+            testBlock.next = prevNext
+
+            validatorIfIndex = loadDatabaseLabel.block.index(validatorIf)
+            loadDatabaseLabel.block.insert(validatorIfIndex + 1, testBlock)
+    
+    loadLevelCapJSON()
+    setUpCharacterScreen()
+    setUpAdditionalFunctions()
+    setUpLevelCapCheckAddition()
+    setUpAfterLoadHook()
+
+        
+label levelCapForceLvlCheck:
+    call refreshLevelVar from _call_refreshLevelVar_1
+    call levelUpSpot from _call_levelUpSpot_2
+    return
+
+label JsonFuncAdjustPlayerLevel:
+    $ lineOfScene += 1
+    $ newLevel = 1
+    if displayingScene.theScene[lineOfScene] == "Cap":
+        if levelCapEnabled():
+            $ newLevel = getMaxLevelCap()
+        else:
+            $ newLevel = -1
+    elif displayingScene.theScene[lineOfScene] == "Input":
+        $ newLevel = renpy.input(_("What level should the player be changed to (Currently [player.stats.lvl])?"), length=3, allow="0123456789") or _("-1")
+    else:
+        $ newLevel = displayingScene.theScene[lineOfScene]
+
+    python:
+        try:
+            newLevel = int(newLevel)
+        except:
+            newLevel = -1
+
+        if newLevel != -1:
+            respecPlayerToLevel(newLevel)
+    return
