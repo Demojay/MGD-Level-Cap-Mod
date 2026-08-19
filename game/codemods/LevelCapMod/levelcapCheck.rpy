@@ -68,6 +68,9 @@ init 1000 python:
     def levelCapReached():
         return player.stats.lvl >= getMaxLevelCap()
 
+    def levelCapSurpassed():
+        return player.stats.lvl > getMaxLevelCap()
+
     def calcLevelCap():
         currentCapObj = getDiffLevelCapObj()
         currentCap = -1
@@ -146,12 +149,8 @@ init 1000 python:
         if scriptStatement:
             testBlock = CreateBlock('if levelCapReached():\n $ player.stats.Exp = player.stats.ExpNeeded - 1')[0]
 
-            prevNext = scriptStatement.next
-            scriptStatement.next = testBlock
-            testBlock.next = prevNext
+            ReplaceNext(scriptStatement, testBlock)
 
-            scriptStatementIndex = levelUpSpotCheck.block.index(scriptStatement)
-            levelUpSpotCheck.block.insert(scriptStatementIndex + 1, testBlock)
     
     def setUpAdditionalFunctions():
         global JsonFuncRegistry
@@ -163,19 +162,69 @@ init 1000 python:
         if validatorIf:
             #testBlock = CreateBlock("if loadingDatabaseType == 0:\n $ loadLevelCapJSON()")[0]
             testBlock = CreateBlock("$ loadLevelCapJSON()")[0]
-
-            prevNext = validatorIf.next
-            validatorIf.next = testBlock
-            testBlock.next = prevNext
-
-            validatorIfIndex = loadDatabaseLabel.block.index(validatorIf)
-            loadDatabaseLabel.block.insert(validatorIfIndex + 1, testBlock)
+            ReplaceNext(validatorIf, testBlock)
     
+    def setUpRequiresLevelCapPassed():
+        addRequiresCheck("RequiresLevelCapPassed", "SceneRequires_LevelCapPassed", "passLevelCapCheck = 1", "hasLevelCapCheck = 0", "passLevelCapCheck == 1", "passLevelCapCheck == 0", "Requires level cap to be exceeded.",
+        "passLevelCapCheck == 1 and hasLevelCapCheck == 1", "Must not have exceeded level cap.")
+
+    """
+    Function for adding new "Requires" Functions to MGD, along with the failure messages for both standard and inverse requirements.
+    Parameters:
+    RequiresFunc - The name of the Function that is used in any menu JSONs
+    RequiresLabel - The label that will be called by the "RequiresFunc" function, and is responsible for performing the actual check
+    passCheckStmt - Initialization of the variable used to check whether the check was successful or not
+    hasCheckStmt - Inifializatino of the the variable used to check if the check was invoked during the event at all (for use with the "Inverse Requirement" parameter)
+    passCheckIfStmt - Statement added to the line in dialogueSystemSceneRequires.rpy line 305/325 to check with the requirment check was successful before displaying messages on the menu item
+    NonInverseReqCheck - Statement for the standard requirement branch, to check whether the failure message should be displayed on the menu item
+    NonInverseReqCheckStmt - Actual Sentence displayed on the menu item when the standard requirement is failed
+    InverseReqCheck - Statement for the inverse requirement branch, to check whether the failure message should be displayed on the menu item
+    InverseReqCheckStmt - Actual Sentence displayed on the menu item when the inverse requirement is failed
+    """
+    def addRequiresCheck(RequiresFunc, RequiresLabel, passCheckStmt, hasCheckStmt, passCheckIfStmt, NonInverseReqCheck, NonInverseReqCheckStmt, InverseReqCheck, InverseReqCheckStmt):
+        global requires_funcs
+        requires_funcs[RequiresFunc] = [RequiresLabel]
+
+        scenelabel = GetLabel("SceneRequiresCheck")
+        InsertBlock(scenelabel, f"$ {passCheckStmt}")
+        InsertBlock(scenelabel, f"$ {hasCheckStmt}")
+
+        inverseReqFalseLabel = FindNode(scenelabel, "If", "inverseRequirement == 0")
+        if inverseReqFalseLabel:
+            FalsePassCheckIf = FindNode(inverseReqFalseLabel, "If", "passStatcheck == 1")
+            if FalsePassCheckIf:
+                FalsePassCheckIf.entries[0] = (
+                    FalsePassCheckIf.entries[0][0] + f" and {passCheckIfStmt}",
+                    FalsePassCheckIf.entries[0][1]
+                )
+
+                #Add failure message to  dialogueSystemSceneRequires.rpy line 324
+                FalsePassPassStatCheckIf = FindNode(FalsePassCheckIf, "If", "passStatcheck == 0")
+                if FalsePassPassStatCheckIf:
+                    FalsePassDisplayMsg = CreateBlock(f'$ display = "{NonInverseReqCheckStmt}"')
+                    InsertIfBranch(FalsePassPassStatCheckIf, len(FalsePassPassStatCheckIf.entries), f"{NonInverseReqCheck}", FalsePassDisplayMsg)
+        
+        inverseReqTrueLabel = FindNode(scenelabel, "If", "inverseRequirement == 1")
+        if inverseReqTrueLabel:
+            TruePassCheckIf = GetIfEntry(inverseReqTrueLabel, "inverseRequirement == 1")[0][1][0]
+            if TruePassCheckIf:
+                TruePassCheckIf.entries[0] = (
+                    TruePassCheckIf.entries[0][0] + f" and {passCheckIfStmt}",
+                    TruePassCheckIf.entries[0][1]
+                )
+
+                #Add failure message to  dialogueSystemSceneRequires.rpy line 324
+                TruePassPassStatCheckIf = FindNode(TruePassCheckIf, "If", "passStatcheck == 1 and hasStatCheck == 1")
+                if TruePassPassStatCheckIf:
+                    TruePassDisplayBlock = CreateBlock(f'if {InverseReqCheck}:\n $ display = "{InverseReqCheckStmt}"')
+                    ReplaceNext(TruePassPassStatCheckIf, TruePassDisplayBlock)
+
     loadLevelCapJSON()
     setUpCharacterScreen()
     setUpAdditionalFunctions()
     setUpLevelCapCheckAddition()
     setUpAfterLoadHook()
+    setUpRequiresLevelCapPassed()
 
         
 label levelCapForceLvlCheck:
@@ -204,4 +253,12 @@ label JsonFuncAdjustPlayerLevel:
 
         if newLevel != -1:
             respecPlayerToLevel(newLevel)
+    return
+
+label SceneRequires_LevelCapPassed:
+    $ passLevelCapCheck = 0
+    $ hasLevelCapCheck = 1
+    if levelCapEnabled() and levelCapSurpassed():
+        $ passLevelCapCheck = 1
+    $ lineOfScene += 1
     return
