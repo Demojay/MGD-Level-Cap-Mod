@@ -228,8 +228,8 @@ init 1000 python:
 
         
 label levelCapForceLvlCheck:
-    call refreshLevelVar from _call_refreshLevelVar_1
-    call levelUpSpot from _call_levelUpSpot_2
+    call refreshLevelVar from _call_refreshLevelVar_LevelCapMod
+    call levelUpSpot from _call_levelUpSpot_LevelCapMod
     return
 
 label JsonFuncAdjustPlayerLevel:
